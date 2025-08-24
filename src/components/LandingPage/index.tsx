@@ -2,10 +2,12 @@
 import React from "react"
 import Navbar from "../common/Navbar"
 import SectionOne from "./SectionOne"
+import HeroButtons from "./HeroButtons"
+import Footer from "../common/Footer"
 
 export default function Home() {
   return (
-    <div className="h-screen w-screen bg-gradient-to-r from-[#01040b] via-[#111823] to-[#020915] relative overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-r from-[#01040b] via-[#111823] to-[#010814] relative overflow-hidden">
       {/* Circuit background */}
       <div className="absolute inset-0 opacity-20">
         <img
@@ -19,6 +21,11 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <SectionOne />
+        <HeroButtons />
+        {/* working */}
+        {/* features card */}
+        {/* live demo */}
+        <Footer />
       </div>
     </div>
   )
