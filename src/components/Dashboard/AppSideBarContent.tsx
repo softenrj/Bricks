@@ -1,7 +1,5 @@
 "use client"
 import {
-    Star,
-    Calendar,
     Settings,
     Inbox,
     Home,
