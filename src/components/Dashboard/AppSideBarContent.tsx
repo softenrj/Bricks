@@ -14,6 +14,7 @@ import {
     SidebarMenuItem,
     SidebarMenuSub,
     SidebarMenuSubItem,
+    useSidebar,
 } from "../ui/sidebar"
 import {
     Collapsible,
@@ -21,6 +22,7 @@ import {
     CollapsibleTrigger,
 } from "../ui/collapsible"
 import { usePathname } from "next/navigation"
+import { Tooltip } from "../common/Tooltip"
 
 // Dummy sidebar data with different icons
 const sidebarItems = [
@@ -30,8 +32,8 @@ const sidebarItems = [
         icon: Home,
         color: "#3b82f6", // blue
         subItems: [
-            { title: "Overview", href: "/dashboard/overview", icon: Star, color: "#facc15" }, // yellow
-            { title: "Stats", href: "/dashboard/stats", icon: Calendar, color: "#10b981" }, // green
+            { title: "Overview", href: "/dashboard/overview", color: "#facc15" }, // yellow
+            { title: "Stats", href: "/dashboard/stats", color: "#10b981" }, // green
         ],
     },
     {
@@ -40,8 +42,8 @@ const sidebarItems = [
         icon: Folder,
         color: "#8b5cf6", // purple
         subItems: [
-            { title: "All Projects", href: "/projects", icon: Star, color: "#ef4444" }, // red
-            { title: "Starred", href: "/projects/starred", icon: Star, color: "#f59e0b" }, // orange
+            { title: "All Projects", href: "/projects", color: "#ef4444" }, // red
+            { title: "Starred", href: "/projects/starred", color: "#f59e0b" }, // orange
         ],
     },
     {
@@ -50,8 +52,8 @@ const sidebarItems = [
         icon: Inbox,
         color: "#06b6d4", // cyan
         subItems: [
-            { title: "Inbox", href: "/messages/inbox", icon: Inbox, color: "#3b82f6" },
-            { title: "Archived", href: "/messages/archived", icon: Inbox, color: "#9ca3af" }, // gray
+            { title: "Inbox", href: "/messages/inbox", color: "#3b82f6" },
+            { title: "Archived", href: "/messages/archived", color: "#9ca3af" }, // gray
         ],
     },
     {
@@ -60,8 +62,8 @@ const sidebarItems = [
         icon: Users,
         color: "#22c55e", // green
         subItems: [
-            { title: "Members", href: "/team/members", icon: Users, color: "#3b82f6" },
-            { title: "Roles", href: "/team/roles", icon: Settings, color: "#f97316" }, // orange
+            { title: "Members", href: "/team/members", color: "#3b82f6" },
+            { title: "Roles", href: "/team/roles", color: "#f97316" }, // orange
         ],
     },
     {
@@ -70,30 +72,32 @@ const sidebarItems = [
         icon: Settings,
         color: "#f87171", // pink/red
         subItems: [
-            { title: "Profile", href: "/settings/profile", icon: Star, color: "#10b981" },
-            { title: "Billing", href: "/settings/billing", icon: Star, color: "#ef4444" },
+            { title: "Profile", href: "/settings/profile", color: "#10b981" },
+            { title: "Billing", href: "/settings/billing", color: "#ef4444" },
         ],
     },
 ]
 
 function AppSideBarContent() {
     const tab = usePathname()
-    console.log(tab)
+    const { open } = useSidebar();
     return (
         <div className="ml-4 mt-4">
             <SidebarMenu>
                 {sidebarItems.map((item, index) => (
                     <Collapsible key={index} defaultOpen className="group/collapsible mb-2">
                         <SidebarMenuItem>
-                            <CollapsibleTrigger asChild>
+                            <CollapsibleTrigger  asChild>
                                 <a className="cursor-pointer" href={item.href}>
-                                    <div className="ml-2 text-white">
+                                    <div className="ml-0 text-white">
                                         <div
                                             className={`flex items-center gap-2 px-3 py-1 rounded-lg w-fit ${tab === item.href ? "glass-card" : ""
                                                 }`}
                                         >
-                                            <item.icon color={item.color} className="svg-glow" />
-                                            <p className="text-lg">{item.title}</p>
+                                            <Tooltip content={item.title} show={!open}>
+                                                <item.icon color={item.color} className="svg-glow" />
+                                            </Tooltip>
+                                            { open && <p className="text-lg">{item.title}</p>}
                                         </div>
                                     </div>
                                 </a>
@@ -108,10 +112,9 @@ function AppSideBarContent() {
                                         return (
                                             <a key={subIndex} className="cursor-pointer w-full" href={sub.href}>
                                                 <SidebarMenuSubItem
-                                                    className={`relative text-gray-300 flex gap-2 items-center pr-5 
+                                                    className={`relative text-gray-400 flex gap-2 items-center pr-5 
           ${isActive ? "text-white font-medium" : ""}`}
                                                 >
-                                                    <sub.icon size={14} color={sub.color} className="svg-glow" />
                                                     <p className="text-sm">{sub.title}</p>
 
                                                     {/* Pink dot on the right */}
