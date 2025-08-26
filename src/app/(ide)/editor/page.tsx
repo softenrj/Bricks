@@ -1,5 +1,5 @@
 import React from 'react'
-import IdeLayout from "@/components/IdeLayOut/Layout"
+import IdeLayout from "@/components/IdeLayOut/MainWindow"
 
 function page() {
   return (

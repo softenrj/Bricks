@@ -1,4 +1,3 @@
-import IdeSideBar from '@/components/IdeSidebar/IdeSideBar'
 import React from 'react'
 
 function IdeLayout({ children }: { children: React.ReactNode }) {

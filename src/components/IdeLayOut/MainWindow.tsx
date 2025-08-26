@@ -1,6 +1,5 @@
 import React from 'react'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../ui/resizable'
-import EditorActionBtn from './EditorActionBtn'
 import AppEditor from '../CodeEditor/AppEditor'
 
 function MainWindow() {

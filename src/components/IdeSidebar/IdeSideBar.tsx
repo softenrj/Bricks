@@ -1,11 +1,11 @@
 import React from 'react'
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '../ui/sidebar'
+import { Sidebar } from '../ui/sidebar'
 
 function IdeSideBar() {
   return (
     <Sidebar className="bg-transparent min-w-[80px]" collapsible="icon">
       <div className="h-screen flex flex-col w-full bg-gradient-to-r from-[#0F1012] via-[#151718] to-[#1C1B21]">
-      
+
       </div>
       
     </Sidebar>
