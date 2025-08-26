@@ -1,10 +1,10 @@
-import AppSideBar from '@/components/AppSideBar/AppSideBar'
+import IdeSideBar from '@/components/IdeSidebar/IdeSideBar'
 import React from 'react'
 
-function DashboardLayout({ children }: { children: React.ReactNode }) {
+function IdeLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen w-screen overflow-hidden">
-      <AppSideBar />
+      {/* <IdeSideBar /> */}
       <main className="flex-1 overflow-auto">
         {children}
       </main>
@@ -12,4 +12,4 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default DashboardLayout
+export default IdeLayout

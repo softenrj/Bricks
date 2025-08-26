@@ -238,18 +238,20 @@
 }
 
 .glass-card {
-  border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  /* From https://css.glass */
-  background: rgba(255, 255, 255, 0.295);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(120, 118, 118, 0.229);
+  border-radius: 12px;
   backdrop-filter: blur(9.6px);
   -webkit-backdrop-filter: blur(9.6px);
-  border: 1px solid rgba(255, 255, 255, 0.38);
 
 }
 
 .svg-glow {
-  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.8));
+  filter: drop-shadow(0 0 3px rgba(59, 130, 246, 0.8));
+}
+
+.theme-dashboard {
+  background-color: #0D0E10;
+  width: 100%;
+  min-height: 100%;
 }
