@@ -1,4 +1,5 @@
 import AppSideBar from '@/components/AppSideBar/AppSideBar'
+import DashboardNavStrip from '@/components/common/DashboardNavStrip'
 import React from 'react'
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -6,7 +7,8 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen w-screen overflow-hidden">
       <AppSideBar />
       <main className="flex-1 overflow-auto">
-        {children}
+          <DashboardNavStrip />
+          {children}
       </main>
     </div>
   )

@@ -41,7 +41,7 @@ function AppSlideBarBtnsCard({ item, index, tab, open}: Props) {
                     </Link>
 
                     {/* Rotate Chevron based on individual collapsible */}
-                    {item.subItems && <CollapsibleTrigger asChild>
+                    {open && item.subItems && <CollapsibleTrigger asChild>
                         {isOpen ? <ChevronUp size={14} color="white" /> : <ChevronDown size={14} color="white" />}
                     </CollapsibleTrigger>}
                 </div>
