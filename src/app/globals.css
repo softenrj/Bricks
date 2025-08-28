@@ -164,6 +164,36 @@
   border: 1px solid transparent;
   transition: color 0.3s ease;
 }
+.Alex-btn {
+  position: relative;
+  border: 0.1px solid transparent;
+  transition: color 0.3s ease;
+}
+.Alex-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50;
+  padding: 1px;
+  background: linear-gradient(90deg,
+      #00f0ff,
+      /* neon blue */
+      #ff00ff,
+      /* pink */
+      #ff7300,
+      /* orange */
+      #ffee00
+      /* yellow */
+    );
+  background-size: 300% 300%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
 
 .signIn-btn::before {
   content: "";
@@ -196,10 +226,20 @@
   z-index: 1;
 }
 
+.Alex-btn span {
+  position: relative;
+  z-index: 1;
+}
+
 .signIn-btn:hover::before {
   animation: neonBorder 4s linear infinite;
   opacity: 1;
 }
+.Alex-btn:hover::before {
+  animation: neonBorder 4s linear infinite;
+  opacity: 1;
+}
+
 
 @keyframes neonBorder {
   0% {

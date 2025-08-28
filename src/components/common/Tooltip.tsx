@@ -14,7 +14,7 @@ type AppTooltipProps = {
 export function Tooltip({ children, content, show=true }: AppTooltipProps) {
   return (
     <ToolTipComp>
-      <TooltipTrigger asChild>
+      <TooltipTrigger asChild className="cursor-pointer">
         {children}
       </TooltipTrigger>
       {

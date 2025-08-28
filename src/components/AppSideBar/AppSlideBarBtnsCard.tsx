@@ -28,7 +28,7 @@ function AppSlideBarBtnsCard({ item, index, tab, open}: Props) {
             className="group/collapsible mb-2"
         >
             <SidebarMenuItem>
-                <div className={`flex items-center w-fit pr-2 ${tab === item.href ? "glass-card" : ""}`}>
+                <div className={`flex items-center w-fit ${tab === item.href ? "glass-card" : ""}`}>
                     <Link className="cursor-pointer" href={item.href}>
                         <div className="ml-0 text-white">
                             <div className="flex items-center gap-2 px-3 py-1 rounded-lg w-fit">
@@ -42,7 +42,7 @@ function AppSlideBarBtnsCard({ item, index, tab, open}: Props) {
 
                     {/* Rotate Chevron based on individual collapsible */}
                     {open && item.subItems && <CollapsibleTrigger asChild>
-                        {isOpen ? <ChevronUp size={14} color="white" /> : <ChevronDown size={14} color="white" />}
+                        {isOpen ? <ChevronUp size={12} className='mr-2' color="white" /> : <ChevronDown size={14} color="white" />}
                     </CollapsibleTrigger>}
                 </div>
 
@@ -54,7 +54,7 @@ function AppSlideBarBtnsCard({ item, index, tab, open}: Props) {
                                 return (
                                     <Link key={subIndex} href={sub.href}>
                                         <SidebarMenuSubItem
-                                            className={`relative text-gray-400 flex gap-2 items-center pr-5 ${isActive ? "text-white font-medium" : ""
+                                            className={`relative text-gray-400 flex gap-2 items-center ${isActive ? "text-white font-medium" : ""
                                                 }`}
                                         >
                                             <p className="text-sm">{sub.title}</p>
