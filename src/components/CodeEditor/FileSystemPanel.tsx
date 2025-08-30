@@ -64,7 +64,7 @@ function FileSystemPanel({ fsData }: FileSystemPanelProps) {
                 try {
                   const content = atob(value);
                   alert(content);
-                } catch (e) {
+                } catch (e: any) {
                   alert("Unable to decode file content");
                 }
               }}
