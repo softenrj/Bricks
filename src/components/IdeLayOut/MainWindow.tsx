@@ -1,44 +1,47 @@
-import React from 'react'
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../ui/resizable'
-import AppEditor from '../CodeEditor/AppEditor'
+"use client";
+import React from "react";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable";
+import AppEditor from "../CodeEditor/AppEditor";
+import TerminalPanel from "../CodeEditor/Terminal";
+import PreviewPanel from "../CodeEditor/PreviewTab";
+import FileSystemPanel from "../CodeEditor/FileSystemPanel";
 
 function MainWindow() {
-    return (
-        <ResizablePanelGroup
-            direction="horizontal"
-            className="min-h-[200px] rounded-lg border md:min-w-[450px]"
-        >
-            <ResizablePanel defaultSize={20} maxSize={40} minSize={10}>
-                fs system/ diff components
-            </ResizablePanel>
-            <ResizableHandle />
+  const [data, setData] = React.useState<any>({}); // FS state
 
-            <ResizablePanel defaultSize={45}>
-                
-                <div>
-                    <ResizablePanelGroup direction="vertical">
-                    <ResizablePanel defaultSize={75}>
-                        <AppEditor />
-                    </ResizablePanel>
-                    <ResizableHandle />
-                    <ResizablePanel defaultSize={25}>
-                        <div className="flex h-full items-center justify-center p-6">
-                            <span className="font-semibold">Terminal</span>
-                        </div>
-                    </ResizablePanel>
-                </ResizablePanelGroup>
-                </div>
+  return (
+    <ResizablePanelGroup
+      direction="horizontal"
+      className="min-h-[200px] rounded-lg border md:min-w-[450px] max-h-[95%]"
+    >
+      {/* Left FS */}
+      <ResizablePanel defaultSize={20} maxSize={40} minSize={10}>
+        <FileSystemPanel fsData={data} />
+      </ResizablePanel>
+      <ResizableHandle />
+
+      {/* Editor + Terminal */}
+      <ResizablePanel defaultSize={45}>
+        <div className="flex flex-col h-full">
+          <ResizablePanelGroup direction="vertical">
+            <ResizablePanel defaultSize={75}>
+              <AppEditor />
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel defaultSize={35}>
-                <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold">Real time execure</span>
-                </div>
+            <ResizablePanel defaultSize={25}>
+              <TerminalPanel setStaterFile={(fs: any) => setData(fs)} />
             </ResizablePanel>
-        </ResizablePanelGroup>
-    )
+          </ResizablePanelGroup>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
+
+      {/* Preview */}
+      <ResizablePanel defaultSize={35}>
+        <PreviewPanel />
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
 }
 
-export default MainWindow
-
-
+export default MainWindow;
