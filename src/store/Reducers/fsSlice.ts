@@ -44,7 +44,7 @@ const fsSlice = createSlice({
       // Load content from FS tree automatically
       const segments = action.payload.split("/");
       let node: any = state.tree;
-      for (let seg of segments) {
+      for (const seg of segments) {
         if (!node) break;
         node = node[seg];
       }
