@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
-
+import ReduxProvider from "@/context/ReduxProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,6 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    <ReduxProvider >
     <SidebarProvider>
       <html lang="en">
         <body
@@ -38,5 +39,6 @@ export default function RootLayout({
         </body>
       </html>
     </SidebarProvider>
+    </ReduxProvider>
   );
 }

@@ -1,191 +1,93 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Terminal, Play, RotateCcw, X, Settings, ChevronDown } from "lucide-react";
+import { Terminal, RotateCcw, X, Globe } from "lucide-react";
+import {
+  bootWebContainer,
+  installDeps,
+  startDevServer,
+  addLog,
+  clearLogs,
+  createViteProject,
+  sendToProcess,
+} from "@/store/Reducers/webContainer";
+import { AppDispatch, RootState } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 
-type Log = { 
-  text: string; 
-  type: "stdout" | "info" | "error" | "success" | "command";
-  timestamp?: Date;
-};
-
-type FSData = {
-  [key: string]: string | FSData;
-};
-
-interface TerminalPanelProps {
-  setStaterFile: (fs: FSData) => void;
-}
-
-function TerminalPanel({ setStaterFile }: TerminalPanelProps) {
-  const [logs, setLogs] = useState<Log[]>([]);
-  const [isRunning, setIsRunning] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+function TerminalPanel() {
+  const dispatch = useAppDispatch<AppDispatch>();
+  const { logs, liveUrl, status } = useAppSelector(
+    (state: RootState) => state.webContainer
+  );
 
   const [currentCommand, setCurrentCommand] = useState("");
-  const inputRef = useRef<WritableStreamDefaultWriter<any> | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Auto scroll to bottom
+  const createProject = async () => {
+    await dispatch(bootWebContainer());
+    await dispatch(createViteProject());
+  };
+
+  useEffect(() => {
+    createProject();
+  }, []);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [logs]);
 
-  // Focus input when terminal is clicked
-  const focusInput = () => {
-    terminalInputRef.current?.focus();
-  };
+  const focusInput = () => terminalInputRef.current?.focus();
 
-  // Add log with timestamp
-  const addLog = (text: string, type: Log["type"]) => {
-    setLogs((prev) => [...prev, { text, type, timestamp: new Date() }]);
-  };
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && currentCommand.trim()) {
+      const command = currentCommand.trim();
 
-  // Recursive FS builder for state
-  async function buildFSState(path: string, wc: any): Promise<FSData> {
-    const entries = await wc.fs.readdir(path, { withFileTypes: true });
-    const result: FSData = {};
-
-    for (const entry of entries) {
-      const fullPath = `${path}/${entry.name}`;
-      if (entry.isDirectory()) {
-        result[entry.name] = await buildFSState(fullPath, wc);
-      } else {
-        try {
-          const content = await wc.fs.readFile(fullPath, "utf-8");
-          result[entry.name] = btoa(content);
-        } catch (err) {
-          result[entry.name] = "";
-        }
-      }
-    }
-    return result;
-  }
-
-  useEffect(() => {
-    async function init() {
-      addLog("🔹 Step 1: Booting WebContainer...", "info");
-      const { WebContainer } = await import("@webcontainer/api");
-      const wc = await WebContainer.boot();
-      addLog("✅ WebContainer booted", "success");
-
-      addLog("🔹 Step 2: Running npm create vite@latest...", "info");
-      const proc = await wc.spawn("npm", [
-        "create",
-        "vite@latest",
-        ".",
-        "--",
-        "--template",
-        "react-ts",
-      ]);
-
-      inputRef.current = proc.input.getWriter();
-
-      proc.output.pipeTo(
-        new WritableStream({
-          write(data) {
-            addLog(data, "stdout");
-          },
+      dispatch(
+        addLog({
+          text: `$ ${command}`,
+          type: "command",
+          timestamp: new Date().toISOString(),
         })
       );
 
-      addLog("🔹 Step 3: Waiting for process to finish...", "info");
-      const exitCode = await proc.exit;
-      addLog(`✅ Step 4: Process finished with code: ${exitCode}`, "success");
+      await sendToProcess(command);
 
-      addLog("🔹 Step 5: Building FS state...", "info");
-      const fsState = await buildFSState(".", wc);
-      setStaterFile(fsState);
-      addLog("✅ FS state ready", "success");
-    }
-
-    init();
-  }, []);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputRef.current) {
-      const value = currentCommand.trim();
-
-      if (value.length > 0) {
-        addLog(`$ ${value}`, "command");
-        inputRef.current.write(value + "\n");
-        setCurrentCommand("");
-      }
+      setCurrentCommand("");
     }
   };
 
-  const clearTerminal = () => {
-    setLogs([]);
-  };
+  const runInstall = () => dispatch(installDeps());
+  const runDevServer = () => dispatch(startDevServer());
+  const clearTerminal = () => dispatch(clearLogs());
 
-  const restartProcess = async () => {
-    setLogs([]);
-    setIsRunning(true);
-    
-    try {
-      addLog("🔄 Restarting WebContainer...", "info");
-      const { WebContainer } = await import("@webcontainer/api");
-      const wc = await WebContainer.boot();
-      addLog("✅ WebContainer restarted", "success");
-
-      const proc = await wc.spawn("npm", [
-        "create",
-        "vite@latest",
-        ".",
-        "--",
-        "--template",
-        "react-ts",
-      ]);
-
-      inputRef.current = proc.input.getWriter();
-
-      proc.output.pipeTo(
-        new WritableStream({
-          write(data) {
-            addLog(data, "stdout");
-          },
-        })
-      );
-
-      const exitCode = await proc.exit;
-      addLog(`✅ Process completed with code: ${exitCode}`, "success");
-
-      const fsState = await buildFSState(".", wc);
-      setStaterFile(fsState);
-      addLog("✅ File system updated", "success");
-    } catch (error) {
-      addLog(`❌ Error: ${error}`, "error");
-    } finally {
-      setIsRunning(false);
-    }
-  };
-
-  const getLogColor = (type: Log["type"]) => {
+  const getLogColor = (type: string) => {
     switch (type) {
-      case "success": return "text-green-400";
-      case "error": return "text-red-400";
-      case "info": return "text-blue-400";
-      case "command": return "text-yellow-400";
-      default: return "text-gray-300";
+      case "success":
+        return "text-green-400";
+      case "error":
+        return "text-red-400";
+      case "info":
+        return "text-blue-400";
+      case "command":
+        return "text-yellow-400";
+      default:
+        return "text-gray-300";
     }
   };
 
   return (
     <div className="flex flex-col h-full bg-black">
-      {/* Header Navigation */}
+      {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-700">
-        {/* Left Section */}
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
             <Terminal className="w-4 h-4 text-green-400" />
             <span className="text-sm font-medium text-gray-200">Terminal</span>
           </div>
-          
-          {/* Status */}
           <div className="flex items-center space-x-2">
-            {isRunning ? (
+            {status === "running" ? (
               <div className="flex items-center space-x-1">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-xs text-green-400">Running</span>
@@ -193,113 +95,52 @@ function TerminalPanel({ setStaterFile }: TerminalPanelProps) {
             ) : (
               <div className="flex items-center space-x-1">
                 <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                <span className="text-xs text-gray-400">Ready</span>
+                <span className="text-xs text-gray-400 capitalize">
+                  {status}
+                </span>
               </div>
             )}
           </div>
-
-          {/* Lines count */}
-          <div className="text-xs text-gray-500">
-            {logs.length} lines
-          </div>
+          <div className="text-xs text-gray-500">{logs.length} lines</div>
         </div>
 
-        {/* Right Section */}
+        {/* Actions */}
         <div className="flex items-center space-x-2">
-          {/* Action Buttons */}
           <button
-            onClick={restartProcess}
-            disabled={isRunning}
-            className="flex items-center space-x-1 px-2 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded transition-colors"
-            title="Restart Process"
+            onClick={runInstall}
+            disabled={status !== "ready"}
+            className="px-2 py-1 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white text-xs rounded"
           >
-            <Play className="w-3 h-3" />
-            <span>Restart</span>
+            npm install
           </button>
-
+          <button
+            onClick={runDevServer}
+            disabled={status !== "ready"}
+            className="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white text-xs rounded"
+          >
+            npm run dev
+          </button>
           <button
             onClick={clearTerminal}
-            className="flex items-center px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
-            title="Clear Terminal"
+            className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded"
           >
             <RotateCcw className="w-3 h-3" />
           </button>
-
-          {/* Settings Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowSettings(!showSettings)}
-              className="flex items-center px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
-              title="Settings"
-            >
-              <Settings className="w-3 h-3" />
-              <ChevronDown className="w-3 h-3 ml-1" />
-            </button>
-            
-            {showSettings && (
-              <div className="absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-600 rounded shadow-lg z-10">
-                <div className="p-2 space-y-1">
-                  <button
-                    onClick={() => {
-                      clearTerminal();
-                      setShowSettings(false);
-                    }}
-                    className="w-full text-left px-2 py-1 text-xs text-gray-300 hover:bg-gray-700 rounded"
-                  >
-                    Clear All Output
-                  </button>
-                  <button
-                    onClick={() => {
-                      terminalInputRef.current?.focus();
-                      setShowSettings(false);
-                    }}
-                    className="w-full text-left px-2 py-1 text-xs text-gray-300 hover:bg-gray-700 rounded"
-                  >
-                    Focus Input
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (scrollRef.current) {
-                        scrollRef.current.scrollTop = 0;
-                      }
-                      setShowSettings(false);
-                    }}
-                    className="w-full text-left px-2 py-1 text-xs text-gray-300 hover:bg-gray-700 rounded"
-                  >
-                    Scroll to Top
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (scrollRef.current) {
-                        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-                      }
-                      setShowSettings(false);
-                    }}
-                    className="w-full text-left px-2 py-1 text-xs text-gray-300 hover:bg-gray-700 rounded"
-                  >
-                    Scroll to Bottom
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
 
-      {/* Output Area */}
+      {/* Logs */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-xs"
         onClick={focusInput}
       >
         {logs.length === 0 ? (
-          <div className="text-gray-500">
-            <p>Terminal ready. Type commands below or click Restart to begin.</p>
-          </div>
+          <div className="text-gray-500">Terminal ready.</div>
         ) : (
           <div>
             {logs.map((log, i) => (
-              <div key={i} className={`${getLogColor(log.type)}`}>
+              <div key={i} className={getLogColor(log.type)}>
                 {log.text}
               </div>
             ))}
@@ -307,23 +148,21 @@ function TerminalPanel({ setStaterFile }: TerminalPanelProps) {
         )}
       </div>
 
-      {/* Input Area */}
+      {/* Input */}
       <div className="flex items-center p-2 bg-black border-t border-gray-800">
         <span className="text-green-400 mr-2 font-mono">$</span>
         <input
           ref={terminalInputRef}
           className="flex-1 bg-black text-green-400 font-mono text-xs outline-none"
-          placeholder="Type command..."
+          placeholder="Type command (demo only)"
           value={currentCommand}
           onChange={(e) => setCurrentCommand(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={isRunning}
         />
         {currentCommand && (
           <button
             onClick={() => setCurrentCommand("")}
-            className="ml-2 text-gray-500 hover:text-gray-300 transition-colors"
-            title="Clear input"
+            className="ml-2 text-gray-500 hover:text-gray-300"
           >
             <X className="w-3 h-3" />
           </button>

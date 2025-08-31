@@ -16,7 +16,7 @@ function MainWindow() {
     >
       {/* Left FS */}
       <ResizablePanel defaultSize={20} maxSize={40} minSize={10}>
-        <FileSystemPanel fsData={data} />
+        <FileSystemPanel />
       </ResizablePanel>
       <ResizableHandle />
 
@@ -29,7 +29,7 @@ function MainWindow() {
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={25}>
-              <TerminalPanel setStaterFile={(fs: any) => setData(fs)} />
+              <TerminalPanel />
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
