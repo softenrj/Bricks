@@ -1,49 +1,75 @@
-import { Ellipsis } from 'lucide-react'
-import React from 'react'
-import { Tooltip } from '../common/Tooltip'
-import { Badge } from '../ui/badge'
-import Image from 'next/image'
+"use client";
+import { Ellipsis, Star } from "lucide-react";
+import React, { useState } from "react";
+import { Tooltip } from "../common/Tooltip";
+import { Badge } from "../ui/badge";
+import Image from "next/image";
+import StarIcon from "../common/StarIcon";
 
 function ProjectCard() {
+    const [isStarred, setIsStarred] = useState(false);
+
+    const handleStarClick = () => {
+        setIsStarred(!isStarred);
+    };
+
     return (
-        <div className="bg-[#8888884a] p-4 rounded-md w-full max-w-[400px] relative shadow-md hover:shadow-lg transition-shadow duration-300">
-            <div className="bg-[#2c2c2c] p-2 rounded-md w-fit border-2 border-[#FD2787] absolute -top-6">
-                <Image src="/icons/nextdotjs.svg" alt="next-js" width={28} height={28} />
+        <div className="bg-[#1f1f1f]/80 p-3 rounded-md w-full max-w-[380px] relative shadow-sm hover:shadow-md border border-[#2d2d2d]">
+            {/* Top Icon */}
+            <div className="bg-[#2c2c2c] p-1.5 rounded-md w-fit border border-[#FD2787] absolute -top-4 left-4 shadow-sm">
+                <Image src="/icons/nextdotjs.svg" alt="next-js" width={22} height={22} />
             </div>
 
-            <div className="flex justify-between items-start mt-4">
-                <p className="text-xl sm:text-2xl text-gray-200 font-bold leading-snug">
-                    Simple React Todo App
+            {/* Header */}
+            <div className="mt-5 flex justify-between items-start">
+                {/* Title */}
+                <p className="text-sm sm:text-base text-gray-100 font-semibold leading-snug pr-2">
+                    Simple Todo App
                 </p>
-                <Ellipsis color="#838383" className="cursor-pointer" />
+
+                {/* Right controls */}
+                <Ellipsis
+                    className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors"
+                    size={16}
+                />
+
+                {/* Star Button */}
+                <StarIcon isStarred={isStarred} handleStarClick={handleStarClick} />
             </div>
 
-            <p className="mt-3 text-sm sm:text-base text-gray-300">
-                React-based todo app where you can add, remove, and delete tasks. 
-                You can also set a timer to auto-remove tasks.
+            {/* Description */}
+            <p className="mt-1 text-[11px] text-gray-300 leading-snug line-clamp-2">
+                React-based todo app where you can add, remove, and delete tasks with a
+                timer.
             </p>
 
-            <div className='flex gap-1 mt-2'>
-                <Image src={"/icons/react.svg"} width={18} height={18} alt='frameworks' />
-                <Image src={"/icons/typescript.svg"} width={18} height={18} alt='frameworks' />
+            {/* Tech Icons */}
+            <div className="flex gap-1.5 mt-2">
+                <Image src={"/icons/react.svg"} width={14} height={14} alt="React" />
+                <Image src={"/icons/typescript.svg"} width={14} height={14} alt="TypeScript" />
             </div>
 
-            <div className="flex justify-between items-end mt-4">
-                <div className="flex flex-wrap gap-2">
+            {/* Footer */}
+            <div className="flex justify-between items-center mt-3">
+                <div className="flex flex-wrap gap-1">
                     <Tooltip content="React">
-                        <Badge variant={'destructive'}>React</Badge>
+                        <Badge variant={"destructive"} className="text-[10px] px-2 py-0.5">
+                            React
+                        </Badge>
                     </Tooltip>
                     <Tooltip content="Next.js">
-                        <Badge variant={"default"}>Next.js</Badge>
-                    </Tooltip>
-                    <Tooltip content="Frontend">
-                        <Badge variant={'destructive'}>Frontend</Badge>
+                        <Badge
+                            variant={"default"}
+                            className="text-[10px] rounded-full px-2 py-0.5"
+                        >
+                            Next.js
+                        </Badge>
                     </Tooltip>
                 </div>
-                <p className="text-gray-400 text-xs sm:text-sm">2 days ago</p>
+                <p className="text-gray-400 text-[10px] whitespace-nowrap">2d ago</p>
             </div>
         </div>
-    )
+    );
 }
 
-export default ProjectCard
+export default ProjectCard;

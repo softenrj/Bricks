@@ -1,60 +1,62 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
-import Editor from "@monaco-editor/react";
+import React, { useRef } from "react";
+import Editor, { OnMount } from "@monaco-editor/react";
 import EditorNavBar from "./EditorNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
-import { setFileLanguage, updateFileContent } from "@/store/Reducers/fsSlice";
+import { updateFileContent } from "@/store/Reducers/fsSlice";
 
 function AppEditor() {
   const dispatch = useAppDispatch();
   const fs = useAppSelector((state) => state.fs);
-  const { selectedFile, selectedFileContent, selectedLanguage, tree } = fs;
+  const { selectedFile, selectedFileContent, selectedLanguage } = fs;
 
-  const [isEditorReady, setIsEditorReady] = useState(false);
-  const webContainerRef = useRef<any>(null);
+  const editorRef = useRef<any>(null);
+  console.log(fs)
 
-  // Initialize WebContainer once
-  useEffect(() => {
-    async function initWebContainer() {
-      const { bootWebContainer } = await import("@/store/Reducers/webContainer");
-      webContainerRef.current = await bootWebContainer();
-    }
-    initWebContainer();
-  }, []);
+  // Mount handler
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
 
-  // Populate Monaco from FS tree
-  useEffect(() => {
-    async function setupEditor() {
-      if (Object.keys(tree).length > 0) {
-        const mod = await import("@/service/monacoFeeder.client");
-        await mod.populateMonacoFromFS(tree);
-        setIsEditorReady(true);
+    // Configure TypeScript and JavaScript for JSX/TSX support
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      jsx: monaco.languages.typescript.JsxEmit.React,
+      allowJs: true,
+      checkJs: true,
+      target: monaco.languages.typescript.ScriptTarget.ES2020,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      esModuleInterop: true,
+      strict: true,
+    });
+
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      jsx: monaco.languages.typescript.JsxEmit.React,
+      allowJs: true,
+      checkJs: true,
+      target: monaco.languages.typescript.ScriptTarget.ES2020,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      esModuleInterop: true,
+    });
+
+    // Enable code suggestions (IntelliSense)
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false,
+    });
+
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false,
+    });
+
+    // Ctrl+S shortcut to save
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      if (selectedFile) {
+        const value = editor.getValue();
+        dispatch(updateFileContent({ path: selectedFile, content: value }));
+        console.log("File saved:", selectedFile);
       }
-    }
-    setupEditor();
-  }, [tree]);
-
-  // Handle file selection
-  useEffect(() => {
-    if (selectedFile) {
-      // You can set language based on file extension
-      const ext = selectedFile.split(".").pop() || "";
-      const langMap: Record<string, string> = {
-        ts: "typescript",
-        tsx: "typescript",
-        js: "javascript",
-        jsx: "javascript",
-        css: "css",
-        html: "html",
-        md: "markdown",
-      };
-      dispatch(setFileLanguage(langMap[ext] as any || "plaintext"));
-    }
-  }, [selectedFile, dispatch]);
-
-  if (!isEditorReady) {
-    return <div>Loading editor...</div>;
-  }
+    });
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -64,12 +66,16 @@ function AppEditor() {
         value={selectedFileContent || ""}
         language={selectedLanguage}
         theme="vs-dark"
+        onMount={handleEditorDidMount}
         options={{
           automaticLayout: true,
           minimap: { enabled: false },
           fontSize: 14,
+          scrollBeyondLastLine: false,
+          wordWrap: "on",
         }}
         onChange={(newValue) => {
+          // Optional: live update
           if (selectedFile) {
             dispatch(updateFileContent({ path: selectedFile, content: newValue || "" }));
           }

@@ -122,6 +122,10 @@
   }
 }
 
+body {
+  background-color: #0D0E10;
+}
+
 /* ==== Landing Page ==== */
 @keyframes pulse-glow {
 

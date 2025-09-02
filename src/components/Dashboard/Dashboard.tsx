@@ -1,12 +1,14 @@
 import React from 'react'
-import Section1 from './Dashboard.section.1'
-import Section2 from './Dashboard.section.2'
+import HeadLine from './Dashboard.headline'
+import DashboardRecent from './Dashboard.recent'
+import DashboardAICard from './Dashboard.topcard'
 
 function Dashboard() {
   return (
-    <div className='theme-dashboard px-4'>
-        <Section1 />
-        <Section2 />
+    <div className='theme-dashboard px-4 flex flex-col justify-center'>
+        <HeadLine />
+        <DashboardAICard />
+        <DashboardRecent />
     </div>
   )
 }
