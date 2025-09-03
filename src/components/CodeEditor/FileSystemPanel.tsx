@@ -26,14 +26,14 @@ function FileSystemPanel() {
 
   const getFileIcon = (fileName: string) => {
     const ext = fileName.split(".").pop()?.toLowerCase();
-    const iconClass = "w-4 h-4 mr-2 flex-shrink-0";
+    const iconClass = "w-3.5 h-3.5 flex-shrink-0";
     switch (ext) {
       case "js":
       case "jsx":
         return <File className={`${iconClass} text-yellow-400`} />;
       case "ts":
       case "tsx":
-        return <File className={`${iconClass} text-blue-400`} />;
+        return <File className={`${iconClass} text-sky-400`} />;
       case "css":
         return <File className={`${iconClass} text-blue-300`} />;
       case "html":
@@ -44,6 +44,20 @@ function FileSystemPanel() {
         return <File className={`${iconClass} text-gray-300`} />;
       case "svg":
         return <File className={`${iconClass} text-purple-400`} />;
+      case "py":
+        return <File className={`${iconClass} text-green-400`} />;
+      case "php":
+        return <File className={`${iconClass} text-purple-500`} />;
+      case "go":
+        return <File className={`${iconClass} text-cyan-400`} />;
+      case "rs":
+        return <File className={`${iconClass} text-orange-500`} />;
+      case "java":
+        return <File className={`${iconClass} text-red-400`} />;
+      case "c":
+      case "cpp":
+      case "h":
+        return <File className={`${iconClass} text-blue-500`} />;
       default:
         return <File className={`${iconClass} text-gray-400`} />;
     }
@@ -58,26 +72,28 @@ function FileSystemPanel() {
         return (
           <li key={fullPath} className="select-none">
             <div
-              className={`flex items-center py-1 px-2 mx-1 rounded cursor-pointer transition-colors duration-150 ${isSelected ? "bg-blue-600/30 text-blue-200" : "hover:bg-gray-700/50 text-gray-300"
-                }`}
+              className={`group flex items-center gap-1.5 py-1 px-2 mx-0.5 rounded-sm cursor-pointer transition-all duration-150 relative ${
+                isSelected 
+                  ? "bg-blue-600/25 text-blue-100" 
+                  : "hover:bg-gray-700/40 text-gray-300 hover:text-gray-100"
+              }`}
               style={{ paddingLeft: `${depth * 16 + 8}px` }}
               onClick={() => {
                 dispatch(setSelectedFile(fullPath));
                 try {
                   const content = atob(value);
                   dispatch(setFileContent(content));
-
                   const ext = fullPath.split(".").pop()?.toLowerCase() as keyof typeof LanguageEnum;
                   const lang = LanguageEnum[ext] || LanguageEnum.md;
-                  console.log(lang, ext)
                   dispatch(setFileLanguage(lang));
                 } catch {
                   alert("Unable to decode file content");
                 }
               }}
             >
+              {isSelected && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-400 rounded-r" />}
               {getFileIcon(name)}
-              <span className="text-sm truncate">{name}</span>
+              <span className="text-xs truncate font-normal leading-relaxed">{name}</span>
             </div>
           </li>
         );
@@ -87,25 +103,37 @@ function FileSystemPanel() {
         return (
           <li key={fullPath} className="select-none">
             <div
-              className="flex items-center py-1 px-2 mx-1 rounded cursor-pointer hover:bg-gray-700/50 transition-colors duration-150"
+              className="group flex items-center gap-1 py-1 px-2 mx-0.5 rounded-sm cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
               style={{ paddingLeft: `${depth * 16 + 8}px` }}
               onClick={() => toggleFolder(fullPath)}
             >
-              {hasChildren &&
-                (isCollapsed ? (
-                  <ChevronRight className="w-3 h-3 mr-1 text-gray-400 flex-shrink-0" />
+              {hasChildren ? (
+                isCollapsed ? (
+                  <ChevronRight className="w-3 h-3 text-gray-500 group-hover:text-gray-400 transition-colors flex-shrink-0" />
                 ) : (
-                  <ChevronDown className="w-3 h-3 mr-1 text-gray-400 flex-shrink-0" />
-                ))}
-              {!hasChildren && <div className="w-4 mr-1" />}
-              {isCollapsed ? (
-                <Folder className="w-4 h-4 mr-2 text-blue-400 flex-shrink-0" />
+                  <ChevronDown className="w-3 h-3 text-gray-500 group-hover:text-gray-400 transition-colors flex-shrink-0" />
+                )
               ) : (
-                <FolderOpen className="w-4 h-4 mr-2 text-blue-300 flex-shrink-0" />
+                <div className="w-3" />
               )}
-              <span className="text-sm text-gray-200 truncate">{name}</span>
+              
+              {isCollapsed ? (
+                <Folder className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
+              ) : (
+                <FolderOpen className="w-3.5 h-3.5 text-sky-300 flex-shrink-0" />
+              )}
+              
+              <span className="text-xs text-gray-200 group-hover:text-gray-100 truncate font-medium leading-relaxed">
+                {name}
+              </span>
             </div>
-            {!isCollapsed && hasChildren && <ul>{renderFS(value, fullPath, depth + 1)}</ul>}
+            
+            {!isCollapsed && hasChildren && (
+              <ul className="relative">
+                <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-700/30" />
+                {renderFS(value, fullPath, depth + 1)}
+              </ul>
+            )}
           </li>
         );
       }
@@ -113,14 +141,25 @@ function FileSystemPanel() {
   };
 
   return (
-    <div className="bg-[#181818] h-full border-r border-gray-700 flex flex-col">
-      <div className="px-4 py-3 border-b border-gray-700">
-        <h2 className="text-sm font-medium text-gray-200 uppercase tracking-wide">Explorer</h2>
+    <div className="bg-[#1e1e1e] h-full border-r border-gray-700/60 flex flex-col">
+      {/* Header */}
+      <div className="px-3 py-2.5 border-b border-gray-700/60 bg-[#1a1a1a]">
+        <h2 className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">
+          Explorer
+        </h2>
       </div>
+      
+      {/* File Tree */}
       <div className="flex-1 overflow-auto">
-        <div className="py-2">
-          <ul className="space-y-0.5">
-            {Object.keys(fsData).length > 0 ? renderFS(fsData) : <p className="text-gray-500 px-4">Loading FS…</p>}
+        <div className="py-1">
+          <ul className="space-y-px">
+            {Object.keys(fsData).length > 0 ? (
+              renderFS(fsData)
+            ) : (
+              <div className="px-3 py-6 text-center">
+                <p className="text-xs text-gray-500">Loading file system...</p>
+              </div>
+            )}
           </ul>
         </div>
       </div>

@@ -21,14 +21,24 @@ export default function Home() {
         />
       </div>
 
-      {/* Foreground content */}
-      <div className="relative z-10">
+
+
+      <div className="relative z-10 flex flex-col min-h-screen overflow-x-hidden">
+        <video
+          src="/video/cosmic-bg.mp4"
+          autoPlay
+          loop
+          muted
+          className="absolute inset-0 w-full h-full object-cover -z-10 rounded-xl opacity-35"
+        />
         <Navbar />
-        <SectionOne />
-        <HeroButtons />
-        {/* working */}
-        {/* features card */}
-        {/* live demo */}
+        <main className="flex-1 flex flex-col gap-12">
+          <SectionOne />
+          <HeroButtons />
+          {/* working */}
+          {/* features card */}
+          {/* live demo */}
+        </main>
         <Footer />
       </div>
     </div>
