@@ -5,7 +5,7 @@ import { Tooltip } from "../common/Tooltip"
 
 function LogIn() {
   const [email, setEmail] = React.useState<string | null>(null);
-  const [pass, setPass] = React.useState<String | null>(null)
+  const [pass, setPass] = React.useState<string | null>(null)
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
