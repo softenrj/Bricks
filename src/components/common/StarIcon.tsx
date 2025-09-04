@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { Tooltip } from './Tooltip';
 import { Star } from 'lucide-react';

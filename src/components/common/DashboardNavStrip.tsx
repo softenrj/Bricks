@@ -1,3 +1,4 @@
+"use client"
 import { Activity, Bell, BellDot, Sparkles } from 'lucide-react'
 import React from 'react'
 import { Badge } from '../ui/badge'

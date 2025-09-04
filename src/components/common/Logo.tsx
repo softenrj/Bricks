@@ -1,22 +1,65 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useRef, useState } from "react";
 import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { usePathname } from "next/navigation";
+import { CirclePause, CirclePlay } from "lucide-react";
 
 function Logo() {
-    return (
-        <div className=' flex bg-[#000000] border-[0.2px] w-24 h-8 rounded-full justify-center items-center'>
-            <Avatar className=' h-6 w-6'>
-                <AvatarImage src="/landingPage/bricks.png" />
-                <AvatarFallback>Bricks</AvatarFallback>
-            </Avatar>
-            <p className=' text-gray-400 pr-2 hover:text-gray-100'>
-                #Bricks
-            </p>
-        </div>
-    )
+  const tab = usePathname();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Create audio instance once
+    audioRef.current = new Audio("/soundtrack/landingst.mp3");
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.2; 
+
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const handlePlay = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  return (
+    <div className="flex bg-[#000000] border-[0.2px] min-w-24 h-8 rounded-full justify-center items-center">
+      <Avatar className="h-6 w-6 ml-1">
+        <AvatarImage src="/landingPage/bricks.png" />
+        <AvatarFallback>Bricks</AvatarFallback>
+      </Avatar>
+      <p className="text-gray-400 pr-2 hover:text-gray-100">#Bricks</p>
+      {tab === "/" && (
+        <span className="mr-2 cursor-pointer" onClick={handlePlay}>
+          {isPlaying ? (
+            <CirclePause
+              size={14}
+              className="text-pink-500 hover:text-pink-400"
+            />
+          ) : (
+            <CirclePlay
+              size={14}
+              className="text-gray-600 hover:text-gray-400"
+            />
+          )}
+        </span>
+      )}
+    </div>
+  );
 }
 
-export default Logo
+export default Logo;

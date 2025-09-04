@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import HeadLine from './Dashboard.headline'
 import DashboardRecent from './Dashboard.recent'

@@ -1,3 +1,4 @@
+"use client"
 import {
   Tooltip as ToolTipComp,
   TooltipContent,

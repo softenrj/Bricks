@@ -8,7 +8,7 @@ function HeroButtons() {
   return (
     <>
     <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 px-3">
-      <button className="py-1.5 px-4 sm:px-6 border-2 border-pink-400 hover:border-pink-300 rounded-full text-white font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 cursor-pointer">
+      <button className="py-1.5 px-4 sm:px-6 border-2 border-pink-400 hover:border-pink-300 rounded-full text-white font-semibold text-sm sm:text-base transition-all duration-300 cursor-pointer">
         See It in Action
       </button>
 
