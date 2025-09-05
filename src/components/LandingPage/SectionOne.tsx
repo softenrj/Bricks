@@ -4,7 +4,7 @@ import FeatureBadge from "../common/FeatureBadge";
 
 function SectionOne() {
   return (
-    <div className="flex flex-col items-center text-center w-full px-4 sm:mt-8 md:mt-12 lg:mt-16">
+    <div className="flex flex-col items-center text-center w-full px-4 pt-8 sm:pt-8 md:pt-12 lg:pt-16">
       {/* Logo */}
       <div className="relative mb-6">
         {/* Glow behind logo */}
