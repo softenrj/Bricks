@@ -24,7 +24,7 @@ const sidebarItems: AppSideBarItems[] = [
         color: "#2563eb", // vibrant blue
         subItems: [
             { title: "Overview", href: "/dashboard", color: "#facc15" },
-            { title: "Stats", href: "/dashboard/stats", color: "#16a34a" },
+            { title: "Stats", href: "/dashboard?stats", color: "#16a34a" },
         ],
     },
     {
@@ -34,7 +34,7 @@ const sidebarItems: AppSideBarItems[] = [
         color: "#7c3aed",
         subItems: [
             { title: "All Projects", href: "/projects", color: "#ef4444" },
-            { title: "Starred", href: "/projects/starred", color: "#f59e0b" },
+            { title: "Starred", href: "/projects?starred", color: "#f59e0b" },
         ],
     },
     {
