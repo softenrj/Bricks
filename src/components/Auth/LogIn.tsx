@@ -1,16 +1,43 @@
-"use client"
-import React from "react"
-import { Github, Linkedin, Mail, Lock } from "lucide-react"
-import { Tooltip } from "../common/Tooltip"
+"use client";
+import React from "react";
+import { Github, Mail, Lock } from "lucide-react";
+import { Tooltip } from "../common/Tooltip";
+import { AuthProvider } from "@/utils/util.auth";
 
 function LogIn() {
-  const [email, setEmail] = React.useState<string | null>(null);
-  const [pass, setPass] = React.useState<string | null>(null)
+  const [email, setEmail] = React.useState("");
+  const [pass, setPass] = React.useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !pass) return;
+
+    const result = await AuthProvider.registerWithEmail(email, pass);
+    if (result) {
+      console.log("Signed in with email:", result.user.email);
+    }
+
+    setPass(""); // clear password for security
+  };
+
+  const handleGoogleSignIn = async () => {
+    const result = await AuthProvider.signInWithGoogle();
+    if (result) {
+      console.log("Signed in with Google:", result.user.email);
+    }
+  };
+
+  const handleGitHubSignIn = async () => {
+    const result = await AuthProvider.signInWithGitHub();
+    if (result) {
+      console.log("Signed in with GitHub:", result.user.email);
+    }
+  };
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
       {/* Email + Password Form */}
-      <form className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Email */}
         <div>
           <label className="block text-xs sm:text-sm text-gray-400 mb-1">Email</label>
@@ -18,8 +45,11 @@ function LogIn() {
             <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="bg-transparent w-full outline-none text-white text-sm sm:text-base"
+              required
             />
           </div>
         </div>
@@ -31,13 +61,19 @@ function LogIn() {
             <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
             <input
               type="password"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
               placeholder="Enter your password"
               className="bg-transparent w-full outline-none text-white text-sm sm:text-base"
+              required
             />
           </div>
-          <p className="text-right text-xs sm:text-sm text-pink-400 hover:underline mt-1 cursor-pointer">
+          <button
+            type="button"
+            className="text-right text-xs sm:text-sm text-pink-400 hover:underline mt-1 cursor-pointer w-full"
+          >
             Forgot password?
-          </p>
+          </button>
         </div>
 
         {/* Submit */}
@@ -59,13 +95,24 @@ function LogIn() {
       {/* OAuth Buttons */}
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
         <Tooltip content="GitHub">
-          <button className="p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-md hover:shadow-pink-500/20 transition">
+          <button
+            type="button"
+            aria-label="Sign in with GitHub"
+            onClick={handleGitHubSignIn}
+            className="p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-md hover:shadow-pink-500/20 transition"
+          >
             <Github className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </button>
         </Tooltip>
 
         <Tooltip content="Google">
-          <button className="p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-md hover:shadow-pink-500/20 transition">
+          <button
+            type="button"
+            aria-label="Sign in with Google"
+            onClick={handleGoogleSignIn}
+            className="p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-md hover:shadow-pink-500/20 transition"
+          >
+            {/* Google Icon */}
             <svg
               className="w-5 h-5 sm:w-6 sm:h-6"
               viewBox="0 0 533.5 544.3"
@@ -92,7 +139,7 @@ function LogIn() {
         </Tooltip>
       </div>
     </div>
-  )
+  );
 }
 
-export default LogIn
+export default LogIn;
