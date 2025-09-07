@@ -2,29 +2,35 @@
 import React from "react";
 import { Github, Mail, Lock } from "lucide-react";
 import { Tooltip } from "../common/Tooltip";
-import { AuthProvider } from "@/utils/util.auth";
+import { AuthProvider } from "@/service/util.auth";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import ForgotPassword from "./ForgetPassword";
 
 function LogIn() {
   const [email, setEmail] = React.useState("");
   const [pass, setPass] = React.useState("");
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [fogetPass, setForgetPass] = React.useState<boolean>(false);
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !pass) return;
-
-    const result = await AuthProvider.registerWithEmail(email, pass);
-    if (result) {
-      console.log("Signed in with email:", result.user.email);
+    if (!email || !pass) {
+      toast.error("Please fill all fields");
+      return;
     }
-
-    setPass(""); // clear password for security
+    setLoading(true);
+    const result = await AuthProvider.loginWithEmail(email, pass);
+    if (result) {
+      setPass("");
+      router.push("/dashboard");
+    }
+    setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
     const result = await AuthProvider.signInWithGoogle();
-    if (result) {
-      console.log("Signed in with Google:", result.user.email);
-    }
   };
 
   const handleGitHubSignIn = async () => {
@@ -34,7 +40,10 @@ function LogIn() {
     }
   };
 
+  const handleForgetPass = () => setForgetPass(!fogetPass)
+
   return (
+    fogetPass ? <ForgotPassword setForgetPass={handleForgetPass} /> :
     <div className="w-full max-w-md mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
       {/* Email + Password Form */}
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -70,6 +79,7 @@ function LogIn() {
           </div>
           <button
             type="button"
+            onClick={() => setForgetPass(true)}
             className="text-right text-xs sm:text-sm text-pink-400 hover:underline mt-1 cursor-pointer w-full"
           >
             Forgot password?
@@ -79,9 +89,10 @@ function LogIn() {
         {/* Submit */}
         <button
           type="submit"
+          disabled={loading}
           className="w-full py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-pink-500 to-red-500 font-semibold text-white text-sm sm:text-base hover:opacity-90 hover:shadow-pink-500/40 hover:shadow-md transition"
         >
-          Sign In
+          { loading ? "wait.." : "Sign In"}
         </button>
       </form>
 

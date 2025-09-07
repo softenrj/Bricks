@@ -1,1 +1,1 @@
-export const defaultApiRoute = 'https://reava-backend.onrender.com/api';
+export const defaultApiRoute = 'http://localhost:8000/api';

@@ -7,6 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog"
+import { useAuth } from "@/hooks/useAuth"
+import { useRouter } from "next/navigation"
 
 function AuthDialog({
   isOpen = false,
@@ -15,7 +17,17 @@ function AuthDialog({
   isOpen: boolean
   onClose: () => void
 }) {
-  return <AppDialog open={isOpen} close={onClose} />
+  const [isAuth, setIsAuth] = React.useState<boolean>(false);
+  const { checking, user }  = useAuth();
+  const router = useRouter();
+  React.useEffect(() => {
+  if (isOpen && !checking && user) {
+    setIsAuth(true);
+    router.push('/dashboard')
+  }
+}, [checking, user, router, isOpen])
+
+  return !isAuth && <AppDialog open={isOpen} close={onClose} />
 }
 
 export default AuthDialog
@@ -28,7 +40,7 @@ function AppDialog({
   close: () => void
 }): React.ReactElement {
   return (
-    <Dialog open={open} onOpenChange={close}>
+    <Dialog open={open} onOpenChange={close} aria-describedby="dialog-desc">
       <DialogContent
         className="
           w-[95%] sm:w-[90%] md:max-w-md 
