@@ -4,27 +4,26 @@ import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import toast from "react-hot-toast";
+import { createNewProject } from "@/service/api.project";
+import { TechLanguage, WebTech } from "@/types/project";
 
 function NewProjectCard({ onClose }: { onClose: () => void }) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
-  const [language, setLanguage] = useState("js");
+  const [language, setLanguage] = useState<TechLanguage>(TechLanguage.JS);
 
-  const handleCreate = () => {
-    console.log({ projectName, description, language });
+  const handleCreate = async () => {
+    const res = await createNewProject(projectName,description, WebTech.VITE, language)
+    if(res) handleCancel();
   };
 
   const handleCancel = () => {
     setProjectName("");
     setDescription("");
-    setLanguage("js");
+    setLanguage(TechLanguage.JS);
     onClose();
   };
 
-  const fireToast = (e: string) => {
-    setLanguage(e)
-    toast.success(`you clicked this ${language} don't you`)
-  }
 
   const fieldClass =
     "w-full px-3 py-2 rounded-lg border border-gray-700/40 bg-gray-800/40 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-pink-400 hover:bg-gray-800/50 hover:border-gray-600/50 transition-all duration-300";
@@ -64,13 +63,13 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
           <Code size={14} className="text-blue-400" />
           Language
         </label>
-        <Select value={language} onValueChange={fireToast}>
+        <Select value={language}>
           <SelectTrigger className="w-full border border-gray-700/40 bg-gray-800/40 rounded-lg text-white placeholder:text-gray-400 hover:bg-gray-800/50 hover:border-gray-600/50 focus:ring-2 focus:ring-pink-400 transition-all duration-300">
-            {language === "js" ? "JavaScript" : language === "ts" ? "TypeScript" : "System"}
+            {language === "JS" ? "JavaScript" : language === "TS" ? "TypeScript" : "System"}
           </SelectTrigger>
           <SelectContent className="bg-gray-800/40 border border-gray-700/40 rounded-lg text-white">
-            <SelectItem value="js">JavaScript</SelectItem>
-            <SelectItem value="ts">TypeScript</SelectItem>
+            <SelectItem value={TechLanguage.JS}>JavaScript</SelectItem>
+            <SelectItem value={TechLanguage.TS}>TypeScript</SelectItem>
           </SelectContent>
         </Select>
       </div>

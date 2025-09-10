@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
 import { wc } from "./webContainer";
 import { getFSTree } from "@/service/fsWalker";
 import { LanguageEnum } from "@/feature/LanguageEnum";
