@@ -1,6 +1,6 @@
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_GET_PROJECTS, API_BRICKS_NEW_PROJECT } from "@/utils/api/APIConstant";
+import { API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT } from "@/utils/api/APIConstant";
 import { getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 
@@ -63,5 +63,24 @@ export const getProjects = async (
         console.error("Error fetching projects:", error);
         toast.error(error?.message ?? "Something went wrong");
         return { nextCursor, data: [] };
+    }
+};
+
+export const getRecentProjects = async (): Promise<Project[] | null> => {
+    try {
+
+        const response = await getApi<ApiResponse<Project[]>>({
+            url: API_BRICKS_GET_RECENT_PROJECT,
+        });
+
+        if (response?.success) {
+            return response.data;
+        }
+
+        return null; // fallback if not success
+    } catch (error: any) {
+        console.error("Error fetching projects:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
     }
 };

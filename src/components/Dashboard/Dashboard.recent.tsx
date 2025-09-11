@@ -3,8 +3,21 @@ import React from "react";
 import ProjectCard from "../Project/ProjectCard";
 import { FolderPlus, Grid, ArrowUpDown, Star } from "lucide-react";
 import { Tooltip } from "../common/Tooltip";
+import { Project } from "@/types/project";
+import { getRecentProjects } from "@/service/api.project";
 
 function DashboardRecent() {
+  const [recent, setRecent] = React.useState<Project[]>([]);
+
+  const fetchRecent = async () => {
+    const response = await getRecentProjects();
+    if (response) {
+      setRecent(response);
+    }
+  }
+  React.useEffect(() => {
+    fetchRecent()
+  },[])
   return (
     <div className="text-gray-100 py-6 ">
       {/* Header */}
@@ -53,8 +66,8 @@ function DashboardRecent() {
       {/* Cards Grid */}
       <div className="max-w-8xl mx-auto self-start">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <ProjectCard key={i} />
+          {recent.map(item  => (
+            <ProjectCard key={item._id} project={item} />
           ))}
         </div>
       </div>
