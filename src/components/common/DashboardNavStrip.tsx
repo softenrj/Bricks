@@ -4,6 +4,7 @@ import React from 'react'
 import { Badge } from '../ui/badge'
 import Image from 'next/image'
 import { Tooltip } from './Tooltip'
+import { useAppSelector } from '@/hooks/redux'
 
 function DashboardNavStrip() {
   const today = new Date().toLocaleDateString("en-GB", {
@@ -11,6 +12,8 @@ function DashboardNavStrip() {
     month: "2-digit",
     year: "numeric",
   });
+
+  const user = useAppSelector( state => state.user );
 
   return (
     <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm">
@@ -20,7 +23,11 @@ function DashboardNavStrip() {
         <Badge className="bg-green-700 text-[10px] px-2 py-0.5 rounded-full">
           RealTime
         </Badge>
+      <Tooltip content='bricks UID'>
+        <p className='text-gray-500 text-xs hover:text-gray-400 '>#{user.uid}</p>
+      </Tooltip>
       </div>
+
 
       {/* Center Date */}
       <p className="text-[11px] text-gray-400 tracking-wide">{today}</p>

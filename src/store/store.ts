@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import webContainerSlice from "./Reducers/webContainer"
 import fsSlice from "./Reducers/fsSlice"
+import userSlice from "./Reducers/user"
 
 export const store = configureStore({
   reducer: {
     webContainer: webContainerSlice,
-    fs: fsSlice
+    fs: fsSlice,
+    user: userSlice
   },
 })
 

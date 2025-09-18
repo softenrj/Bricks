@@ -2,9 +2,12 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSidebar } from "../ui/sidebar";
+import { useAppSelector } from "@/hooks/redux";
+import { Tooltip } from "../common/Tooltip";
 
 export default function AppSideBarProfile() {
   const { open } = useSidebar();
+  const user = useAppSelector(state => state.user);
 
   return (
     <div
@@ -20,9 +23,17 @@ export default function AppSideBarProfile() {
       </Avatar>
 
       {open && (
-        <h2 className="text-lg font-semibold text-gray-200 whitespace-nowrap transition-all duration-300">
-          Raj Sharma
-        </h2>
+        <div>
+          <h2 className="text-lg font-semibold text-gray-200 whitespace-nowrap transition-all duration-300">
+            {user.username}
+          </h2>
+          <Tooltip content={user.email || ""}>
+            <p className="text-gray-400 text-xs whitespace-nowrap overflow-hidden text-ellipsis max-w-[135px]">
+            {user.email}
+          </p>
+          </Tooltip>
+
+        </div>
       )}
     </div>
   );
