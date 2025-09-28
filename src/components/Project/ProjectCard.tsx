@@ -8,7 +8,7 @@ import { Project } from "@/types/project";
 import { markStarred } from "@/service/api.project";
 import MenuOptions from "./Project.MenuOption";
 
-function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Project, projectUpdate: (id: string, changes: Project) => void, projectDelete: (id: string) => void }) {
+function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Project, projectUpdate?: (id: string, changes: Project) => void, projectDelete?: (id: string) => void }) {
     const [isStarred, setStarred] = React.useState<boolean>(!!project?.starred)
     const handleStarClick = async () => {
         if (!project?._id) return ;
