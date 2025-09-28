@@ -7,13 +7,72 @@ import {
     RefreshCcwDot
 } from 'lucide-react'
 import CreateNewProject from './Project.create.new'
+import { useSearchParams } from 'next/navigation'
+import { exportProjects, Filter } from '@/service/api.project'
+import { useDebounce } from '@/hooks/debounce'
+import jsPDF from "jspdf";
+
 
 function FilterOptions({
     extraOptions = false,
-    fallback
-}: { extraOptions: boolean, fallback: (type: string) => void }) {
+    fallback,
+    filter,
+    setFilter
+}: { extraOptions: boolean, fallback: (type: string) => void, filter: Partial<Filter>, setFilter: React.Dispatch<React.SetStateAction<Partial<Filter>>> }) {
     const [open, setOpen] = React.useState<boolean>(false);
+    const searchParams = useSearchParams();
+    const action_create = !!searchParams.has("create_new");
     const handleMode = () => setOpen(!open);
+    const [textQ, setTextQ] = React.useState<string>('');
+    const textDebounce = useDebounce<string>(textQ, 200);
+
+    const handleExportPDF = async () => {
+        const mode = filter.ach ? 'arch' : 'all';
+        const projects = await exportProjects(mode); // your API data
+
+        if (!projects || projects.length === 0) return;
+
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 10;
+        let y = 10;
+
+        pdf.setFontSize(16);
+        pdf.text("Projects List", pageWidth / 2, y, { align: "center" });
+        y += 10;
+
+        pdf.setFontSize(10);
+        projects.forEach((proj: any, idx: number) => {
+            const text = `
+${idx + 1}. ${proj.name}
+   Description: ${proj.description}
+   Tech: ${proj.tech_language}, Web: ${proj.web_technology}
+   Starred: ${proj.starred ? "Yes" : "No"}, Archived: ${proj.archived ? "Yes" : "No"}
+   Created At: ${new Date(proj.createdAt).toLocaleDateString()}
+    `.trim();
+
+            pdf.text(text, margin, y);
+            y += 25; // spacing between projects
+
+            // Add new page if needed
+            if (y > pdf.internal.pageSize.getHeight() - 20) {
+                pdf.addPage();
+                y = 10;
+            }
+        });
+
+        pdf.save("projects.pdf");
+    };
+
+
+    const handleSearch = (): void => setFilter(prev => ({ ...prev, q: textQ }));
+    React.useEffect(handleSearch, [textDebounce])
+
+    React.useEffect(() => {
+        if (action_create) {
+            setOpen(true);
+        }
+    }, [action_create]);
     return (
         <>
             <div className="flex flex-wrap gap-2 sm:gap-1.5">
@@ -34,35 +93,57 @@ function FilterOptions({
                             type="text"
                             placeholder="Search projects..."
                             className="pl-7 pr-3 py-1.5 text-xs rounded-md bg-gradient-to-r from-gray-700/40 to-gray-600/40 border border-gray-600/30 text-gray-200 focus:outline-none focus:border-pink-400/60 focus:ring-[0.2px] focus:ring-pink-400/100 transition"
+                            onChange={(e) => setTextQ(e.target.value)}
                         />
                     </div>
                 </>}
 
 
                 <Tooltip content="Sort projects">
-                    <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-amber-500/10 hover:to-yellow-500/10 hover:text-amber-300 hover:border-amber-500/20 transition-all">
+                    <button
+                        className={`group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium
+      bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20
+      hover:from-green-500/10 hover:to-green-400/10 hover:text-green-300 hover:border-green-400/20
+      transition-all
+      ${filter.sort === 'asc' ? "from-green-500/10 to-green-400/10 text-green-300 border-green-400/20" : ""}`}
+                        onClick={() =>
+                            filter.sort
+                                ? filter.sort === "asc"
+                                    ? setFilter((prev) => ({ ...prev, sort: "dsc" }))
+                                    : setFilter((prev) => ({ ...prev, sort: "asc" }))
+                                : setFilter((prev) => ({ ...prev, sort: "dsc" }))
+                        }
+                    >
                         <ArrowUpDown size={12} />
                         <span>Sort</span>
                     </button>
                 </Tooltip>
 
+
                 <Tooltip content="View starred projects">
-                    <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-yellow-300 hover:border-yellow-400/20 transition-all">
+                    <button
+                        className={`group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium
+      bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20
+      hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-yellow-300 hover:border-yellow-400/20
+      transition-all
+      ${filter.att ? "from-yellow-500/10 to-yellow-400/10 text-yellow-300 border-yellow-400/20" : ""}`}
+                        onClick={() =>
+                            filter.att
+                                ? filter.att === true
+                                    ? setFilter((prev) => ({ ...prev, att: false }))
+                                    : setFilter((prev) => ({ ...prev, att: true }))
+                                : setFilter((prev) => ({ ...prev, att: true }))
+                        }
+                    >
                         <Star size={12} />
                         <span>Star</span>
                     </button>
                 </Tooltip>
 
-                {extraOptions &&
-                    <Tooltip content="Archive old projects">
-                        <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-red-500/10 hover:to-rose-500/10 hover:text-rose-300 hover:border-rose-500/20 transition-all">
-                            <Archive size={12} />
-                            <span>Archive</span>
-                        </button>
-                    </Tooltip>}
 
                 <Tooltip content="Export project list">
-                    <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-teal-500/10 hover:to-cyan-500/10 hover:text-cyan-300 hover:border-cyan-500/20 transition-all">
+                    <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-teal-500/10 hover:to-cyan-500/10 hover:text-cyan-300 hover:border-cyan-500/20 transition-all"
+                        onClick={handleExportPDF}>
                         <Download size={12} />
                         <span>Export</span>
                     </button>

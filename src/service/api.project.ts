@@ -1,8 +1,16 @@
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT } from "@/utils/api/APIConstant";
-import { getApi, postApi } from "@/utils/api/common";
+import { API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE } from "@/utils/api/APIConstant";
+import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
+
+export interface Filter {
+    sort: "asc" | "dsc",
+    q: string,
+    att: boolean,
+    ach: boolean
+}
+
 
 export const createNewProject = async (
     project_name: string,
@@ -35,17 +43,22 @@ export const createNewProject = async (
     }
 };
 
+// sort, q, att, created_after, created_before, ach
 export const getProjects = async (
     limit: number,
     nextCursor: Date | null,
-    filter?: any
+    filter: Partial<Filter>
 ): Promise<{ nextCursor: Date | null; data: Project[] }> => {
     try {
-        const query = new URLSearchParams({
-            limit: String(limit),
-            ...(nextCursor ? { lastCreatedAt: nextCursor.toISOString() } : {}),
-            ...(filter ? { filter: String(filter) } : {}),
-        }).toString();
+        const params: Record<string, string> = { limit: String(limit) };
+
+        if (filter.sort) params.sort = filter.sort;
+        if (filter.q) params.q = filter.q;
+        if (filter.att) params.att = String(filter.att);
+        if (filter.ach) params.ach = String(filter.ach);
+        if (nextCursor) params.lastCreatedAt = nextCursor.toISOString();
+
+        const query = new URLSearchParams(params).toString();
 
         const response = await getApi<ProjectsApiResponse>({
             url: `${API_BRICKS_GET_PROJECTS}?${query}`,
@@ -84,3 +97,89 @@ export const getRecentProjects = async (): Promise<Project[] | null> => {
         return null;
     }
 };
+
+/**
+ * 
+ * @param action {0 mark starred, 1 mark unStarred}
+ * @param projectId
+ * @returns 
+ */
+export const markStarred = async (action: boolean, projectId: string): Promise<boolean> => {
+    try {
+        let response: ApiResponse<Project> | undefined;
+        if (action) {
+            response = await deleteApi<ApiResponse<Project>>({
+                url: API_BRICKS_DELETE_UNMARK_STAR + `/${projectId}`
+            })
+        } else {
+            response = await postApi<ApiResponse<Project>>({
+                url: API_BRICKS_POST_MARK_STAR + `/${projectId}`
+            })
+        }
+
+        if (response?.success) {
+            return true;
+        }
+        return false;
+    } catch (error: any) {
+        console.error("Error Starred projects:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return false;
+    }
+}
+
+
+/**
+ * 
+ * @param action {0 mark Archieve, 1 mark unArchieve}
+ * @param projectId
+ * @returns 
+ */
+export const markArchieve = async (action: boolean, projectId: string): Promise<Project | null> => {
+    try {
+        let response: ApiResponse<Project> | undefined;
+        if (action) {
+            response = await deleteApi<ApiResponse<Project>>({
+                url: API_BRICKS_DELETE_PROJECT_ARCHIEVE + `/${projectId}`
+            })
+        } else {
+            response = await postApi<ApiResponse<Project>>({
+                url: API_BRICKS_POST_PROJECT_ARCHIEVE + `/${projectId}`
+            })
+        }
+
+        if (response?.success) {
+            return response.data;
+        }
+        return null;
+    } catch (error: any) {
+        console.error("Error Archieve projects:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
+    }
+}
+
+export const exportProjects = async (mode: 'arch' | 'all' = 'all'): Promise<Project[] | null> => {
+    try {
+        let response: ApiResponse<Project[]> | undefined;
+
+        if (mode === 'all') {
+            response = await getApi<ApiResponse<Project[]>>({
+                url: API_BRICKS_EXPORT_ALL_PROJECTS
+            })
+        } else {
+            response = await getApi<ApiResponse<Project[]>>({
+                url: API_BRICKS_EXPORT_ARCH_PROJECTS
+            })
+        }
+        
+        if (response?.success) {
+            return response.data;
+        }
+        return null;
+    } catch (error: any) {
+        console.error("Error Archieve projects:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
+    }
+}

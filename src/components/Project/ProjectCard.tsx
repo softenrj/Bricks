@@ -1,15 +1,19 @@
 "use client";
-import { Ellipsis, Star } from "lucide-react";
 import React, { useState } from "react";
 import { Tooltip } from "../common/Tooltip";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import StarIcon from "../common/StarIcon";
 import { Project } from "@/types/project";
+import { markStarred } from "@/service/api.project";
+import MenuOptions from "./Project.MenuOption";
 
-function ProjectCard({ project }: { project?: Project }) {
-    const handleStarClick = () => {
-        //
+function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Project, projectUpdate: (id: string, changes: Project) => void, projectDelete: (id: string) => void }) {
+    const [isStarred, setStarred] = React.useState<boolean>(!!project?.starred)
+    const handleStarClick = async () => {
+        if (!project?._id) return ;
+        const response = await markStarred(isStarred, project?._id)
+        if (response) setStarred(!isStarred)
     };
 
     return (
@@ -27,13 +31,10 @@ function ProjectCard({ project }: { project?: Project }) {
                 </p>
 
                 {/* Right controls */}
-                <Ellipsis
-                    className="cursor-pointer text-gray-400 hover:text-gray-200 transition-colors"
-                    size={16}
-                />
+                <MenuOptions project={project} onUpdate={projectUpdate} onDelete={projectDelete} />
 
                 {/* Star Button */}
-                <StarIcon isStarred={project?.starred} handleStarClick={handleStarClick} />
+                <StarIcon isStarred={isStarred} handleStarClick={handleStarClick} />
             </div>
 
             {/* Description */}
@@ -65,7 +66,12 @@ function ProjectCard({ project }: { project?: Project }) {
                         </Badge>
                     </Tooltip>
                 </div>
-                <p className="text-gray-400 text-[10px] whitespace-nowrap">2d ago</p>
+                <p className="text-gray-400 text-[10px] whitespace-nowrap">
+                    {(() => {
+                        const days = Math.floor((Date.now() - new Date(project.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+                        return days === 0 ? "now" : days + "d ago";
+                    })()}
+                </p>
             </div>
         </div>
     );

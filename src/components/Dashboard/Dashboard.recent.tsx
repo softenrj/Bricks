@@ -5,6 +5,7 @@ import { FolderPlus, Grid, ArrowUpDown, Star } from "lucide-react";
 import { Tooltip } from "../common/Tooltip";
 import { Project } from "@/types/project";
 import { getRecentProjects } from "@/service/api.project";
+import Link from "next/link";
 
 function DashboardRecent() {
   const [recent, setRecent] = React.useState<Project[]>([]);
@@ -31,18 +32,18 @@ function DashboardRecent() {
         <div className="flex flex-wrap gap-2 sm:gap-1.5">
           {/* Create New */}
           <Tooltip content="Start a new project">
-            <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-[#FD2787]/90 to-pink-500/80 text-white hover:shadow-md hover:scale-[1.03] active:scale-95 transition-all">
+            <Link href={"/projects?create_new"} className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-[#FD2787]/90 to-pink-500/80 text-white hover:shadow-md hover:scale-[1.03] active:scale-95 transition-all">
               <FolderPlus size={12} className="group-hover:rotate-6 transition-transform" />
               <span>Create</span>
-            </button>
+            </Link>
           </Tooltip>
 
           {/* View All */}
           <Tooltip content="See all projects">
-            <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-amber-500/10 hover:to-yellow-500/10 hover:text-amber-300 hover:border-amber-500/20 transition-all">
+            <Link href={"/projects"} className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-amber-500/10 hover:to-yellow-500/10 hover:text-amber-300 hover:border-amber-500/20 transition-all">
               <Grid size={12} />
               <span>View</span>
-            </button>
+            </Link>
           </Tooltip>
 
           {/* Sort */}
