@@ -76,15 +76,16 @@ ${idx + 1}. ${proj.name}
     return (
         <>
             <div className="flex flex-wrap gap-2 sm:gap-1.5">
-                {extraOptions && <>
+                {extraOptions &&
                     <Tooltip content="Start a new project">
                         <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-[#FD2787]/90 to-pink-500/80 text-white hover:shadow-md hover:scale-[1.03] active:scale-95 transition-all" onClick={handleMode}>
                             <FolderPlus size={12} className="group-hover:rotate-6 transition-transform" />
                             <span>Create</span>
                         </button>
                     </Tooltip>
+                }
 
-                    <div className="relative">
+                <div className="relative">
                         <Search
                             size={14}
                             className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
@@ -96,7 +97,6 @@ ${idx + 1}. ${proj.name}
                             onChange={(e) => setTextQ(e.target.value)}
                         />
                     </div>
-                </>}
 
 
                 <Tooltip content="Sort projects">

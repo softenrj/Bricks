@@ -15,3 +15,4 @@ export const API_BRICKS_POST_PROJECT_ARCHIEVE: string = "/project/bricks-archiev
 export const API_BRICKS_DELETE_PROJECT_ARCHIEVE: string = "/project/bricks-unarchieve"
 export const API_BRICKS_EXPORT_ALL_PROJECTS: string = "/project/bricks-all-projects-list-export"
 export const API_BRICKS_EXPORT_ARCH_PROJECTS: string = "/project/bricks-arch-projects-list-export"
+export const API_BRICKS_REMOVE_PROJECT: string = "/project/bricks-remove-project"

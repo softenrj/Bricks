@@ -1,6 +1,6 @@
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE } from "@/utils/api/APIConstant";
+import { API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 
@@ -181,5 +181,22 @@ export const exportProjects = async (mode: 'arch' | 'all' = 'all'): Promise<Proj
         console.error("Error Archieve projects:", error);
         toast.error(error?.message ?? "Something went wrong");
         return null;
+    }
+}
+
+export const removeProject = async (projectId: string): Promise<boolean> => {
+    try {
+        const response = await deleteApi<ApiResponse<{}>>({
+            url: API_BRICKS_REMOVE_PROJECT + `/${projectId}`
+        })
+
+        if (response?.success) {
+            return response.success;
+        }
+        return false;
+    } catch (error: any) {
+        console.error("Error Removing projects:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return false;
     }
 }

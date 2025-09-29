@@ -18,7 +18,7 @@ export default function AppSideBarProfile() {
       `}
     >
       <Avatar className="h-10 w-10 ring-2 ring-blue-500/50 shadow-sm transition-all duration-300">
-        <AvatarImage src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHVsZ4Il2r8DBJZ0O79S9zkdeNEUtK34XvkA&s" />
+        <AvatarImage src="https://avatars.githubusercontent.com/u/149652817?v=4" />
         <AvatarFallback>RS</AvatarFallback>
       </Avatar>
 
