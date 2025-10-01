@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Project } from '@/types/project'
 import { markArchieve, removeProject } from '@/service/api.project'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog'
+import { useRouter } from 'next/navigation'
 
 function MenuOptions({
     project,
@@ -17,6 +18,7 @@ function MenuOptions({
 }) {
     const [isArch, setISArch] = React.useState<boolean>(!!project.archived);
     const [openAlert, setAlert] = React.useState<boolean>(false);
+    const router = useRouter();
 
     const handleArchieve = async () => {
         if (!project._id) return;
@@ -45,7 +47,7 @@ function MenuOptions({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-10 bg-[#1c1c1cf0] border-[#2d2d2d] text-white" align="start">
                     <DropdownMenuGroup>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => router.push(`/${project._id}/editor`)}>
                             Open
                             <DropdownMenuShortcut>⇧⌘O</DropdownMenuShortcut>
                         </DropdownMenuItem>

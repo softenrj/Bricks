@@ -49,6 +49,9 @@ const fsSlice = createSlice({
       }
       state.selectedFileContent = typeof node === "string" ? node : "";
     },
+    setTree: (state, action: PayloadAction<FSData>) => {
+      state.tree = action.payload;
+    },
     setFileLanguage: (state, action: PayloadAction<typeof LanguageEnum[keyof typeof LanguageEnum]>) => {
       state.selectedLanguage = action.payload;
     },
@@ -75,9 +78,6 @@ const fsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchFsTree.fulfilled, (state, action) => {
-      state.tree = action.payload;
-    });
     builder.addCase(writeFile.fulfilled, (state, action) => {
       const { path, content } = action.payload;
       if (state.selectedFile === path) {
@@ -87,5 +87,5 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, setFileLanguage, updateFileContent, setFileContent } = fsSlice.actions;
+export const { setSelectedFile, setFileLanguage, updateFileContent, setFileContent, setTree } = fsSlice.actions;
 export default fsSlice.reducer;

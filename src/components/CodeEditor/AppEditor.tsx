@@ -11,7 +11,6 @@ function AppEditor() {
   const { selectedFile, selectedFileContent, selectedLanguage } = fs;
 
   const editorRef = useRef<any>(null);
-  console.log(fs)
 
   // Mount handler
   const handleEditorDidMount: OnMount = (editor, monaco) => {
@@ -53,7 +52,6 @@ function AppEditor() {
       if (selectedFile) {
         const value = editor.getValue();
         dispatch(updateFileContent({ path: selectedFile, content: value }));
-        console.log("File saved:", selectedFile);
       }
     });
   };

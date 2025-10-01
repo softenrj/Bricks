@@ -45,22 +45,6 @@ function DashboardRecent() {
               <span>View</span>
             </Link>
           </Tooltip>
-
-          {/* Sort */}
-          <Tooltip content="Sort projects">
-            <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-amber-500/10 hover:to-yellow-500/10 hover:text-amber-300 hover:border-amber-500/20 transition-all">
-              <ArrowUpDown size={12} />
-              <span>Sort</span>
-            </button>
-          </Tooltip>
-
-          {/* Starred */}
-          <Tooltip content="View starred projects">
-            <button className="group flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-yellow-300 hover:border-yellow-400/20 transition-all">
-              <Star size={12} />
-              <span>Star</span>
-            </button>
-          </Tooltip>
         </div>
       </div>
 

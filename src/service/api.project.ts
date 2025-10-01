@@ -1,6 +1,6 @@
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
+import { API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 
@@ -198,5 +198,22 @@ export const removeProject = async (projectId: string): Promise<boolean> => {
         console.error("Error Removing projects:", error);
         toast.error(error?.message ?? "Something went wrong");
         return false;
+    }
+}
+
+export const projectFileSystem = async (projectId: string): Promise<any> => {
+    try {
+        const response = await getApi<ApiResponse<any>>({
+            url: API_BRICKS_GET_PROJECT_FS + `/${projectId}`
+        })
+
+        if (response?.success) {
+            return response.data;
+        }
+        return null;
+    } catch (error: any) {
+        console.error("Error Getting FS of project:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
     }
 }

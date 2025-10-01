@@ -1,21 +1,19 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Terminal, RotateCcw, X, Globe } from "lucide-react";
+import { Terminal, RotateCcw, X } from "lucide-react";
 import {
   bootWebContainer,
-  installDeps,
-  startDevServer,
+  startShell,
   addLog,
   clearLogs,
-  createViteProject,
-  sendToProcess,
+  sendToShell,
 } from "@/store/Reducers/webContainer";
 import { AppDispatch, RootState } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 
 function TerminalPanel() {
   const dispatch = useAppDispatch<AppDispatch>();
-  const { logs, liveUrl, status } = useAppSelector(
+  const { logs, status } = useAppSelector(
     (state: RootState) => state.webContainer
   );
 
@@ -23,14 +21,13 @@ function TerminalPanel() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
-  const createProject = async () => {
-    await dispatch(bootWebContainer());
-    await dispatch(createViteProject());
-  };
-
   useEffect(() => {
-    createProject();
-  }, []);
+    const init = async () => {
+      await dispatch(bootWebContainer());
+      await dispatch(startShell());
+    };
+    init();
+  }, [dispatch]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -52,14 +49,12 @@ function TerminalPanel() {
         })
       );
 
-      await sendToProcess(command);
+      await sendToShell(command);
 
       setCurrentCommand("");
     }
   };
 
-  const runInstall = () => dispatch(installDeps());
-  const runDevServer = () => dispatch(startDevServer());
   const clearTerminal = () => dispatch(clearLogs());
 
   const getLogColor = (type: string) => {
@@ -81,52 +76,17 @@ function TerminalPanel() {
     <div className="flex flex-col h-full bg-black">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-700">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
-            <Terminal className="w-4 h-4 text-green-400" />
-            <span className="text-sm font-medium text-gray-200">Terminal</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            {status === "running" ? (
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-xs text-green-400">Running</span>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                <span className="text-xs text-gray-400 capitalize">
-                  {status}
-                </span>
-              </div>
-            )}
-          </div>
+        <div className="flex items-center space-x-2">
+          <Terminal className="w-4 h-4 text-green-400" />
+          <span className="text-sm font-medium text-gray-200">Terminal</span>
           <div className="text-xs text-gray-500">{logs.length} lines</div>
         </div>
-
-        {/* Actions */}
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={runInstall}
-            disabled={status !== "ready"}
-            className="px-2 py-1 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white text-xs rounded"
-          >
-            npm install
-          </button>
-          <button
-            onClick={runDevServer}
-            disabled={status !== "ready"}
-            className="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white text-xs rounded"
-          >
-            npm run dev
-          </button>
-          <button
-            onClick={clearTerminal}
-            className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded"
-          >
-            <RotateCcw className="w-3 h-3" />
-          </button>
-        </div>
+        <button
+          onClick={clearTerminal}
+          className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded"
+        >
+          <RotateCcw className="w-3 h-3" />
+        </button>
       </div>
 
       {/* Logs */}
@@ -138,13 +98,11 @@ function TerminalPanel() {
         {logs.length === 0 ? (
           <div className="text-gray-500">Terminal ready.</div>
         ) : (
-          <div>
-            {logs.map((log, i) => (
-              <div key={i} className={getLogColor(log.type)}>
-                {log.text}
-              </div>
-            ))}
-          </div>
+          logs.map((log, i) => (
+            <div key={i} className={getLogColor(log.type)}>
+              {log.text}
+            </div>
+          ))
         )}
       </div>
 
@@ -154,7 +112,7 @@ function TerminalPanel() {
         <input
           ref={terminalInputRef}
           className="flex-1 bg-black text-green-400 font-mono text-xs outline-none"
-          placeholder="Type command (demo only)"
+          placeholder="Type a command"
           value={currentCommand}
           onChange={(e) => setCurrentCommand(e.target.value)}
           onKeyDown={handleKeyDown}

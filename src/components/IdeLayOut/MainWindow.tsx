@@ -5,9 +5,20 @@ import AppEditor from "../CodeEditor/AppEditor";
 import TerminalPanel from "../CodeEditor/Terminal";
 import PreviewPanel from "../CodeEditor/PreviewTab";
 import FileSystemPanel from "../CodeEditor/FileSystemPanel";
+import { projectFileSystem } from "@/service/api.project";
+import { setTree } from "@/store/Reducers/fsSlice";
+import { useAppDispatch } from "@/hooks/redux";
 
-function MainWindow() {
-  const [data, setData] = React.useState<any>({}); // FS state
+function MainWindow({ projectId }: { projectId: string }) {
+  const dispatch = useAppDispatch();
+  const getProjectFs = async () => {
+    const response = await projectFileSystem(projectId);
+    dispatch(setTree(response))
+  }
+
+  React.useEffect(() => {
+    getProjectFs()
+  },[])
 
   return (
     <ResizablePanelGroup

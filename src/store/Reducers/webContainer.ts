@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getWebContainer } from "@/service/webContainer";
 import { WebContainer } from "@webcontainer/api";
 
+// ---------- Types ----------
 export type Log = {
   text: string;
   type: "stdout" | "info" | "error" | "success" | "command";
@@ -11,7 +12,7 @@ export type Log = {
 interface WebContainerState {
   logs: Log[];
   liveUrl: string | null;
-  status: "idle" | "booting" | "ready" | "installing" | "running" | "error";
+  status: "idle" | "booting" | "ready" | "running" | "error";
 }
 
 const initialState: WebContainerState = {
@@ -20,11 +21,11 @@ const initialState: WebContainerState = {
   status: "idle",
 };
 
-// ------------------ Globals ------------------
+// ---------- Globals ----------
 export let wc: WebContainer;
-let inputWriter: WritableStreamDefaultWriter<any> | null = null;
+let shellWriter: WritableStreamDefaultWriter<any> | null = null;
 
-// helper to log
+// helper log
 const logWithDispatch = (
   dispatch: any,
   text: string,
@@ -33,14 +34,7 @@ const logWithDispatch = (
   dispatch(addLog({ text, type, timestamp: new Date().toISOString() }));
 };
 
-// ------------------ Exports for interactive input ------------------
-export const sendToProcess = async (message: string) => {
-  if (inputWriter) {
-    await inputWriter.write(message + "\n");
-  }
-};
-
-// ------------------ Thunks ------------------
+// ---------- Thunks ----------
 export const bootWebContainer = createAsyncThunk(
   "webcontainer/boot",
   async (_, { dispatch, rejectWithValue }) => {
@@ -58,22 +52,19 @@ export const bootWebContainer = createAsyncThunk(
   }
 );
 
-export const createViteProject = createAsyncThunk(
-  "webcontainer/vite",
+export const startShell = createAsyncThunk(
+  "webcontainer/shell",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       if (!wc) wc = await getWebContainer();
 
-      const proc = await wc.spawn("npm", [
-        "create",
-        "vite@latest",
-        ".",
-        "--",
-        "--template",
-        "react-ts",
-      ]);
+      logWithDispatch(dispatch, "🚀 Starting shell...", "info");
 
-      proc.output.pipeTo(
+      // Start persistent shell (like bash)
+      const shell = await wc.spawn("jsh");
+
+      // Capture output
+      shell.output.pipeTo(
         new WritableStream({
           write(data) {
             logWithDispatch(dispatch, String(data), "stdout");
@@ -81,80 +72,27 @@ export const createViteProject = createAsyncThunk(
         })
       );
 
-      if (proc.input) {
-        inputWriter = proc.input.getWriter(); // ✅ stored globally
+      // Save writer for stdin
+      if (shell.input) {
+        shellWriter = shell.input.getWriter();
       }
-
-      const exitCode = await proc.exit;
-      if (exitCode !== 0)
-        throw new Error(`Vite project creation failed (code ${exitCode})`);
-
-      logWithDispatch(dispatch, "🚀 Vite project created successfully", "success");
-      return "ready";
-    } catch (err: any) {
-      logWithDispatch(dispatch, `❌ Vite project failed: ${err.message}`, "error");
-      return rejectWithValue(err.message);
-    }
-  }
-);
-
-export const installDeps = createAsyncThunk(
-  "webcontainer/install",
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      if (!wc) wc = await getWebContainer();
-      const proc = await wc.spawn("npm", ["install"], { cwd: "/" });
-
-      proc.output.pipeTo(
-        new WritableStream({
-          write(data) {
-            logWithDispatch(dispatch, String(data), "stdout");
-          },
-        })
-      );
-
-      const exitCode = await proc.exit;
-      if (exitCode !== 0)
-        throw new Error(`npm install failed with code ${exitCode}`);
-
-      logWithDispatch(dispatch, "📦 Dependencies installed", "success");
-      return "ready";
-    } catch (err: any) {
-      logWithDispatch(dispatch, `❌ Install failed: ${err.message}`, "error");
-      return rejectWithValue(err.message);
-    }
-  }
-);
-
-export const startDevServer = createAsyncThunk(
-  "webcontainer/dev",
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      if (!wc) wc = await getWebContainer();
-      const proc = await wc.spawn("npm", ["run", "dev"], { cwd: "/" });
-
-      proc.output.pipeTo(
-        new WritableStream({
-          write(data) {
-            logWithDispatch(dispatch, String(data), "stdout");
-          },
-        })
-      );
-
-      wc.on("server-ready", (_: number, url: string) => {
-        dispatch(setLiveUrl(url));
-        logWithDispatch(dispatch, `🌍 Dev server running at ${url}`, "success");
-      });
 
       return "running";
     } catch (err: any) {
-      logWithDispatch(dispatch, `❌ Dev server failed: ${err.message}`, "error");
+      logWithDispatch(dispatch, `❌ Shell failed: ${err.message}`, "error");
       return rejectWithValue(err.message);
     }
   }
 );
 
-// ------------------ Slice ------------------
+// Send command to shell
+export const sendToShell = async (command: string) => {
+  if (shellWriter) {
+    await shellWriter.write(command + "\n");
+  }
+};
+
+// ---------- Slice ----------
 const webContainerSlice = createSlice({
   name: "webcontainer",
   initialState,
@@ -171,7 +109,6 @@ const webContainerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Boot
       .addCase(bootWebContainer.pending, (state) => {
         state.status = "booting";
       })
@@ -181,37 +118,13 @@ const webContainerSlice = createSlice({
       .addCase(bootWebContainer.rejected, (state) => {
         state.status = "error";
       })
-
-      // Vite create
-      .addCase(createViteProject.pending, (state) => {
-        state.status = "installing";
-      })
-      .addCase(createViteProject.fulfilled, (state) => {
-        state.status = "ready";
-      })
-      .addCase(createViteProject.rejected, (state) => {
-        state.status = "error";
-      })
-
-      // Install
-      .addCase(installDeps.pending, (state) => {
-        state.status = "installing";
-      })
-      .addCase(installDeps.fulfilled, (state) => {
-        state.status = "ready";
-      })
-      .addCase(installDeps.rejected, (state) => {
-        state.status = "error";
-      })
-
-      // Dev server
-      .addCase(startDevServer.pending, (state) => {
+      .addCase(startShell.pending, (state) => {
         state.status = "running";
       })
-      .addCase(startDevServer.fulfilled, (state) => {
+      .addCase(startShell.fulfilled, (state) => {
         state.status = "running";
       })
-      .addCase(startDevServer.rejected, (state) => {
+      .addCase(startShell.rejected, (state) => {
         state.status = "error";
       });
   },

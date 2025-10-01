@@ -6,22 +6,24 @@ import { Textarea } from "../ui/textarea";
 import toast from "react-hot-toast";
 import { createNewProject } from "@/service/api.project";
 import { TechLanguage, WebTech } from "@/types/project";
+import { useRouter } from "next/navigation";
 
 function NewProjectCard({ onClose }: { onClose: () => void }) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState<TechLanguage>(TechLanguage.JS);
+  const router = useRouter();
 
   const handleCreate = async () => {
     const res = await createNewProject(projectName,description, WebTech.VITE, language)
-    if(res) handleCancel();
+    if(res) handleCancel(res._id);
   };
 
-  const handleCancel = () => {
+  const handleCancel = (projectId?: string) => {
     setProjectName("");
     setDescription("");
     setLanguage(TechLanguage.JS);
-    onClose();
+    if (projectId) router.push(`/${projectId}/editor`);
   };
 
 
@@ -77,7 +79,7 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
       {/* Buttons */}
       <div className="flex justify-end gap-4 mt-4">
         <Button
-          onClick={handleCancel}
+          onClick={() => handleCancel()}
           className="px-5 py-2 border border-gray-700/40 text-white rounded-lg hover:bg-gray-800/50 hover:border-gray-600/50 transition-all duration-300"
         >
           Cancel

@@ -9,7 +9,6 @@ export const useAuth = () => {
     React.useEffect(() => {
         const unsubscribe = onAuthStateChanged( auth, async (firebaseUser) => {
             setUser(firebaseUser);
-            console.log(firebaseUser)
             if (firebaseUser) {
                 const token = await firebaseUser.getIdToken()
                 localStorage.setItem("bricks:auth", token);

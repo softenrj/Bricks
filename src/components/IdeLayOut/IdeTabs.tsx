@@ -21,7 +21,7 @@ const tabs = [
   { href: '/history', icon: History, label: 'History' },
 ]
 
-function IdeTabs() {
+function IdeTabs({ projectId }: { projectId: string }) {
   const tab = usePathname();
 
   return (
@@ -38,7 +38,7 @@ function IdeTabs() {
         {tabs.map(({ href, icon: Icon, label }) => (
           <Tooltip key={href} content={label} >
             <Link 
-              href={href}
+              href={`/${projectId}/`+href}
               className={`p-2 rounded-xl flex items-center justify-center transition-colors 
                 ${tab === href 
                   ? 'bg-gray-700 text-white' 
