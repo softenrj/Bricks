@@ -4,6 +4,7 @@ import Editor, { OnMount } from "@monaco-editor/react";
 import EditorNavBar from "./EditorNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
 import { updateFileContent } from "@/store/Reducers/fsSlice";
+import { fileUpdate } from "@/socket/project";
 
 function AppEditor() {
   const dispatch = useAppDispatch();
@@ -76,6 +77,7 @@ function AppEditor() {
           // Optional: live update
           if (selectedFile) {
             dispatch(updateFileContent({ path: selectedFile, content: newValue || "" }));
+            fileUpdate(newValue)
           }
         }}
       />

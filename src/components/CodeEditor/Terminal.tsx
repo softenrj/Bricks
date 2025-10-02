@@ -2,18 +2,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Terminal, RotateCcw, X } from "lucide-react";
 import {
-  bootWebContainer,
   startShell,
   addLog,
   clearLogs,
   sendToShell,
+  installDependencies,
+  startDevServer,
 } from "@/store/Reducers/webContainer";
 import { AppDispatch, RootState } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 
-function TerminalPanel() {
+export default function TerminalPanel() {
   const dispatch = useAppDispatch<AppDispatch>();
-  const { logs, status } = useAppSelector(
+  const { logs, status, liveUrl } = useAppSelector(
     (state: RootState) => state.webContainer
   );
 
@@ -22,17 +23,11 @@ function TerminalPanel() {
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const init = async () => {
-      await dispatch(bootWebContainer());
-      await dispatch(startShell());
-    };
-    init();
+    dispatch(startShell());
   }, [dispatch]);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [logs]);
 
   const focusInput = () => terminalInputRef.current?.focus();
@@ -40,35 +35,19 @@ function TerminalPanel() {
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && currentCommand.trim()) {
       const command = currentCommand.trim();
-
-      dispatch(
-        addLog({
-          text: `$ ${command}`,
-          type: "command",
-          timestamp: new Date().toISOString(),
-        })
-      );
-
+      dispatch(addLog({ text: `$ ${command}`, type: "command", timestamp: new Date().toISOString() }));
       await sendToShell(command);
-
       setCurrentCommand("");
     }
   };
 
-  const clearTerminal = () => dispatch(clearLogs());
-
   const getLogColor = (type: string) => {
     switch (type) {
-      case "success":
-        return "text-green-400";
-      case "error":
-        return "text-red-400";
-      case "info":
-        return "text-blue-400";
-      case "command":
-        return "text-yellow-400";
-      default:
-        return "text-gray-300";
+      case "success": return "text-green-400";
+      case "error": return "text-red-400";
+      case "info": return "text-blue-400";
+      case "command": return "text-yellow-400";
+      default: return "text-gray-300";
     }
   };
 
@@ -81,20 +60,21 @@ function TerminalPanel() {
           <span className="text-sm font-medium text-gray-200">Terminal</span>
           <div className="text-xs text-gray-500">{logs.length} lines</div>
         </div>
-        <button
-          onClick={clearTerminal}
-          className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded"
-        >
-          <RotateCcw className="w-3 h-3" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <button onClick={() => dispatch(installDependencies())} className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded">
+            npm install
+          </button>
+          <button onClick={() => dispatch(startDevServer())} className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded">
+            npm run dev
+          </button>
+          <button onClick={() => dispatch(clearLogs())} className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded">
+            <RotateCcw className="w-3 h-3" />
+          </button>
+        </div>
       </div>
 
       {/* Logs */}
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-xs"
-        onClick={focusInput}
-      >
+      <div ref={scrollRef} className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-xs" onClick={focusInput}>
         {logs.length === 0 ? (
           <div className="text-gray-500">Terminal ready.</div>
         ) : (
@@ -118,16 +98,18 @@ function TerminalPanel() {
           onKeyDown={handleKeyDown}
         />
         {currentCommand && (
-          <button
-            onClick={() => setCurrentCommand("")}
-            className="ml-2 text-gray-500 hover:text-gray-300"
-          >
+          <button onClick={() => setCurrentCommand("")} className="ml-2 text-gray-500 hover:text-gray-300">
             <X className="w-3 h-3" />
           </button>
         )}
       </div>
+
+      {/* Live URL */}
+      {liveUrl && (
+        <div className="p-2 bg-gray-900 text-xs text-blue-400">
+          Live Preview: <a href={liveUrl} target="_blank" rel="noreferrer">{liveUrl}</a>
+        </div>
+      )}
     </div>
   );
 }
-
-export default TerminalPanel;

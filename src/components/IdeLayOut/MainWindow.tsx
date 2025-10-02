@@ -8,12 +8,15 @@ import FileSystemPanel from "../CodeEditor/FileSystemPanel";
 import { projectFileSystem } from "@/service/api.project";
 import { setTree } from "@/store/Reducers/fsSlice";
 import { useAppDispatch } from "@/hooks/redux";
+import { initialFSWebContainer } from "@/service/webContainer";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
   const getProjectFs = async () => {
     const response = await projectFileSystem(projectId);
     dispatch(setTree(response))
+    // push to webContainer
+    await initialFSWebContainer(response);
   }
 
   React.useEffect(() => {

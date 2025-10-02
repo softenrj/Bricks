@@ -12,20 +12,25 @@ export type Log = {
 interface WebContainerState {
   logs: Log[];
   liveUrl: string | null;
-  status: "idle" | "booting" | "ready" | "running" | "error";
+  status: "idle" | "booting" | "running" | "ready" | "error";
+  installStatus: "idle" | "pending" | "done" | "error";
+  devStatus: "idle" | "pending" | "running" | "error";
 }
 
+// ---------- Initial State ----------
 const initialState: WebContainerState = {
   logs: [],
   liveUrl: null,
   status: "idle",
+  installStatus: "idle",
+  devStatus: "idle",
 };
 
 // ---------- Globals ----------
 export let wc: WebContainer;
 let shellWriter: WritableStreamDefaultWriter<any> | null = null;
 
-// helper log
+// ---------- Helper Log ----------
 const logWithDispatch = (
   dispatch: any,
   text: string,
@@ -34,36 +39,18 @@ const logWithDispatch = (
   dispatch(addLog({ text, type, timestamp: new Date().toISOString() }));
 };
 
-// ---------- Thunks ----------
-export const bootWebContainer = createAsyncThunk(
-  "webcontainer/boot",
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      if (!wc) {
-        logWithDispatch(dispatch, "⚡ Booting WebContainer...", "info");
-        wc = await getWebContainer();
-      }
-      logWithDispatch(dispatch, "✅ WebContainer ready", "success");
-      return "ready";
-    } catch (err: any) {
-      logWithDispatch(dispatch, `❌ Boot failed: ${err.message}`, "error");
-      return rejectWithValue(err.message);
-    }
-  }
-);
+// ---------- Async Thunks ----------
 
-export const startShell = createAsyncThunk(
-  "webcontainer/shell",
+// Start Terminal Shell
+export const startShell = createAsyncThunk<void, void>(
+  "webcontainer/startShell",
   async (_, { dispatch, rejectWithValue }) => {
     try {
       if (!wc) wc = await getWebContainer();
-
       logWithDispatch(dispatch, "🚀 Starting shell...", "info");
 
-      // Start persistent shell (like bash)
       const shell = await wc.spawn("jsh");
 
-      // Capture output
       shell.output.pipeTo(
         new WritableStream({
           write(data) {
@@ -72,12 +59,8 @@ export const startShell = createAsyncThunk(
         })
       );
 
-      // Save writer for stdin
-      if (shell.input) {
-        shellWriter = shell.input.getWriter();
-      }
-
-      return "running";
+      if (shell.input) shellWriter = shell.input.getWriter();
+      return;
     } catch (err: any) {
       logWithDispatch(dispatch, `❌ Shell failed: ${err.message}`, "error");
       return rejectWithValue(err.message);
@@ -85,12 +68,72 @@ export const startShell = createAsyncThunk(
   }
 );
 
-// Send command to shell
+// Send command to terminal shell
 export const sendToShell = async (command: string) => {
   if (shellWriter) {
     await shellWriter.write(command + "\n");
   }
 };
+
+// Install Dependencies
+export const installDependencies = createAsyncThunk<void, void>(
+  "webcontainer/install",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      if (!wc) wc = await getWebContainer();
+      const installProcess = await wc.spawn("npm", ["install"]);
+
+      installProcess.output.pipeTo(
+        new WritableStream({
+          write(data) {
+            logWithDispatch(dispatch, String(data), "stdout");
+          },
+        })
+      );
+
+      await installProcess.exit;
+      logWithDispatch(dispatch, "✅ Dependencies installed", "success");
+      return;
+    } catch (err: any) {
+      logWithDispatch(dispatch, `❌ Install failed: ${err.message}`, "error");
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+// Run Dev Server
+export const startDevServer = createAsyncThunk<string, void>(
+  "webcontainer/devServer",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      if (!wc) wc = await getWebContainer();
+      const devProcess = await wc.spawn("npm", ["run", "dev"]);
+
+      devProcess.output.pipeTo(
+        new WritableStream({
+          write(data) {
+            logWithDispatch(dispatch, String(data), "stdout");
+          },
+        })
+      );
+
+      return new Promise<string>((resolve, reject) => {
+        wc.on("server-ready", (_port, url) => {
+          logWithDispatch(dispatch, `🌐 Dev server running at ${url}`, "success");
+          dispatch(setLiveUrl(url));
+          resolve(url);
+        });
+
+        devProcess.exit.then((code) => {
+          if (code !== 0) reject(new Error(`Dev server exited with code ${code}`));
+        });
+      });
+    } catch (err: any) {
+      logWithDispatch(dispatch, `❌ Dev server failed: ${err.message}`, "error");
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
 // ---------- Slice ----------
 const webContainerSlice = createSlice({
@@ -108,25 +151,26 @@ const webContainerSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Start Shell
     builder
-      .addCase(bootWebContainer.pending, (state) => {
-        state.status = "booting";
+      .addCase(startShell.pending, (state) => { state.status = "running"; })
+      .addCase(startShell.fulfilled, (state) => { state.status = "ready"; })
+      .addCase(startShell.rejected, (state) => { state.status = "error"; });
+
+    // Install Dependencies
+    builder
+      .addCase(installDependencies.pending, (state) => { state.installStatus = "pending"; })
+      .addCase(installDependencies.fulfilled, (state) => { state.installStatus = "done"; })
+      .addCase(installDependencies.rejected, (state) => { state.installStatus = "error"; });
+
+    // Start Dev Server
+    builder
+      .addCase(startDevServer.pending, (state) => { state.devStatus = "pending"; })
+      .addCase(startDevServer.fulfilled, (state, action: PayloadAction<string>) => {
+        state.devStatus = "running";
+        state.liveUrl = action.payload;
       })
-      .addCase(bootWebContainer.fulfilled, (state) => {
-        state.status = "ready";
-      })
-      .addCase(bootWebContainer.rejected, (state) => {
-        state.status = "error";
-      })
-      .addCase(startShell.pending, (state) => {
-        state.status = "running";
-      })
-      .addCase(startShell.fulfilled, (state) => {
-        state.status = "running";
-      })
-      .addCase(startShell.rejected, (state) => {
-        state.status = "error";
-      });
+      .addCase(startDevServer.rejected, (state) => { state.devStatus = "error"; });
   },
 });
 

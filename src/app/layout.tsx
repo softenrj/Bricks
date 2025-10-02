@@ -4,6 +4,7 @@ import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import ReduxProvider from "@/context/ReduxProvider";
 import { Toaster } from "react-hot-toast"
+import "@/socket/socket"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
