@@ -6,7 +6,7 @@ import React from "react";
 function PreviewPanel() {
   const wbLink = useAppSelector(state => state.webContainer).liveUrl
   return (
-    <div className="h-full bg-white">
+    <div className="h-full bg-[#0D0D0D]">
       {/* Live Preview */}
       {wbLink && (
         <div className="border-t border-gray-700">

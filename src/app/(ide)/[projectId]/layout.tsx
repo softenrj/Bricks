@@ -6,7 +6,7 @@ async function IdeLayout({ children, params }: { children: React.ReactNode, para
   const param = await params;
   const projectId = param.projectId;
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-screen overflow-hidden bg-black">
       <IdeTabs projectId={projectId} />
       <main className="flex-1 overflow-auto">
         <DashboardNavStrip />

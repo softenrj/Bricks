@@ -1,54 +1,33 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import EditorNavBar from "./EditorNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
 import { updateFileContent } from "@/store/Reducers/fsSlice";
-import { fileUpdate } from "@/socket/project";
+import MediaDisplay from "./MediaDisplay";
+import ReactMarkdown from "react-markdown";
+import MarkDownPreview from "./MarkDownPreview";
 
 function AppEditor() {
   const dispatch = useAppDispatch();
-  const fs = useAppSelector((state) => state.fs);
-  const { selectedFile, selectedFileContent, selectedLanguage } = fs;
-
+  const { selectedFile, selectedFileContent, selectedLanguage } = useAppSelector(
+    (state) => state.fs
+  );
+  const [isMedia, setIsMedia] = React.useState<boolean>(false);
+  const [showMd, setShowMd] = React.useState<boolean>(false);
   const editorRef = useRef<any>(null);
 
-  // Mount handler
+  useEffect(() => {
+    if (editorRef.current && selectedFile !== null) {
+      editorRef.current.setValue(selectedFileContent || "");
+    }
+  }, [selectedFile]);
+
+  // Editor mount handler
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
 
-    // Configure TypeScript and JavaScript for JSX/TSX support
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-      jsx: monaco.languages.typescript.JsxEmit.React,
-      allowJs: true,
-      checkJs: true,
-      target: monaco.languages.typescript.ScriptTarget.ES2020,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      esModuleInterop: true,
-      strict: true,
-    });
-
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-      jsx: monaco.languages.typescript.JsxEmit.React,
-      allowJs: true,
-      checkJs: true,
-      target: monaco.languages.typescript.ScriptTarget.ES2020,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      esModuleInterop: true,
-    });
-
-    // Enable code suggestions (IntelliSense)
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: false,
-    });
-
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: false,
-    });
-
-    // Ctrl+S shortcut to save
+    // Ctrl+S save
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       if (selectedFile) {
         const value = editor.getValue();
@@ -57,30 +36,61 @@ function AppEditor() {
     });
   };
 
+  // Detect media type by extension
+  useEffect(() => {
+    if (!selectedFile) {
+      setIsMedia(false);
+      return;
+    }
+    const extension = selectedFile.split(".").pop()?.toLowerCase();
+    const imageFormats = ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "tiff"];
+    setIsMedia(extension ? imageFormats.includes(extension) : false);
+  }, [selectedFile]);
+
   return (
     <div className="h-full flex flex-col">
-      <EditorNavBar />
-      <Editor
-        height="100%"
-        value={selectedFileContent || ""}
-        language={selectedLanguage}
-        theme="vs-dark"
-        onMount={handleEditorDidMount}
-        options={{
-          automaticLayout: true,
-          minimap: { enabled: false },
-          fontSize: 14,
-          scrollBeyondLastLine: false,
-          wordWrap: "on",
-        }}
-        onChange={(newValue) => {
-          // Optional: live update
-          if (selectedFile) {
-            dispatch(updateFileContent({ path: selectedFile, content: newValue || "" }));
-            fileUpdate(newValue)
-          }
-        }}
-      />
+      {/* Nav bar */}
+      <EditorNavBar showMd={showMd} setShowMd={setShowMd} />
+
+      {/* Editor / Media */}
+      {selectedFile ? (
+        isMedia ? (
+          <MediaDisplay />
+        ) : (
+          <>
+            <Editor
+              height={showMd ? "50%" : "100%"} // shrink editor if markdown preview is shown
+              value={selectedFileContent || ""}
+              language={selectedLanguage}
+              theme="vs-dark"
+              onMount={handleEditorDidMount}
+              options={{
+                automaticLayout: true,
+                minimap: { enabled: false },
+                fontSize: 14,
+                scrollBeyondLastLine: false,
+                wordWrap: "on",
+              }}
+              onChange={(newValue) => {
+                if (selectedFile) {
+                  dispatch(
+                    updateFileContent({ path: selectedFile, content: newValue || "" })
+                  );
+                }
+              }}
+            />
+
+            {/* Markdown Preview */}
+            {showMd && selectedFileContent && (
+              <MarkDownPreview selectedFileContent={selectedFileContent} />
+            )}
+          </>
+        )
+      ) : (
+        <div className="flex-1 flex items-center justify-center text-gray-500">
+          No file open
+        </div>
+      )}
     </div>
   );
 }

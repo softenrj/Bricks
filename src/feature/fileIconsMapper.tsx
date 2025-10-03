@@ -1,11 +1,28 @@
 import { Icon } from "@iconify/react";
-import vscodeIcons from "@iconify-json/vscode-icons/icons.json";
 
 export const getFileIcon = (fileName: string) => {
-  const ext = fileName.split(".").pop()?.toLowerCase();
+  const lower = fileName.toLowerCase();
+  const ext = lower.split(".").pop();
 
-  // Build dynamic map from vscode-icons pack
-  const map: Record<string, string> = {
+  const fileMap: Record<string, string> = {
+    "package.json": "vscode-icons:file-type-npm",
+    "package-lock.json": "vscode-icons:file-type-npm",
+    "yarn.lock": "vscode-icons:file-type-yarn",
+    "pnpm-lock.yaml": "vscode-icons:file-type-pnpm",
+    "tsconfig.json": "vscode-icons:file-type-tsconfig",
+    "jsconfig.json": "vscode-icons:file-type-jsconfig",
+    "next.config.js": "vscode-icons:file-type-next",
+    "vite.config.js": "vscode-icons:file-type-vite",
+    "webpack.config.js": "vscode-icons:file-type-webpack",
+    "tailwind.config.js": "vscode-icons:file-type-tailwind",
+    ".gitignore": "vscode-icons:file-type-git",
+    ".env": "vscode-icons:file-type-dotenv",
+    "dockerfile": "vscode-icons:file-type-docker",
+    "readme.md": "vscode-icons--file-type-light-systemd",
+    "README.md": "vscode-icons--file-type-light-systemd",
+  };
+
+  const extMap: Record<string, string> = {
     js: "vscode-icons:file-type-js",
     jsx: "vscode-icons:file-type-reactjs",
     ts: "vscode-icons:file-type-typescript",
@@ -26,9 +43,7 @@ export const getFileIcon = (fileName: string) => {
     yaml: "vscode-icons:file-type-yaml",
     yml: "vscode-icons:file-type-yaml",
     xml: "vscode-icons:file-type-xml",
-    dockerfile: "vscode-icons:file-type-docker",
     sh: "vscode-icons:file-type-shell",
-    env: "vscode-icons:file-type-dotenv",
     svg: "vscode-icons:file-type-svg",
     png: "vscode-icons:file-type-image",
     jpg: "vscode-icons:file-type-image",
@@ -44,7 +59,7 @@ export const getFileIcon = (fileName: string) => {
     prisma: "vscode-icons:file-type-prisma",
   };
 
-  const icon = ext && map[ext] ? map[ext] : "vscode-icons:file";
+  let icon = fileMap[lower] || (ext ? extMap[ext] : undefined) || "vscode-icons:file";
 
-  return <Icon icon={icon} width="20" height="20" />;
+  return <Icon icon={icon} width="18" height="18" />;
 };

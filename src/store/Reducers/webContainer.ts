@@ -30,13 +30,18 @@ const initialState: WebContainerState = {
 export let wc: WebContainer;
 let shellWriter: WritableStreamDefaultWriter<any> | null = null;
 
+// ---------- Helper Functions ----------
+const stripAnsi = (str: string) => {
+  return str.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
+};
+
 // ---------- Helper Log ----------
 const logWithDispatch = (
   dispatch: any,
   text: string,
   type: Log["type"] = "info"
 ) => {
-  dispatch(addLog({ text, type, timestamp: new Date().toISOString() }));
+  dispatch(addLog({ text: stripAnsi(text), type, timestamp: new Date().toISOString() }));
 };
 
 // ---------- Async Thunks ----------

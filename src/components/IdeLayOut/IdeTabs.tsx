@@ -25,7 +25,7 @@ function IdeTabs({ projectId }: { projectId: string }) {
   const tab = usePathname();
 
   return (
-    <div className='w-14 bg-[#0E0E0E] border-r border-gray-700 text-white flex flex-col items-center py-4 space-y-6'>
+    <div className='w-14 bg-[#0D0D0D] border-r border-gray-700 text-white flex flex-col items-center py-4 space-y-6'>
       
       {/* Logo / Avatar */}
       <Avatar className="h-10 w-10">

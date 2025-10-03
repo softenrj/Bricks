@@ -29,7 +29,7 @@ function MainWindow({ projectId }: { projectId: string }) {
       className="min-h-[200px] rounded-lg border md:min-w-[450px] max-h-[95%]"
     >
       {/* Left FS */}
-      <ResizablePanel defaultSize={20} maxSize={40} minSize={10}>
+      <ResizablePanel defaultSize={15} maxSize={25} minSize={10}>
         <FileSystemPanel />
       </ResizablePanel>
       <ResizableHandle />

@@ -54,17 +54,17 @@ export default function TerminalPanel() {
   return (
     <div className="flex flex-col h-full bg-black">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-700">
+      <div className="flex items-center justify-between px-4 py-1 bg-[#0D0D0D] border-b border-gray-700">
         <div className="flex items-center space-x-2">
           <Terminal className="w-4 h-4 text-green-400" />
           <span className="text-sm font-medium text-gray-200">Terminal</span>
-          <div className="text-xs text-gray-500">{logs.length} lines</div>
+          <div className="text-xs text-gray-500">{logs.length} ln.</div>
         </div>
         <div className="flex items-center space-x-2">
-          <button onClick={() => dispatch(installDependencies())} className="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded">
+          <button onClick={() => dispatch(installDependencies())} className="py-1 px-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded">
             npm install
           </button>
-          <button onClick={() => dispatch(startDevServer())} className="px-2 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded">
+          <button onClick={() => dispatch(startDevServer())} className="py-1 px-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded">
             npm run dev
           </button>
           <button onClick={() => dispatch(clearLogs())} className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded">
@@ -74,8 +74,24 @@ export default function TerminalPanel() {
       </div>
 
       {/* Logs */}
-      <div ref={scrollRef} className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-xs" onClick={focusInput}>
-        {logs.length === 0 ? (
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-xs"
+        onClick={focusInput}
+      >
+        {status === "booting" ? (
+          <pre className="text-green-400 whitespace-pre-wrap">
+            {`
+  ____  _             _     
+ |  _ \\| |_   _  __ _| |__  
+ | | | | | | | |/ _\` | '_ \\ 
+ | |_| | | |_| | (_| | | | |
+ |____/|_|\\__,_|\\__, |_| |_|
+                 |___/       
+    Booting up...
+      `}
+          </pre>
+        ) : logs.length === 0 ? (
           <div className="text-gray-500">Terminal ready.</div>
         ) : (
           logs.map((log, i) => (
@@ -103,13 +119,6 @@ export default function TerminalPanel() {
           </button>
         )}
       </div>
-
-      {/* Live URL */}
-      {liveUrl && (
-        <div className="p-2 bg-gray-900 text-xs text-blue-400">
-          Live Preview: <a href={liveUrl} target="_blank" rel="noreferrer">{liveUrl}</a>
-        </div>
-      )}
     </div>
   );
 }
