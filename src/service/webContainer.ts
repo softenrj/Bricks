@@ -46,15 +46,5 @@ export async function initialFSWebContainer(tree: FSData): Promise<void> {
 export async function installDep(): Promise<void> {
   const container = await getWebContainer();
   const installProcess = await container.spawn("npm", ["install"]);
-
-  installProcess.output.pipeTo(
-    new WritableStream({
-      write(data) {
-        console.log("[npm install]", data);
-      },
-    })
-  );
-
   await installProcess.exit;
-  console.log("✅ Dependencies installed");
 }

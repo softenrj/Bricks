@@ -1,16 +1,22 @@
+"use client"
 import { CloudDownload, FileSymlink, FolderSymlink } from 'lucide-react'
 import React from 'react'
 import { Tooltip } from '../common/Tooltip'
+import { useAppSelector } from '@/hooks/redux'
+import { downLoadProject } from '@/feature/projectDownload'
 
 function FScontroller() {
+  const projectName = useAppSelector(state => state.fs).projectName;
+  const fs = useAppSelector(state => state.fs).tree
+  const handleDownload = async () => await downLoadProject(projectName,fs);
   return (
     <div className="mx-3 my-1 flex justify-between items-center group">
       <p className="text-white truncate text-sm sm:text-xs max-w-[100px]">
-        Ai chatbot
+        {projectName}
       </p>
       <div className="text-[#a2a2a2] gap-2 opacity-0 hidden group-hover:opacity-100 group-hover:flex transition-opacity duration-200">
         <Tooltip content="download">
-          <CloudDownload size={16} />
+          <CloudDownload size={16} onClick={handleDownload} />
         </Tooltip>
         <Tooltip content="Add file">
           <FileSymlink size={16} />

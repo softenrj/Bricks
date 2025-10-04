@@ -1,65 +1,65 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo, useState } from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import EditorNavBar from "./EditorNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
-import { updateFileContent } from "@/store/Reducers/fsSlice";
+import { setFileChange, updateFileContent } from "@/store/Reducers/fsSlice";
 import MediaDisplay from "./MediaDisplay";
-import ReactMarkdown from "react-markdown";
 import MarkDownPreview from "./MarkDownPreview";
 
 function AppEditor() {
   const dispatch = useAppDispatch();
-  const { selectedFile, selectedFileContent, selectedLanguage } = useAppSelector(
+  const { selectedFile, selectedFileContent, selectedLanguage, openTabs } = useAppSelector(
     (state) => state.fs
   );
-  const [isMedia, setIsMedia] = React.useState<boolean>(false);
-  const [showMd, setShowMd] = React.useState<boolean>(false);
+
+  const [showMd, setShowMd] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
+  const currentFileRef = useRef<string | null>(null); 
 
   useEffect(() => {
-    if (editorRef.current && selectedFile !== null) {
-      editorRef.current.setValue(selectedFileContent || "");
-    }
+    currentFileRef.current = selectedFile;
   }, [selectedFile]);
 
-  // Editor mount handler
+  const isMedia = useMemo(() => {
+    const ext = selectedFile?.split(".").pop()?.toLowerCase();
+    const imageFormats = ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "tiff"];
+    return ext ? imageFormats.includes(ext) : false;
+  }, [selectedFile]);
+
+  useEffect(() => {
+    if (editorRef.current && selectedFileContent !== null) {
+      const currentValue = editorRef.current.getValue();
+      if (currentValue !== selectedFileContent) {
+        editorRef.current.setValue(selectedFileContent);
+      }
+    }
+  }, [selectedFile, selectedFileContent]);
+
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
 
-    // Ctrl+S save
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-      if (selectedFile) {
+      const currentFile = currentFileRef.current;
+      if (currentFile) {
         const value = editor.getValue();
-        dispatch(updateFileContent({ path: selectedFile, content: value }));
+        dispatch(updateFileContent({ path: currentFile, content: value }));
+        dispatch(setFileChange({ name: currentFile, isEditing: false }));
       }
     });
   };
 
-  // Detect media type by extension
-  useEffect(() => {
-    if (!selectedFile) {
-      setIsMedia(false);
-      return;
-    }
-    const extension = selectedFile.split(".").pop()?.toLowerCase();
-    const imageFormats = ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "tiff"];
-    setIsMedia(extension ? imageFormats.includes(extension) : false);
-  }, [selectedFile]);
-
   return (
     <div className="h-full flex flex-col">
-      {/* Nav bar */}
       <EditorNavBar showMd={showMd} setShowMd={setShowMd} />
 
-      {/* Editor / Media */}
       {selectedFile ? (
         isMedia ? (
           <MediaDisplay />
         ) : (
           <>
             <Editor
-              height={showMd ? "50%" : "100%"} // shrink editor if markdown preview is shown
+              height={showMd ? "50%" : "100%"}
               value={selectedFileContent || ""}
               language={selectedLanguage}
               theme="vs-dark"
@@ -72,15 +72,15 @@ function AppEditor() {
                 wordWrap: "on",
               }}
               onChange={(newValue) => {
-                if (selectedFile) {
-                  dispatch(
-                    updateFileContent({ path: selectedFile, content: newValue || "" })
-                  );
+                if (
+                  (newValue ?? "").replace(/\r\n/g, "\n") !==
+                  (selectedFileContent ?? "").replace(/\r\n/g, "\n")
+                ) {
+                  dispatch(setFileChange({ name: selectedFile!, isEditing: true }));
                 }
               }}
             />
 
-            {/* Markdown Preview */}
             {showMd && selectedFileContent && (
               <MarkDownPreview selectedFileContent={selectedFileContent} />
             )}

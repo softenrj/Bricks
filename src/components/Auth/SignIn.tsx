@@ -26,9 +26,6 @@ function SignIn() {
     try {
       setLoading(true);
       const result = await AuthProvider.registerWithEmail(email, pass, username)
-      if (result) {
-        console.log("Signed in with email:", result.user.email)
-      }
     } catch (error) {
       console.error("Sign in failed:", error)
     } finally {

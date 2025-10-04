@@ -5,18 +5,20 @@ import AppEditor from "../CodeEditor/AppEditor";
 import TerminalPanel from "../CodeEditor/Terminal";
 import PreviewPanel from "../CodeEditor/PreviewTab";
 import FileSystemPanel from "../CodeEditor/FileSystemPanel";
-import { projectFileSystem } from "@/service/api.project";
-import { setTree } from "@/store/Reducers/fsSlice";
+import { getProjectDetails, projectFileSystem } from "@/service/api.project";
+import { setProjectName, setTree } from "@/store/Reducers/fsSlice";
 import { useAppDispatch } from "@/hooks/redux";
 import { initialFSWebContainer } from "@/service/webContainer";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
   const getProjectFs = async () => {
-    const response = await projectFileSystem(projectId);
-    dispatch(setTree(response))
+    const response1 = await projectFileSystem(projectId);
+    const response2 = await getProjectDetails(projectId);
+    dispatch(setTree(response1))
+    if (response2) dispatch(setProjectName(response2?.name))
     // push to webContainer
-    await initialFSWebContainer(response);
+    await initialFSWebContainer(response1);
   }
 
   React.useEffect(() => {
@@ -42,7 +44,7 @@ function MainWindow({ projectId }: { projectId: string }) {
               <AppEditor />
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel defaultSize={25}>
+            <ResizablePanel defaultSize={35} maxSize={45}>
               <TerminalPanel />
             </ResizablePanel>
           </ResizablePanelGroup>
