@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import ProjectCard from "./ProjectCard";
 import FilterOptions from "./Project.recent.filter";
 import { Project } from "@/types/project";
@@ -98,7 +98,9 @@ function ProjectList({
         <p className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight">
           {listName}
         </p>
-        <FilterOptions extraOptions={extraOptions} fallback={onFallBack} filter={filter} setFilter={setFilter} />
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <FilterOptions extraOptions={extraOptions} fallback={onFallBack} filter={filter} setFilter={setFilter} />
+        </Suspense>
       </div>
 
       {/* Grid */}

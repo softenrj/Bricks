@@ -59,7 +59,7 @@ export const getFileIcon = (fileName: string) => {
     prisma: "vscode-icons:file-type-prisma",
   };
 
-  let icon = fileMap[lower] || (ext ? extMap[ext] : undefined) || "vscode-icons:file";
+  const icon = fileMap[lower] || (ext ? extMap[ext] : undefined) || "vscode-icons:file";
 
   return <Icon icon={icon} width="18" height="18" />;
 };

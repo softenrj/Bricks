@@ -186,7 +186,7 @@ export const exportProjects = async (mode: 'arch' | 'all' = 'all'): Promise<Proj
 
 export const removeProject = async (projectId: string): Promise<boolean> => {
     try {
-        const response = await deleteApi<ApiResponse<{}>>({
+        const response = await deleteApi<ApiResponse<void>>({
             url: API_BRICKS_REMOVE_PROJECT + `/${projectId}`
         })
 
