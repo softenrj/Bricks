@@ -3,11 +3,13 @@ import { wc } from "./webContainer";
 import { getFSTree } from "@/service/fsWalker";
 import { LanguageEnum } from "@/feature/LanguageEnum";
 import { isValidBase64 } from "@/feature/projectDownload";
+import { fileRename, fileUpdate, removeFile } from "@/socket/project.FS";
 
 export type FSData = { [key: string]: string | FSData };
 
 interface FSState {
   tree: FSData;
+  activePath: string;
   projectName: string;
   selectedFile: string | null;
   selectedFileContent: string | null;
@@ -17,6 +19,7 @@ interface FSState {
 
 const initialState: FSState = {
   tree: {},
+  activePath: '.',
   projectName: "",
   selectedFile: null,
   selectedFileContent: "",
@@ -61,6 +64,7 @@ const fsSlice = createSlice({
     setSelectedFile: (state, action: PayloadAction<string>) => {
       const path = action.payload;
       state.selectedFile = path;
+      state.activePath = path;
 
       if (!state.openTabs.some(tab => tab.name === path)) {
         state.openTabs.push({ name: path, isEditing: false });
@@ -73,6 +77,7 @@ const fsSlice = createSlice({
     switchTab: (state, action: PayloadAction<string>) => {
       const path = action.payload;
       state.selectedFile = path;
+      state.activePath = path;
       state.selectedFileContent = getFileContent(state.tree, path);
       state.selectedLanguage = detectLanguage(path);
     },
@@ -129,13 +134,71 @@ const fsSlice = createSlice({
       }
       node[segments[segments.length - 1]] = content;
 
-      // Optional: write directly to wc.fs (auto-save)
+      const name = segments.pop()!;
+      const parentPath = segments.length > 0 ? segments.join('/') : '.';
+
+      fileUpdate(name, parentPath, content);
+
       if (wc) {
         wc.fs.writeFile(path, content);
       }
     },
-  },
 
+    renameFileName: (state, action: PayloadAction<{ oldPath: string; newName: string }>) => {
+      const { oldPath, newName } = action.payload;
+      const segments = oldPath.split("/");
+      const oldName = segments.pop()!;
+      if (oldName === newName) return;
+      let node: any = state.tree;
+
+      // Navigate to parent folder
+      for (const seg of segments) {
+        node = node[seg] as FSData;
+        if (!node) return;
+      }
+
+      node[newName] = node[oldName];
+      delete node[oldName];
+
+      state.openTabs = state.openTabs.map(tab =>
+        tab.name === oldPath ? { ...tab, name: segments.length > 0 ? `${segments.join("/")}/${newName}` : newName } : tab
+      );
+
+      if (state.selectedFile === oldPath) {
+        state.selectedFile = segments.length > 0 ? `${segments.join("/")}/${newName}` : newName;
+      }
+
+      const parentPath = segments.length > 0 ? segments.join("/") : ".";
+      fileRename(parentPath, oldName, newName)
+    },
+
+    deleteFile: (state, action: PayloadAction<{ fullPath: string; name: string }>) => {
+      const { fullPath, name } = action.payload;
+      const segments = fullPath.split("/");
+      segments.pop(); 
+
+      let node: any = state.tree;
+
+      for (const seg of segments) {
+        node = node[seg] as FSData;
+        if (!node) return; 
+      }
+
+      delete node[name];
+
+      state.openTabs = state.openTabs.filter(tab => tab.name !== fullPath);
+
+      if (state.selectedFile === fullPath) {
+        state.selectedFile = state.openTabs.length > 0 ? state.openTabs[0].name : null;
+        state.selectedFileContent = state.selectedFile
+          ? getFileContent(state.tree, state.selectedFile)
+          : "";
+      }
+      const parentPath = segments.length > 0 ? segments.join("/") : ".";
+      removeFile(parentPath, name);
+    }
+
+  },
   extraReducers: (builder) => {
     builder.addCase(writeFile.fulfilled, (state, action) => {
       const { path, content } = action.payload;
@@ -155,7 +218,9 @@ export const {
   switchTab,
   closeTab,
   setProjectName,
-  setFileChange
+  setFileChange,
+  renameFileName,
+  deleteFile
 } = fsSlice.actions;
 
 export default fsSlice.reducer;

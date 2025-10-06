@@ -51,6 +51,7 @@ export const startShell = createAsyncThunk<void, void>(
   "webcontainer/startShell",
   async (_, { dispatch, rejectWithValue }) => {
     try {
+      logWithDispatch(dispatch, "❄️ wait shell is about to start", "info")
       if (!wc) wc = await getWebContainer();
       logWithDispatch(dispatch, "🚀 Starting shell...", "info");
 

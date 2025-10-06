@@ -5,10 +5,12 @@ let socket: Socket | null = null;
 
 export function getSocket(): Socket | null {
   if (typeof window === "undefined") return null;
+  const token = localStorage.getItem('bricks:auth')
 
   if (!socket) {
     socket = io(serverUrl, {
       transports: ["websocket"],
+      auth: { token: token }
     });
 
     socket.on("connect", () => {

@@ -9,7 +9,9 @@ import {
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import {
+  deleteFile,
   fetchFsTree,
+  renameFileName,
   setFileContent,
   setFileLanguage,
   setSelectedFile,
@@ -27,6 +29,24 @@ function FileSystemPanel() {
   const selectedFile = useAppSelector((s) => s.fs.selectedFile);
 
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+
+  const [editingPath, setEditingPath] = useState<string | null>(null);
+  const [newName, setNewName] = useState<string>("");
+
+  const handleRename = (fullPath: string) => {
+    dispatch(renameFileName({
+      oldPath: fullPath,
+      newName: newName
+    }))
+  }
+  const renameRequest = (path: string, name: string) => {
+    setNewName(name);
+    setEditingPath(path);
+  }
+
+  const removeFile = (fullPath: string, name: string ) => {
+    dispatch(deleteFile({ fullPath, name }))
+  }
 
   useEffect(() => {
     if (Object.keys(fsData).length === 0) {
@@ -58,34 +78,65 @@ function FileSystemPanel() {
         const isSelected = selectedFile === fullPath;
         return (
           <li key={fullPath} className="select-none">
-            <FileContext>
+            <FileContext onRename={renameRequest} onRemove={removeFile} path={fullPath} name={name} >
               <div
-                className={`group flex items-center gap-2 py-1 px-2 mx-0.5 rounded-md cursor-pointer transition-all duration-150 relative ${isSelected
+                className={`group flex items-center gap-2 py-1 px-2 mx-0.5 cursor-pointer transition-all duration-150 relative ${isSelected
                   ? "bg-blue-300/5 text-blue-100"
                   : "hover:bg-gray-700/11 text-gray-300 hover:text-gray-100"
                   }`}
                 style={{ paddingLeft: `${depth * 16 + 12}px` }}
                 onClick={() => {
-                  dispatch(setSelectedFile(fullPath));
-                  try {
-                    const content = atob(value);
-                    dispatch(setFileContent(content));
-                    const ext = fullPath.split(".").pop()?.toLowerCase() as keyof typeof LanguageEnum;
-                    const lang = LanguageEnum[ext] || LanguageEnum.md;
-                    dispatch(setFileLanguage(lang));
-                  } catch {
-                    // empty
+                  if (!editingPath) {
+                    dispatch(setSelectedFile(fullPath));
+                    try {
+                      const content = atob(value);
+                      dispatch(setFileContent(content));
+                      const ext = fullPath.split(".").pop()?.toLowerCase() as keyof typeof LanguageEnum;
+                      const lang = LanguageEnum[ext] || LanguageEnum.md;
+                      dispatch(setFileLanguage(lang));
+                    } catch {
+                      // empty
+                    }
                   }
                 }}
               >
-                {isSelected && (
-                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-400/40 rounded-r" />
-                )}
+                {isSelected && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-400/40" />}
                 {getFileIcon(name)}
-                <span className="text-xs truncate font-normal leading-relaxed">
-                  {name}
-                </span>
+
+                {editingPath === fullPath ? (
+                  <input
+                    autoFocus
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    onBlur={() => {
+                      if (newName.trim()) {
+                        handleRename(fullPath);
+                      }
+                      setEditingPath(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (newName.trim()) {
+                          handleRename(fullPath)
+                        }
+                        setEditingPath(null);
+                      }
+                      if (e.key === "Escape") setEditingPath(null);
+                    }}
+                    className="text-xs font-normal text-gray-100 bg-transparent border-none outline-none truncate"
+                    style={{
+                      padding: 0,
+                      margin: 0,
+                      lineHeight: "1.25rem",
+                      width: "100%",
+                    }}
+                  />
+                ) : (
+                  <span className="text-xs truncate font-normal leading-relaxed">{name}</span>
+                )}
+
               </div>
+
             </FileContext>
           </li>
         );
@@ -95,9 +146,9 @@ function FileSystemPanel() {
         const hasChildren = Object.keys(value).length > 0;
         return (
           <li key={fullPath} className="select-none">
-            <FileContext>
+            <FileContext onRename={renameRequest} onRemove={removeFile} path={fullPath} name={name}>
               <div
-                className="group flex items-center gap-2 py-1.5 px-2 mx-0.5 rounded-md cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
+                className="group flex items-center gap-2 py-1.5 px-2 mx-0.5 cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
                 style={{ paddingLeft: `${depth * 16 + 12}px` }}
                 onClick={() => toggleFolder(fullPath)}
               >

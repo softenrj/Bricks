@@ -12,16 +12,21 @@ import {
   FolderPlus,
   Pencil,
   Trash2,
-  Download,
-  RefreshCw,
 } from "lucide-react"
 
-export function FileContext({ children }: { children: React.ReactNode }) {
+interface Prope { children: React.ReactNode,
+  onRename: (path: string, name: string) => void;
+  onRemove: (fullPath: string, name: string) => void;
+  path: string;
+  name: string;
+ }
+
+export function FileContext({ children, onRename, onRemove, path, name }: Prope) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
 
-      <ContextMenuContent className="w-50 rounded-lg p-1 bg-[#1f1f21] text-sm text-gray-200 shadow-lg border border-gray-700">
+      <ContextMenuContent className="w-40 rounded-md p-1 bg-[#1f1f21] text-sm text-gray-300 shadow-lg border border-gray-700">
         {/* Core Actions */}
         <ContextMenuItem
           className="flex items-center gap-2 rounded-md 
@@ -53,6 +58,7 @@ export function FileContext({ children }: { children: React.ReactNode }) {
                      data-[highlighted]:bg-gray-700/70 
                      data-[highlighted]:text-white 
                      focus:outline-none"
+          onClick={() => onRename(path, name)}
         >
           <Pencil size={16} />
           Rename
@@ -64,34 +70,11 @@ export function FileContext({ children }: { children: React.ReactNode }) {
                      data-[highlighted]:bg-red-600/70 
                      data-[highlighted]:text-white 
                      focus:outline-none"
+          onClick={() => onRemove(path, name)}
         >
           <Trash2 size={16} />
           Delete
           <ContextMenuShortcut>⌘⌫</ContextMenuShortcut>
-        </ContextMenuItem>
-
-        <ContextMenuSeparator className="bg-gray-700" />
-
-        {/* Utility */}
-        <ContextMenuItem
-          className="flex items-center gap-2 rounded-md 
-                     data-[highlighted]:bg-gray-700/70 
-                     data-[highlighted]:text-white 
-                     focus:outline-none"
-        >
-          <Download size={16} />
-          Download
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          className="flex items-center gap-2 rounded-md 
-                     data-[highlighted]:bg-gray-700/70 
-                     data-[highlighted]:text-white 
-                     focus:outline-none"
-        >
-          <RefreshCw size={16} />
-          Refresh
-          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
