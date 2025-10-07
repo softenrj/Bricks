@@ -2,20 +2,10 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { wc } from "./webContainer";
 import { getFSTree } from "@/service/fsWalker";
 import { LanguageEnum } from "@/feature/LanguageEnum";
-import { isValidBase64 } from "@/feature/projectDownload";
-import { fileRename, fileUpdate, removeFile } from "@/socket/project.FS";
-
+import { fileRename, fileUpdate, newFileSocket, newFolderSocket, removeFile } from "@/socket/project.FS";
+import { FSState } from "@/types/FSState";
+import { detectLanguage, getFileContent } from "@/feature/fsSystem";
 export type FSData = { [key: string]: string | FSData };
-
-interface FSState {
-  tree: FSData;
-  activePath: string;
-  projectName: string;
-  selectedFile: string | null;
-  selectedFileContent: string | null;
-  selectedLanguage: typeof LanguageEnum[keyof typeof LanguageEnum];
-  openTabs: { name: string; isEditing: boolean }[];
-}
 
 const initialState: FSState = {
   tree: {},
@@ -26,23 +16,6 @@ const initialState: FSState = {
   selectedLanguage: LanguageEnum.md,
   openTabs: [],
 };
-
-// Helper to get file content from tree
-function getFileContent(tree: FSData, path: string): string {
-  const segments = path.split("/");
-  let node: any = tree;
-  for (const seg of segments) {
-    if (!node) return "";
-    node = node[seg];
-  }
-  return typeof node === "string" ? isValidBase64(node) ? atob(node) : node : "";
-}
-
-// Optional: detect language from file extension
-function detectLanguage(path: string): typeof LanguageEnum[keyof typeof LanguageEnum] {
-  const ext = path.split(".").pop() || "";
-  return (LanguageEnum as any)[ext] || LanguageEnum.md;
-}
 
 // Async thunks
 export const fetchFsTree = createAsyncThunk("fs/fetchTree", async () => {
@@ -64,7 +37,11 @@ const fsSlice = createSlice({
     setSelectedFile: (state, action: PayloadAction<string>) => {
       const path = action.payload;
       state.selectedFile = path;
-      state.activePath = path;
+      const segment = path.split('/');
+      segment.pop();
+      const Rpath = segment.join('/');
+      const parentPath = Rpath === "" ? '.' : Rpath;
+      state.activePath = parentPath;
 
       if (!state.openTabs.some(tab => tab.name === path)) {
         state.openTabs.push({ name: path, isEditing: false });
@@ -77,7 +54,11 @@ const fsSlice = createSlice({
     switchTab: (state, action: PayloadAction<string>) => {
       const path = action.payload;
       state.selectedFile = path;
-      state.activePath = path;
+      const segment = path.split('/');
+      segment.pop();
+      const Rpath = segment.join('/');
+      const parentPath = Rpath === "" ? '.' : Rpath;
+      state.activePath = parentPath;
       state.selectedFileContent = getFileContent(state.tree, path);
       state.selectedLanguage = detectLanguage(path);
     },
@@ -175,13 +156,13 @@ const fsSlice = createSlice({
     deleteFile: (state, action: PayloadAction<{ fullPath: string; name: string }>) => {
       const { fullPath, name } = action.payload;
       const segments = fullPath.split("/");
-      segments.pop(); 
+      segments.pop();
 
       let node: any = state.tree;
 
       for (const seg of segments) {
         node = node[seg] as FSData;
-        if (!node) return; 
+        if (!node) return;
       }
 
       delete node[name];
@@ -196,8 +177,62 @@ const fsSlice = createSlice({
       }
       const parentPath = segments.length > 0 ? segments.join("/") : ".";
       removeFile(parentPath, name);
-    }
+    },
+    setActivepath: (state, action: PayloadAction<string>) => {
+      let parentPath = action.payload.trim();
+      if (parentPath === "") parentPath = ".";
+      if (parentPath.startsWith("./")) parentPath = parentPath.slice(2);
+      if (parentPath.endsWith("/")) parentPath = parentPath.slice(0, -1);
+      state.activePath = parentPath;
+    },
 
+    newFile: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string }>) => {
+      const { parentPath, name, projectId } = action.payload;
+      const cleanParent = parentPath === "." ? "" : parentPath;
+      const path = cleanParent ? `${cleanParent}/${name}` : name;
+      const segments = path.split("/");
+
+      // walk tree
+      let node: any = state.tree;
+      for (let i = 0; i < segments.length - 1; i++) {
+        const seg = segments[i];
+        if (!node[seg]) node[seg] = {};
+        node = node[seg] as FSData;
+      }
+
+      node[segments[segments.length - 1]] = "";
+      state.selectedFile = path;
+      state.activePath = cleanParent || ".";
+      state.selectedFileContent = "";
+      state.selectedLanguage = detectLanguage(name);
+
+      if (!state.openTabs.some(t => t.name === path)) {
+        state.openTabs.push({ name: path, isEditing: false });
+      }
+
+      fileUpdate(name, cleanParent || ".", "");
+      wc?.fs.writeFile(path, "");
+      newFileSocket(parentPath,name, projectId)
+    },
+
+    newFolder: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string }>) => {
+      const { parentPath, name, projectId } = action.payload;
+      const cleanParent = parentPath === "." ? "" : parentPath;
+      const path = cleanParent ? `${cleanParent}/${name}` : name;
+      const segments = path.split("/");
+
+      let node: any = state.tree;
+      for (let i = 0; i < segments.length - 1; i++) {
+        const seg = segments[i];
+        if (!node[seg]) node[seg] = {};
+        node = node[seg] as FSData;
+      }
+
+      node[segments[segments.length - 1]] = {};
+      state.activePath = path;
+
+      newFolderSocket(parentPath,name, projectId)
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(writeFile.fulfilled, (state, action) => {
@@ -209,18 +244,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const {
-  setSelectedFile,
-  setFileLanguage,
-  setFileContent,
-  updateFileContent,
-  setTree,
-  switchTab,
-  closeTab,
-  setProjectName,
-  setFileChange,
-  renameFileName,
-  deleteFile
-} = fsSlice.actions;
+export const { setSelectedFile, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder } = fsSlice.actions;
 
 export default fsSlice.reducer;

@@ -32,7 +32,7 @@ function MainWindow({ projectId }: { projectId: string }) {
     >
       {/* Left FS */}
       <ResizablePanel defaultSize={15} maxSize={25} minSize={10}>
-        <FileSystemPanel />
+        <FileSystemPanel projectId={projectId} />
       </ResizablePanel>
       <ResizableHandle />
 

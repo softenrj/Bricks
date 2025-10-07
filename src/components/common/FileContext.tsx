@@ -17,11 +17,13 @@ import {
 interface Prope { children: React.ReactNode,
   onRename: (path: string, name: string) => void;
   onRemove: (fullPath: string, name: string) => void;
+  onNewFile: () => void;
+  onNewFolder: () => void;
   path: string;
   name: string;
  }
 
-export function FileContext({ children, onRename, onRemove, path, name }: Prope) {
+export function FileContext({ children, onRename, onRemove, path, name, onNewFile, onNewFolder }: Prope) {
   return (
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
@@ -33,6 +35,7 @@ export function FileContext({ children, onRename, onRemove, path, name }: Prope)
                      data-[highlighted]:bg-gray-700/70 
                      data-[highlighted]:text-white 
                      focus:outline-none"
+          onClick={onNewFile}
         >
           <FilePlus size={16} />
           Add File
@@ -44,6 +47,7 @@ export function FileContext({ children, onRename, onRemove, path, name }: Prope)
                      data-[highlighted]:bg-gray-700/70 
                      data-[highlighted]:text-white 
                      focus:outline-none"
+          onClick={onNewFolder}
         >
           <FolderPlus size={16} />
           Add Folder

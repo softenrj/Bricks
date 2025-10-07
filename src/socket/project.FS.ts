@@ -1,4 +1,4 @@
-import { SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
+import { SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
 import { getSocket } from "./socket";
 
 const socket = getSocket();
@@ -27,12 +27,23 @@ export const fileRename = (src: string,oldName: string, name: string) => {
     })
 }
 
-export const newFile = (src: string, name: string) => {
+export const newFileSocket = (src: string, name: string, projectId: string) => {
     if (!socket) return ;
 
     socket.emit(SOCKET_NEW_FILE, {
         path: src,
-        name
+        name,
+        projectId
+    })
+}
+
+export const newFolderSocket = (src: string, name: string, projectId: string) => {
+    if (!socket) return ;
+
+    socket.emit(SOCKET_NEW_FOLDER, {
+        path: src,
+        name,
+        projectId
     })
 }
 

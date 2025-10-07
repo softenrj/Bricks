@@ -5,7 +5,11 @@ import { Tooltip } from '../common/Tooltip'
 import { useAppSelector } from '@/hooks/redux'
 import { downLoadProject } from '@/feature/projectDownload'
 
-function FScontroller() {
+interface Probe {
+  onNewFile: () => void;
+  onNewFolder: () => void;
+}
+function FScontroller({ onNewFile, onNewFolder }: Probe) {
   const projectName = useAppSelector(state => state.fs).projectName;
   const fs = useAppSelector(state => state.fs).tree
   const handleDownload = async () => await downLoadProject(projectName, fs);
@@ -23,10 +27,10 @@ function FScontroller() {
           <CloudDownload size={16} onClick={handleDownload} />
         </Tooltip>
         <Tooltip content="Add file">
-          <FileSymlink size={16} />
+          <FileSymlink size={16} onClick={() => onNewFile()} />
         </Tooltip>
         <Tooltip content="Add folder">
-          <FolderSymlink size={16} />
+          <FolderSymlink size={16} onClick={() => onNewFolder()} />
         </Tooltip>
       </div>
     </div>
