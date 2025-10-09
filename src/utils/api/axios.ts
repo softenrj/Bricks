@@ -5,20 +5,20 @@ import { getAuth } from '@firebase/auth'
 
 const defaultAxios = axios.create({ baseURL: defaultApiRoute })
 
-const getFreshToken = () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
+const getFreshToken = async (): Promise<string | null> => {
+  const auth = getAuth()
+  const user = auth.currentUser
   if (user) {
-    const token = user.getIdToken(true);
-    return token;
+    const token = await user.getIdToken(true)
+    return token
   }
   const token = localStorage.getItem('bricks:auth')
-  return token;
+  return token
 }
 
 defaultAxios.interceptors.request.use(
   async (config) => {
-    const token = getFreshToken();
+    const token = await getFreshToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
