@@ -37,7 +37,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
   const [fileName, setFileName] = React.useState("New File");
 
   React.useEffect(() => {
-    if (Object.keys(fsData).length === 0) {
+    if (Object.keys(fsData || {}).length === 0) {
       dispatch(fetchFsTree());
     }
   }, [dispatch, fsData]);
@@ -154,7 +154,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
         {!isCollapsed && (
           <ul className="relative">
             <div className="absolute left-5 top-0 bottom-0 w-px bg-gray-700/30" />
-            {hasChildren && Object.entries(data).sort(([aName, aValue], [bName, bValue]) => {
+            {hasChildren && Object.entries(data || {})?.sort(([aName, aValue], [bName, bValue]) => {
               const aIsFolder = typeof aValue !== "string";
               const bIsFolder = typeof bValue !== "string";
               if (aIsFolder && !bIsFolder) return -1;
@@ -205,13 +205,13 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
           </li>
         )}
 
-        {Object.entries(fsData).length === 0 ? (
+        {Object.entries(fsData || {})?.length === 0 ? (
           <div className="px-3 py-6 text-center">
             <p className="text-sm text-gray-500">Loading file system...</p>
           </div>
         ) : (
-          Object.entries(fsData)
-            .sort(([aName, aValue], [bName, bValue]) => {
+          Object.entries(fsData || {})
+            ?.sort(([aName, aValue], [bName, bValue]) => {
               const aIsFolder = typeof aValue !== "string";
               const bIsFolder = typeof bValue !== "string";
               if (aIsFolder && !bIsFolder) return -1;

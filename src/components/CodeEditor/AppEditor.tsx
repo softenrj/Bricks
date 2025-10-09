@@ -1,4 +1,5 @@
 "use client";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import React, { useRef, useEffect, useMemo, useState } from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import EditorNavBar from "./EditorNavBar";
@@ -15,7 +16,7 @@ function AppEditor() {
 
   const [showMd, setShowMd] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
-  const currentFileRef = useRef<string | null>(null); 
+  const currentFileRef = useRef<string | null>(null);
 
   useEffect(() => {
     currentFileRef.current = selectedFile;
@@ -39,6 +40,18 @@ function AppEditor() {
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
 
+    // Disable TS/JS errors AFTER Monaco has loaded
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
+
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
+
+    // Ctrl+S save
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       const currentFile = currentFileRef.current;
       if (currentFile) {
@@ -61,7 +74,7 @@ function AppEditor() {
             <Editor
               height={showMd ? "50%" : "100%"}
               value={selectedFileContent || ""}
-              language={selectedLanguage}
+              language={selectedLanguage || "plaintext"}
               theme="vs-dark"
               onMount={handleEditorDidMount}
               options={{
@@ -70,6 +83,9 @@ function AppEditor() {
                 fontSize: 14,
                 scrollBeyondLastLine: false,
                 wordWrap: "on",
+                quickSuggestions: false,
+                hover: { enabled: false },
+                suggestOnTriggerCharacters: false,
               }}
               onChange={(newValue) => {
                 if (
