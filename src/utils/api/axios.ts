@@ -1,12 +1,24 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { defaultApiRoute } from '../constance'
 import toast from 'react-hot-toast'
+import { getAuth } from '@firebase/auth'
 
 const defaultAxios = axios.create({ baseURL: defaultApiRoute })
 
+const getFreshToken = () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (user) {
+    const token = user.getIdToken(true);
+    return token;
+  }
+  const token = localStorage.getItem('bricks:auth')
+  return token;
+}
+
 defaultAxios.interceptors.request.use(
   async (config) => {
-    const token = localStorage.getItem('bricks:auth')
+    const token = getFreshToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
