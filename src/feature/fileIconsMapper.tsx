@@ -20,6 +20,7 @@ export const getFileIcon = (fileName: string) => {
     "dockerfile": "vscode-icons:file-type-docker",
     "readme.md": "vscode-icons--file-type-light-systemd",
     "README.md": "vscode-icons--file-type-light-systemd",
+    "file": "vscode-icons:file-type-apib"
   };
 
   const extMap: Record<string, string> = {

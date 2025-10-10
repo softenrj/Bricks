@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import ReduxProvider from "@/context/ReduxProvider";
 import { Toaster } from "react-hot-toast"
+import "./globals.css";
+import '@xyflow/react/dist/style.css';
 import "@/socket/socket"
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,18 +32,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ReduxProvider >
-      <SidebarProvider>
-        <html lang="en">
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ReduxProvider>
+          <SidebarProvider>
             {children}
-            <div><Toaster position="bottom-right"
-              reverseOrder={true} /></div>
-          </body>
-        </html>
-      </SidebarProvider>
-    </ReduxProvider>
+            <Toaster position="bottom-right" reverseOrder />
+          </SidebarProvider>
+        </ReduxProvider>
+      </body>
+    </html>
   );
 }

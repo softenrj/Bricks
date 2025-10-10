@@ -6,9 +6,6 @@ const socket = getSocket();
 export const fileUpdate = (name: string,src: string, fsc: string) => {
     if (!socket) return ;
     const encodedContent = Buffer.from(fsc, "utf-8").toString("base64");
-    console.log(encodedContent,fsc
-    )
-
     // Emit the socket event
     socket.emit(SOCKET_FILE_UPDATE, {
         path: src,

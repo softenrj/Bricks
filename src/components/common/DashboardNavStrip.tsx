@@ -13,27 +13,28 @@ function DashboardNavStrip() {
     year: "numeric",
   });
 
-  const user = useAppSelector( state => state.user );
+  const user = useAppSelector(state => state.user);
 
   return (
-    <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm">
+    <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm max-w-screen">
       {/* Left side */}
       <div className="flex items-center gap-2">
         <Activity size={16} className="text-green-500" />
         <Badge className="bg-green-700 text-[10px] px-2 py-0.5 rounded-full">
           RealTime
         </Badge>
-      <Tooltip content='bricks UID'>
-        <p className='text-gray-500 text-xs hover:text-gray-400 '>#{user.uid}</p>
-      </Tooltip>
+        <Tooltip content='bricks UID'>
+          <p className='text-gray-500 text-xs hover:text-gray-400 truncate w-10 sm:w-20 md:w-30 lg:w-full'>#{user.uid}</p>
+        </Tooltip>
       </div>
+
 
 
       {/* Center Date */}
       <p className="text-[11px] text-gray-400 tracking-wide">{today}</p>
 
       {/* Right side */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         {/* User Tag */}
         <div className="flex items-center bg-black border Alex-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition">
           <Sparkles size={14} className="text-yellow-400" />

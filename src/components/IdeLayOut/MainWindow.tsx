@@ -28,7 +28,7 @@ function MainWindow({ projectId }: { projectId: string }) {
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="min-h-[200px] rounded-lg border md:min-w-[450px] max-h-[95%]"
+      className="min-h-[200px] rounded-lg border md:min-w-[450px] h-full"
     >
       {/* Left FS */}
       <ResizablePanel defaultSize={15} maxSize={25} minSize={10}>

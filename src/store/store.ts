@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import webContainerSlice from "./Reducers/webContainer"
 import fsSlice from "./Reducers/fsSlice"
 import userSlice from "./Reducers/user"
+import contextSlice from "./Reducers/fileContext"
 
 export const store = configureStore({
   reducer: {
     webContainer: webContainerSlice,
     fs: fsSlice,
-    user: userSlice
+    user: userSlice,
+    context: contextSlice
   },
 })
 

@@ -1,12 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { defaultApiRoute } from '../constance'
 import toast from 'react-hot-toast'
-import { getAuth } from '@firebase/auth'
+import * as firebaseAuth from '@/feature/Firebase'
+
 
 const defaultAxios = axios.create({ baseURL: defaultApiRoute })
 
 const getFreshToken = async (): Promise<string | null> => {
-  const auth = getAuth()
+  const auth = firebaseAuth.auth;
   const user = auth.currentUser
   if (user) {
     const token = await user.getIdToken(true)

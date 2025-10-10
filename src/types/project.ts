@@ -20,3 +20,28 @@ export interface Project {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export enum FSTYPE {
+    FOLDER = "folder",
+    FILE = "file",
+    IMAGE = "image"
+}
+
+export interface ProjectFile {
+    _id: string;
+    projectId: string;
+    userId: string;
+    name: string;
+    path: string;
+    type: string;
+    content?: string;
+    version: number;
+    isDefault: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface ProjectContext {
+    project: Project,
+    context: ProjectFile[]
+}

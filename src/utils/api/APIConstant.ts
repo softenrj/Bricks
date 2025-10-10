@@ -17,3 +17,7 @@ export const API_BRICKS_EXPORT_ALL_PROJECTS: string = "/project/bricks-all-proje
 export const API_BRICKS_EXPORT_ARCH_PROJECTS: string = "/project/bricks-arch-projects-list-export"
 export const API_BRICKS_REMOVE_PROJECT: string = "/project/bricks-remove-project"
 export const API_BRICKS_GET_PROJECT_FS: string = "/project/bricks-project-files"
+
+// project Context
+export const API_BRICKS_PROJECT_CONTEXT: string = "/context/pxt"
+export const API_BRICKS_PROJECT_CHILD: string = "/context/child"
