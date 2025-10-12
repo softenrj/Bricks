@@ -1,33 +1,41 @@
 "use client";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import React, { useRef, useEffect, useMemo, useState } from "react";
+import * as monaco from 'monaco-editor'
+import React, { useRef, useEffect, useMemo, useState, useCallback } from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
 import EditorNavBar from "./EditorNavBar";
 import { useAppSelector, useAppDispatch } from "@/hooks/redux";
 import { setFileChange, updateFileContent } from "@/store/Reducers/fsSlice";
 import MediaDisplay from "./MediaDisplay";
 import MarkDownPreview from "./MarkDownPreview";
+import { __getSuggestion } from "@/service/api.project";
+import { useDebounce } from "@/hooks/debounce";
+import { configureMonacoTailwindcss, tailwindcssData } from "monaco-tailwindcss";
+
 
 function AppEditor() {
   const dispatch = useAppDispatch();
-  const { selectedFile, selectedFileContent, selectedLanguage, openTabs } = useAppSelector(
-    (state) => state.fs
-  );
+  const { selectedFile, selectedFileContent, selectedLanguage } = useAppSelector((state) => state.fs);
+  const [codeSnippits, setCodeSnippts] = React.useState<string>('');
+  const suggestionDebounce = useDebounce(codeSnippits, 300);
 
   const [showMd, setShowMd] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
+  const monacoRef = useRef<any>(null);
   const currentFileRef = useRef<string | null>(null);
 
+  // Keep track of current file
   useEffect(() => {
     currentFileRef.current = selectedFile;
   }, [selectedFile]);
 
+  // Determine if selected file is media
   const isMedia = useMemo(() => {
     const ext = selectedFile?.split(".").pop()?.toLowerCase();
     const imageFormats = ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "tiff"];
     return ext ? imageFormats.includes(ext) : false;
   }, [selectedFile]);
 
+  // Sync editor content with selected file content
   useEffect(() => {
     if (editorRef.current && selectedFileContent !== null) {
       const currentValue = editorRef.current.getValue();
@@ -37,21 +45,87 @@ function AppEditor() {
     }
   }, [selectedFile, selectedFileContent]);
 
+  // Inline suggestion provider
+  const registerInlineSuggestions = useCallback(() => {
+    if (!monacoRef.current || !editorRef.current) return;
+
+    const monaco = monacoRef.current;
+    const language = selectedLanguage || "javascript";
+
+    const provider = monaco.languages.registerInlineCompletionsProvider(language, {
+      provideInlineCompletions: async (model, position, context, token) => {
+        try {
+          const code = model.getValue();
+          const cursorOffset = model.getOffsetAt(position);
+
+          // Send only few lines before cursor as context
+          const beforeCursor = code.slice(0, cursorOffset);
+          const suggestion = await __getSuggestion(beforeCursor);
+
+          if (!suggestion || !suggestion.trim()) {
+            return { items: [], dispose: () => { } };
+          }
+
+          const suggestionLines = suggestion.split("\n");
+          return {
+            items: [
+              {
+                insertText: suggestion.trim(),
+                range: {
+                  startLineNumber: position.lineNumber,
+                  startColumn: position.column,
+                  endLineNumber: position.lineNumber + suggestionLines.length - 1,
+                  endColumn:
+                    suggestionLines.length > 1
+                      ? suggestionLines[suggestionLines.length - 1].length + 1
+                      : position.column + suggestion.length,
+                },
+              },
+            ],
+            dispose: () => { },
+          };
+        } catch (err) {
+          console.error("Inline suggestion error:", err);
+          return { items: [], dispose: () => { } };
+        }
+      },
+
+      handleItemDidShow: () => { },
+      freeInlineCompletions: () => { },
+    });
+
+    return provider;
+  }, [selectedLanguage]);
+
+
+  // Editor mount
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
+    monacoRef.current = monaco;
 
-    // Disable TS/JS errors AFTER Monaco has loaded
+    // Disable TS/JS errors
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
       noSyntaxValidation: true,
     });
-
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: true,
       noSyntaxValidation: true,
     });
 
-    // Ctrl+S save
+    configureMonacoTailwindcss(monaco, {
+    languageSelector: ["html", "javascript", "typescript", "jsx", "tsx"],
+    tailwindConfig: "/tailwind.config.js", // ✅ Make sure path is absolute from root/public
+  });
+
+  // Optional: CSS data provider for extra completion
+  monaco.languages.css.cssDefaults.setOptions({
+    data: {
+      dataProviders: { tailwindcssData },
+    },
+  });
+
+    // Ctrl + S → save file
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       const currentFile = currentFileRef.current;
       if (currentFile) {
@@ -60,6 +134,12 @@ function AppEditor() {
         dispatch(setFileChange({ name: currentFile, isEditing: false }));
       }
     });
+
+    // Register inline suggestion provider
+    const provider = registerInlineSuggestions();
+
+    // Dispose provider on editor disposal
+    editor.onDidDispose(() => provider?.dispose());
   };
 
   return (
@@ -86,26 +166,20 @@ function AppEditor() {
                 quickSuggestions: false,
                 hover: { enabled: false },
                 suggestOnTriggerCharacters: false,
+                tabCompletion: "on",
               }}
               onChange={(newValue) => {
-                if (
-                  (newValue ?? "").replace(/\r\n/g, "\n") !==
-                  (selectedFileContent ?? "").replace(/\r\n/g, "\n")
-                ) {
+                if ((newValue ?? "").replace(/\r\n/g, "\n") !== (selectedFileContent ?? "").replace(/\r\n/g, "\n")) {
                   dispatch(setFileChange({ name: selectedFile!, isEditing: true }));
                 }
               }}
             />
 
-            {showMd && selectedFileContent && (
-              <MarkDownPreview selectedFileContent={selectedFileContent} />
-            )}
+            {showMd && selectedFileContent && <MarkDownPreview selectedFileContent={selectedFileContent} />}
           </>
         )
       ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-500">
-          No file open
-        </div>
+        <div className="flex-1 flex items-center justify-center text-gray-500">No file open</div>
       )}
     </div>
   );

@@ -13,23 +13,6 @@ const ContextSlice = createSlice({
     initialState,
     reducers: {
         setContext: (_state, action: PayloadAction<ProjectContextNode[]>) => {
-            // const project = action.payload;
-
-            // const rootNode: ProjectContextNode = {
-            //     _id: project._id,
-            //     projectId: project._id,       // <-- required
-            //     parent: undefined,
-            //     userId: project.userId,
-            //     name: project.name,
-            //     path: "",                     // root path
-            //     type: "folder",
-            //     version: 1,                   // add a default version
-            //     isDefault: true,              // root node is default
-            //     createdAt: project.createdAt,
-            //     updatedAt: project.updatedAt,
-            //     child: []
-            // };
-            // return [rootNode];
             _state = action.payload;
             return _state;
         },

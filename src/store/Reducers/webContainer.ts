@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getWebContainer } from "@/service/webContainer";
 import { WebContainer } from "@webcontainer/api";
+import { AppDispatch } from "../store";
 
 // ---------- Types ----------
 export type Log = {
@@ -68,18 +69,55 @@ export const startShell = createAsyncThunk<void, void>(
       if (shell.input) shellWriter = shell.input.getWriter();
       return;
     } catch (err: any) {
-      logWithDispatch(dispatch, `❌ Shell failed: ${err.message}`, "error");
+      logWithDispatch(dispatch, ` Shell failed: ${err.message}`, "error");
       return rejectWithValue(err.message);
     }
   }
 );
 
 // Send command to terminal shell
-export const sendToShell = async (command: string) => {
-  if (shellWriter) {
+export const sendToShell = async (
+  command: string,
+  dispatch: AppDispatch,
+  onPackageJsonUpdate?: (content: string) => void
+) => {
+  const npmCommandRegex = /^(npm\s+(install|i|uninstall|remove|update|add))/;
+
+  if (npmCommandRegex.test(command.trim())) {
+    try {
+      const wc = await getWebContainer();
+      if (!wc) return;
+
+      const args = command.trim().split(" ").slice(1);
+
+      logWithDispatch(dispatch, `Dependencies installing: ${args.join(" ")}`, "info");
+
+      const process = await wc.spawn("npm", args);
+
+
+      const writer = new WritableStream({
+        write(data) {
+          logWithDispatch(dispatch, String(data), "stdout");
+        },
+      });
+      process.output.pipeTo(writer);
+      await process.exit;
+
+      // Refresh package.json after npm finishes
+      const content = await wc.fs.readFile("package.json", "utf-8");
+      onPackageJsonUpdate?.(content);
+
+      logWithDispatch(dispatch, `Dependencies installed successfully!`, "success");
+    } catch (err: any) {
+      logWithDispatch(dispatch, `Failed to run npm command: ${err.message}`, "error");
+    }
+  } else if (shellWriter) {
+    // fallback for normal shell commands
     await shellWriter.write(command + "\n");
   }
 };
+
+
 
 // Install Dependencies
 export const installDependencies = createAsyncThunk<void, void>(
@@ -87,25 +125,60 @@ export const installDependencies = createAsyncThunk<void, void>(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       if (!wc) wc = await getWebContainer();
-      const installProcess = await wc.spawn("npm", ["install"]);
+      logWithDispatch(dispatch, "Dependencies installing .. wait", "success");
 
-      installProcess.output.pipeTo(
-        new WritableStream({
-          write(data) {
-            logWithDispatch(dispatch, String(data), "stdout");
-          },
-        })
-      );
+      const lockFileExists = await wc.fs
+        .readFile("./package-lock.json")
+        .then(() => true)
+        .catch(() => false);
 
-      await installProcess.exit;
-      logWithDispatch(dispatch, "✅ Dependencies installed", "success");
+      const command = lockFileExists ? ["ci", "--silent"] : ["install", "--silent"];
+      const installProcess = await wc.spawn("npm", command);
+
+      let logBuffer = "";
+      const flushLogs = () => {
+        if (logBuffer) {
+          dispatch(
+            addLog({
+              text: logBuffer,
+              type: "stdout",
+              timestamp: new Date().toISOString(),
+            })
+          );
+          logBuffer = "";
+        }
+      };
+
+      const intervalId = setInterval(flushLogs, 200);
+
+      const writer = new WritableStream({
+        write(data) {
+          logBuffer += String(data);
+          if (logBuffer.length > 4096) flushLogs();
+        },
+      });
+
+      installProcess.output.pipeTo(writer);
+      const exitCode = await installProcess.exit;
+
+      flushLogs();
+      clearInterval(intervalId);
+
+      if (exitCode !== 0) {
+        logWithDispatch(dispatch, `Install exited with code ${exitCode}`, "error");
+        return rejectWithValue(`Install failed with code ${exitCode}`);
+      }
+
+      logWithDispatch(dispatch, "Dependencies installed successfully", "success");
       return;
     } catch (err: any) {
-      logWithDispatch(dispatch, `❌ Install failed: ${err.message}`, "error");
+      logWithDispatch(dispatch, `Install failed: ${err.message}`, "error");
       return rejectWithValue(err.message);
     }
   }
 );
+
+
 
 // Run Dev Server
 export const startDevServer = createAsyncThunk<string, void>(

@@ -14,16 +14,16 @@ function PreviewPanel() {
             <span className="flex items-center space-x-1">
               <Globe className="w-3 h-3" /> <span>{wbLink}</span>
             </span>
-            <a
+            {/* <a
               href={wbLink}
               target="_blank"
               rel="noreferrer"
               className="underline text-blue-400"
             >
               Open in new tab
-            </a>
+            </a> */}
           </div>
-          <iframe src={wbLink} className="w-full h-full border-0" />
+          <iframe src={wbLink} className="w-full h-screen border-0" />
         </div>
       )}
     </div>

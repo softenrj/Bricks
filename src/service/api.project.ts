@@ -1,6 +1,6 @@
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECT, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
+import { API_BRICKS_CODE_SUGGESION, API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECT, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 
@@ -11,7 +11,14 @@ export interface Filter {
     ach: boolean
 }
 
-
+/**
+ * 
+ * @param project_name 
+ * @param project_description 
+ * @param web_tech 
+ * @param tech_lan 
+ * @returns 
+ */
 export const createNewProject = async (
     project_name: string,
     project_description: string,
@@ -43,6 +50,13 @@ export const createNewProject = async (
     }
 };
 
+/**
+ * 
+ * @param limit 
+ * @param nextCursor 
+ * @param filter 
+ * @returns 
+ */
 // sort, q, att, created_after, created_before, ach
 export const getProjects = async (
     limit: number,
@@ -79,6 +93,10 @@ export const getProjects = async (
     }
 };
 
+/**
+ * 
+ * @returns 
+ */
 export const getRecentProjects = async (): Promise<Project[] | null> => {
     try {
 
@@ -159,6 +177,11 @@ export const markArchieve = async (action: boolean, projectId: string): Promise<
     }
 }
 
+/**
+ * 
+ * @param mode 
+ * @returns 
+ */
 export const exportProjects = async (mode: 'arch' | 'all' = 'all'): Promise<Project[] | null> => {
     try {
         let response: ApiResponse<Project[]> | undefined;
@@ -172,7 +195,7 @@ export const exportProjects = async (mode: 'arch' | 'all' = 'all'): Promise<Proj
                 url: API_BRICKS_EXPORT_ARCH_PROJECTS
             })
         }
-        
+
         if (response?.success) {
             return response.data;
         }
@@ -184,6 +207,11 @@ export const exportProjects = async (mode: 'arch' | 'all' = 'all'): Promise<Proj
     }
 }
 
+/**
+ * 
+ * @param projectId 
+ * @returns 
+ */
 export const removeProject = async (projectId: string): Promise<boolean> => {
     try {
         const response = await deleteApi<ApiResponse<void>>({
@@ -201,6 +229,11 @@ export const removeProject = async (projectId: string): Promise<boolean> => {
     }
 }
 
+/**
+ * 
+ * @param projectId 
+ * @returns 
+ */
 export const projectFileSystem = async (projectId: string): Promise<any> => {
     try {
         const response = await getApi<ApiResponse<any>>({
@@ -218,10 +251,15 @@ export const projectFileSystem = async (projectId: string): Promise<any> => {
     }
 }
 
-export const getProjectDetails = async (projectId): Promise<Project | null> => {
+/**
+ * 
+ * @param projectId 
+ * @returns 
+ */
+export const getProjectDetails = async (projectId: string): Promise<Project | null> => {
     try {
         const response = await getApi<ApiResponse<Project>>({
-            url: API_BRICKS_GET_PROJECT + `/${projectId }`
+            url: API_BRICKS_GET_PROJECT + `/${projectId}`
         })
 
         if (response?.success) {
@@ -234,3 +272,34 @@ export const getProjectDetails = async (projectId): Promise<Project | null> => {
         return null;
     }
 }
+
+let suggestionTimeout: NodeJS.Timeout | null = null;
+let lastPromise: Promise<string | null> | null = null;
+
+export const __getSuggestion = async (cont: string): Promise<string | null> => {
+    if (suggestionTimeout) clearTimeout(suggestionTimeout);
+
+    lastPromise = new Promise((resolve) => {
+        suggestionTimeout = setTimeout(async () => {
+            try {
+                const encodedContent = Buffer.from(cont, "utf-8").toString("base64");
+                const response = await postApi<ApiResponse<string>>({
+                    url: API_BRICKS_CODE_SUGGESION,
+                    values: { context: encodedContent },
+                });
+
+                if (response?.success) {
+                    const decode = atob(response.data);
+                    resolve(decode);
+                } else {
+                    resolve(null);
+                }
+            } catch (error: any) {
+                console.error("Error getting code suggestion:", error);
+                toast.error(error?.message ?? "Something went wrong");
+                resolve(null);
+            }
+        }, 400);
+    });
+    return lastPromise;
+};

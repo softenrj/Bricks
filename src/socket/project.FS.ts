@@ -3,6 +3,13 @@ import { getSocket } from "./socket";
 
 const socket = getSocket();
 
+/**
+ * 
+ * @param name 
+ * @param src 
+ * @param fsc 
+ * @returns 
+ */
 export const fileUpdate = (name: string,src: string, fsc: string) => {
     if (!socket) return ;
     const encodedContent = Buffer.from(fsc, "utf-8").toString("base64");
@@ -14,6 +21,13 @@ export const fileUpdate = (name: string,src: string, fsc: string) => {
     });
 }
 
+/**
+ * 
+ * @param src 
+ * @param oldName 
+ * @param name 
+ * @returns 
+ */
 export const fileRename = (src: string,oldName: string, name: string) => {
     if (!socket) return ;
 
@@ -24,6 +38,13 @@ export const fileRename = (src: string,oldName: string, name: string) => {
     })
 }
 
+/**
+ * 
+ * @param src 
+ * @param name 
+ * @param projectId 
+ * @returns 
+ */
 export const newFileSocket = (src: string, name: string, projectId: string) => {
     if (!socket) return ;
 
@@ -34,6 +55,13 @@ export const newFileSocket = (src: string, name: string, projectId: string) => {
     })
 }
 
+/**
+ * 
+ * @param src 
+ * @param name 
+ * @param projectId 
+ * @returns 
+ */
 export const newFolderSocket = (src: string, name: string, projectId: string) => {
     if (!socket) return ;
 
@@ -44,6 +72,12 @@ export const newFolderSocket = (src: string, name: string, projectId: string) =>
     })
 }
 
+/**
+ * 
+ * @param src 
+ * @param name 
+ * @returns 
+ */
 export const removeFile = (src: string, name: string) => {
     if (!socket) return ;
 

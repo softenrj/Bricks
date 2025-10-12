@@ -2,18 +2,7 @@
 import React from "react";
 import { ChevronRight, ChevronDown, Folder, FolderOpen } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import {
-  deleteFile,
-  fetchFsTree,
-  FSData,
-  newFile,
-  newFolder,
-  renameFileName,
-  setActivepath,
-  setFileContent,
-  setFileLanguage,
-  setSelectedFile,
-} from "@/store/Reducers/fsSlice";
+import { deleteFile, fetchFsTree, FSData, newFile, newFolder, renameFileName, setActivepath, setFileContent, setFileLanguage, setSelectedFile } from "@/store/Reducers/fsSlice";
 import { LanguageEnum } from "@/feature/LanguageEnum";
 import { getFileIcon } from "@/feature/fileIconsMapper";
 import FScontroller from "./FScontroller";

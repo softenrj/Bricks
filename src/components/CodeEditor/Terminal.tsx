@@ -11,6 +11,7 @@ import {
 } from "@/store/Reducers/webContainer";
 import { AppDispatch, RootState } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { updateFileContent } from "@/store/Reducers/fsSlice";
 
 export default function TerminalPanel() {
   const dispatch = useAppDispatch<AppDispatch>();
@@ -32,11 +33,16 @@ export default function TerminalPanel() {
 
   const focusInput = () => terminalInputRef.current?.focus();
 
+  const handlePackageUpdater = (content: string) => {
+    dispatch(updateFileContent({ path: 'package.json', content }))
+  }
+
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && currentCommand.trim()) {
+      setCurrentCommand('');
       const command = currentCommand.trim();
       dispatch(addLog({ text: `$ ${command}`, type: "command", timestamp: new Date().toISOString() }));
-      await sendToShell(command);
+      await sendToShell(command,dispatch,handlePackageUpdater);
       setCurrentCommand("");
     }
   };

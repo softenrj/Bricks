@@ -21,3 +21,9 @@ export const API_BRICKS_GET_PROJECT_FS: string = "/project/bricks-project-files"
 // project Context
 export const API_BRICKS_PROJECT_CONTEXT: string = "/context/pxt"
 export const API_BRICKS_PROJECT_CHILD: string = "/context/child"
+
+// bricks project chat
+export const API_BRICKS_GET_BRICKS_CHATS: string = "/project/bricks-chat-tabs"
+
+// code completion
+export const API_BRICKS_CODE_SUGGESION: string = "/project/bricks-code-sugg"

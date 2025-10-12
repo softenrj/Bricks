@@ -23,7 +23,7 @@ function MainWindow({ projectId }: { projectId: string }) {
 
   React.useEffect(() => {
     getProjectFs()
-  },[])
+  }, [])
 
   return (
     <ResizablePanelGroup
@@ -54,7 +54,7 @@ function MainWindow({ projectId }: { projectId: string }) {
 
       {/* Preview */}
       <ResizablePanel defaultSize={35}>
-        <PreviewPanel />
+          <PreviewPanel />
       </ResizablePanel>
     </ResizablePanelGroup>
   );

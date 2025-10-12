@@ -101,7 +101,6 @@ const fsSlice = createSlice({
 
     updateFileContent: (state, action: PayloadAction<{ path: string; content: string }>) => {
       const { path, content } = action.payload;
-
       // Update current active file content if selected
       if (state.selectedFile === path) {
         state.selectedFileContent = content;
