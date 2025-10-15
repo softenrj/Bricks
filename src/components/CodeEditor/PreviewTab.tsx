@@ -9,7 +9,7 @@ function PreviewPanel() {
     <div className="h-full bg-[#0D0D0D]">
       {/* Live Preview */}
       {wbLink && (
-        <div className="border-t border-gray-700">
+        <div className="border-t h-full border-gray-700">
           <div className="flex items-center justify-between px-2 py-1 bg-gray-900 text-xs text-white">
             <span className="flex items-center space-x-1">
               <Globe className="w-3 h-3" /> <span>{wbLink}</span>
@@ -23,7 +23,7 @@ function PreviewPanel() {
               Open in new tab
             </a> */}
           </div>
-          <iframe src={wbLink} className="w-full h-screen border-0" />
+          <iframe src={wbLink} className="w-full h-full border-0" />
         </div>
       )}
     </div>

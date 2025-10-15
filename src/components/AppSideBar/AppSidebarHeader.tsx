@@ -5,6 +5,7 @@ import { AvatarImage } from '@radix-ui/react-avatar'
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Tooltip } from '../common/Tooltip'
 import { useSidebar } from '../ui/sidebar'
+import BricksIcon from "@/assets/svg/bricks-t-w.svg"
 
 function AppSidebarHeader() {
     const { toggleSidebar, open } = useSidebar()
@@ -12,8 +13,8 @@ function AppSidebarHeader() {
         <div className='m-2 flex items-center justify-between'>
             { open ? <>
             <div className='flex gap-2 items-center'>
-                <Avatar className="h-8 w-8">
-                <AvatarImage src="/landingPage/transparent-bricks.png" />
+                <Avatar className="h-10 w-10 rounded-sm">
+                <AvatarImage src={BricksIcon.src} />
                 <AvatarFallback>Bricks</AvatarFallback>
             </Avatar>
             <h1 className="text-white font-bold text-2xl">Bricks</h1>

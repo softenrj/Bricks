@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import BricksIcon from "@/assets/svg/bricks-t-w.svg"
 import { Tooltip } from '../common/Tooltip'
 
 const tabs = [
@@ -28,8 +29,8 @@ function IdeTabs({ projectId }: { projectId: string }) {
     <div className='w-14 bg-[#0D0D0D] border-r border-gray-700 text-white flex flex-col items-center py-4 space-y-6'>
       
       {/* Logo / Avatar */}
-      <Avatar className="h-10 w-10">
-        <AvatarImage src="/landingPage/transparent-bricks.png" />
+      <Avatar className="h-10 w-10 rounded-sm">
+        <AvatarImage src={BricksIcon.src} />
         <AvatarFallback>Bricks</AvatarFallback>
       </Avatar>
 

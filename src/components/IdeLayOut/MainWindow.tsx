@@ -9,6 +9,8 @@ import { getProjectDetails, projectFileSystem } from "@/service/api.project";
 import { setProjectName, setTree } from "@/store/Reducers/fsSlice";
 import { useAppDispatch } from "@/hooks/redux";
 import { initialFSWebContainer } from "@/service/webContainer";
+import ProcessBar from "../CodeEditor/ProcessBar";
+import RealTimePanel from "../common/RealTimePanel";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
@@ -28,7 +30,7 @@ function MainWindow({ projectId }: { projectId: string }) {
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="min-h-[200px] rounded-lg border md:min-w-[450px] h-full"
+      className="min-h-[200px] border md:min-w-[450px] h-full"
     >
       {/* Left FS */}
       <ResizablePanel defaultSize={15} maxSize={25} minSize={10}>
@@ -54,8 +56,12 @@ function MainWindow({ projectId }: { projectId: string }) {
 
       {/* Preview */}
       <ResizablePanel defaultSize={35}>
+        <div className="flex flex-col h-full">
           <PreviewPanel />
+          <ProcessBar />
+        </div>
       </ResizablePanel>
+        <RealTimePanel />
     </ResizablePanelGroup>
   );
 }

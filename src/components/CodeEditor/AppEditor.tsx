@@ -8,20 +8,28 @@ import { setFileChange, updateFileContent } from "@/store/Reducers/fsSlice";
 import MediaDisplay from "./MediaDisplay";
 import MarkDownPreview from "./MarkDownPreview";
 import { __getSuggestion } from "@/service/api.project";
-import { useDebounce } from "@/hooks/debounce";
-import { configureMonacoTailwindcss, tailwindcssData } from "monaco-tailwindcss";
-
+import { isEqual } from 'lodash'
 
 function AppEditor() {
   const dispatch = useAppDispatch();
   const { selectedFile, selectedFileContent, selectedLanguage } = useAppSelector((state) => state.fs);
-  const [codeSnippits, setCodeSnippts] = React.useState<string>('');
-  const suggestionDebounce = useDebounce(codeSnippits, 300);
-
   const [showMd, setShowMd] = useState<boolean>(false);
   const editorRef = useRef<any>(null);
   const monacoRef = useRef<any>(null);
   const currentFileRef = useRef<string | null>(null);
+  const [tailwindModule, setTailwindModule] = useState<any>(null);
+  const selectedFileContentRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    // Only run on client
+    import("monaco-tailwindcss").then((mod) => {
+      setTailwindModule(mod);
+    });
+  }, []);
+
+  useEffect(() => {
+    selectedFileContentRef.current = selectedFileContent;
+  }, [selectedFileContent]);
 
   // Keep track of current file
   useEffect(() => {
@@ -113,26 +121,41 @@ function AppEditor() {
       noSyntaxValidation: true,
     });
 
-    configureMonacoTailwindcss(monaco, {
-    languageSelector: ["html", "javascript", "typescript", "jsx", "tsx"],
-    tailwindConfig: "/tailwind.config.js", // ✅ Make sure path is absolute from root/public
-  });
+    // if (tailwindModule) {
+    //   tailwindModule.configureMonacoTailwindcss(monaco, {
+    //     languageSelector: ["html", "javascript", "typescript", "jsx", "tsx"],
+    //     tailwindConfig: "/tailwind.config.js",
+    //     worker: "/monaco/tailwindcss.worker.js",
+    //     enableWorker: false
+    //   });
 
-  // Optional: CSS data provider for extra completion
-  monaco.languages.css.cssDefaults.setOptions({
-    data: {
-      dataProviders: { tailwindcssData },
-    },
-  });
+    //   // Optional: CSS data provider for extra completion
+    //   monaco.languages.css.cssDefaults.setOptions({
+    //     data: {
+    //       dataProviders: { tailwindcssData: tailwindModule.tailwindcssData },
+    //     },
+    //   });
+    // }
 
     // Ctrl + S → save file
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       const currentFile = currentFileRef.current;
-      if (currentFile) {
-        const value = editor.getValue();
-        dispatch(updateFileContent({ path: currentFile, content: value }));
-        dispatch(setFileChange({ name: currentFile, isEditing: false }));
+      if (!currentFile) return;
+
+      const value = editor.getValue();
+      const savedValue = selectedFileContentRef.current;
+
+      // Prevent save if no actual content change (normalized for line endings)
+      if (
+        savedValue &&
+        value.replace(/\r\n/g, "\n").trimEnd() === savedValue.replace(/\r\n/g, "\n").trimEnd()
+      ) {
+        console.log("No changes detected — skipping save.");
+        return;
       }
+
+      dispatch(updateFileContent({ path: currentFile, content: value }));
+      dispatch(setFileChange({ name: currentFile, isEditing: false }));
     });
 
     // Register inline suggestion provider

@@ -67,7 +67,7 @@ export default function TerminalPanel() {
           <div className="text-xs text-gray-500">{logs.length} ln.</div>
         </div>
         <div className="flex items-center space-x-2">
-          <button onClick={() => dispatch(installDependencies())} className="py-1 px-1 bg-purple-600 hover:bg-purple-700 text-white text-xs rounded">
+          <button onClick={() => dispatch(installDependencies())} className="py-1 px-1 bg-pink-500 hover:bg-pink-700 text-white text-xs rounded">
             npm install
           </button>
           <button onClick={() => dispatch(startDevServer())} className="py-1 px-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded">

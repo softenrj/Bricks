@@ -9,3 +9,7 @@ export const SOCKET_FILE_RENAME: string = "file:rename"
 export const SOCKET_BRICKS_CHAT_RECALL: string = "bricks-chat:recall"
 export const SOCKET_BRICKS_AI_RESPONSE: string = "bicks-chat:prompt"
 
+
+// Status
+export const IO_BRICKS_PROCESS_STATUS: string = "bricks:process:status"
+export const IO_BRICKS_REALTIME: string = "bricks:realtime:status"

@@ -13,12 +13,12 @@ export function getSocket(): Socket | null {
       auth: { token: token }
     });
 
-    // socket.on("connect", () => {
-    //   console.log("Connected with id:", socket!.id);
-    // });
+    socket.on("connect", () => {
+      console.log("Connected with id:", socket!.id);
+    });
 
     socket.on("disconnect", () => {
-      console.log("Disconnected");
+      console.log("Bricks:webSocket disconnected");
     });
   }
 
