@@ -1,8 +1,11 @@
 import React from 'react'
+import AiChat from "@/components/AiChat"
 
-function page() {
+async function page({ params }: { params: Promise<{ projectId: string }>}) {
+  const param = await params;
+  const projectId = param.projectId;
   return (
-    <div>page</div>
+    <AiChat projectId={projectId} />
   )
 }
 
