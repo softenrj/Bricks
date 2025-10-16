@@ -62,39 +62,6 @@ BRICKS AI is an innovative development platform that enables users to create sof
 - **JSZip** - Client-side file compression
 - **html2canvas** - Screenshot generation
 
-## Installation
-
-### Prerequisites
-- Node.js version 18.0 or higher
-- npm, yarn, or pnpm package manager
-
-### Setup Instructions
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/softenrj/Bricks.git
-   cd bricks
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment**
-   ```bash
-   cp .env.example .env.local
-   ```
-   Add your Firebase configuration variables to `.env.local`
-
-4. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Access the application**
-   Open [http://localhost:3000](http://localhost:3000) in your browser
-
 ## Usage
 
 ### Getting Started
@@ -193,9 +160,6 @@ bricks/
 - LinkedIn: [Raj](https://www.linkedin.com/in/raj-sharma-23447527b/)
 - Email: [rjsharmase@gmail.com]
 
-## License
-
-This project is licensed under the MIT License.
 
 ---
 
