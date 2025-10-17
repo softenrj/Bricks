@@ -4,11 +4,11 @@ import ChatOpHeader from './ChatOpHeader'
 import ChatOpContent from './ChatOpContent'
 import AppSideBarProfile from '../AppSideBar/AppSideBarProfile'
 
-function ChatOptionContent({ onClose }: { onClose: () => void }) {
+function ChatOptionContent({ onClose, projectId }: { onClose: () => void, projectId: string }) {
   return (
     <div className='w-full flex flex-col items-center my-4'>
         <ChatOpHeader onClose={onClose} />
-        <ChatOpContent />
+        <ChatOpContent projectId={projectId} />
         <AppSideBarProfile />
     </div>
   )

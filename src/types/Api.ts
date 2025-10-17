@@ -9,3 +9,10 @@ export type ApiResponse<T> = {
 export interface ProjectsApiResponse extends ApiResponse<Project[]> {
   nextCursor: string | null; 
 }
+
+export type PaginatedApiResponse<T> = {
+    success: boolean;
+    message: string;
+    data: T;
+    nextCursor: Date | null; 
+}

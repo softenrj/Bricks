@@ -3,13 +3,15 @@ import webContainerSlice from "./Reducers/webContainer"
 import fsSlice from "./Reducers/fsSlice"
 import userSlice from "./Reducers/user"
 import contextSlice from "./Reducers/fileContext"
+import chatSlice from "./Reducers/chatSlice"
 
 export const store = configureStore({
   reducer: {
     webContainer: webContainerSlice,
     fs: fsSlice,
     user: userSlice,
-    context: contextSlice
+    context: contextSlice,
+    bricksChat: chatSlice
   },
 })
 

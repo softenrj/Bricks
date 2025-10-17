@@ -8,7 +8,9 @@ function index({ projectId }: { projectId: string }) {
     return (
         <div className=' flex h-full w-full overflow-x-hidden'>
             <ChatOptions projectId={projectId} />
-            <ChatPanel projectId={projectId} />
+            <div className='flex-1 w-[50%]'>
+                <ChatPanel projectId={projectId} />
+            </div>
         </div>
     )
 }

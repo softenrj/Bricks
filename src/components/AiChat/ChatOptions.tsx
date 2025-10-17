@@ -10,12 +10,12 @@ function ChatOptions({ projectId }:{ projectId: string }) {
   return (
     <motion.div 
     initial={{ width: 0 }}
-    animate={{ width: close ? 48 : 300 }}
+    animate={{ width: close ? 48 : 260 }}
     transition={{ type: "spring"}}>
         <div className='flex justify-center h-full bg-[#181818]'>
             {close ?
             <PanelLeftOpen className='mt-4 text-gray-300 cursor-pointer' onClick={() => onClose(!close)} />:
-            <ChatOptionContent onClose={onCloseHandler} />}
+            <ChatOptionContent projectId={projectId} onClose={onCloseHandler} />}
         </div>
     </motion.div>
   )

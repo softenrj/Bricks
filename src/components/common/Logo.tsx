@@ -38,7 +38,7 @@ function Logo() {
 
   return (
     <div className="flex bg-[#000000] border-[0.2px] min-w-24 h-8 rounded-full justify-center items-center">
-      <Avatar className="h-6 w-6 ml-1">
+      <Avatar className="h-5 w-5 ml-1 rounded-md mr-1">
         <AvatarImage src="/landingPage/bricks.png" />
         <AvatarFallback>Bricks</AvatarFallback>
       </Avatar>

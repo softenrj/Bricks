@@ -12,9 +12,9 @@ function SectionOne() {
 
         {/* Actual logo */}
         <Image
-          src="/landingPage/transparent-bricks.png"
-          width={140}
-          height={140}
+          src="/landingPage/bricks.svg"
+          width={180}
+          height={180}
           alt="#bricks-logo"
           className="relative drop-shadow-2xl sm:w-[160px] sm:h-[160px] w-[120px] h-[120px]"
         />
