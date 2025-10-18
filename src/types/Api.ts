@@ -14,5 +14,5 @@ export type PaginatedApiResponse<T> = {
     success: boolean;
     message: string;
     data: T;
-    nextCursor: Date | null; 
+    nextCursor: string | null; 
 }

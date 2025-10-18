@@ -4,6 +4,7 @@ import fsSlice from "./Reducers/fsSlice"
 import userSlice from "./Reducers/user"
 import contextSlice from "./Reducers/fileContext"
 import chatSlice from "./Reducers/chatSlice"
+import chatTabs from "./Reducers/chatTabs"
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     fs: fsSlice,
     user: userSlice,
     context: contextSlice,
-    bricksChat: chatSlice
+    bricksChat: chatSlice,
+    chatTabs: chatTabs
   },
 })
 

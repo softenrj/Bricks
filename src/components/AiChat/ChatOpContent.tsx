@@ -4,50 +4,84 @@ import React, { useState, useEffect } from "react"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { Tooltip } from "../common/Tooltip"
 import { postApi } from "@/utils/api/common"
-import { ApiResponse, PaginatedApiResponse } from "@/types/Api"
+import { PaginatedApiResponse } from "@/types/Api"
 import { API_BRICKS_GET_TABS } from "@/utils/api/APIConstant"
-
-interface Tabs {
-  _id: string
-  name: string
-  createdAt: Date
-  updatedAt: Date
-}
+import { useAppDispatch, useAppSelector } from "@/hooks/redux"
+import { appendTabs, setTabs } from "@/store/Reducers/chatTabs"
+import { setChat } from "@/store/Reducers/chatSlice"
+import { getChatHistory } from "@/service/api.project"
+import { BricksChat } from "../../../types/chatMessage"
+import { useDebounce } from "@/hooks/debounce"
 
 function ChatOpContent({ projectId }: { projectId: string }) {
   const [activeChat, setActiveChat] = useState<string | null>(null)
-  const [chats, setChats] = useState<Tabs[]>([])
-  const [nextCursor, setNextCursor] = useState<Date | null>(null)
+  const chats = useAppSelector(state => state.chatTabs)
+  const currentChatId = useAppSelector(state => state.bricksChat).chatId
+  const nextCursor = React.useRef<string | null>(null);
   const [hasMore, setHasMore] = useState(true)
-  const limit = 20 // number of items per fetch
+  const dispatch = useAppDispatch()
+  const limit = 10
+  const handleNewChat = () => dispatch(setChat({ chatId: null, messages: [] }));
+  const [search, setSearch] = React.useState<string>('');
+  const searchDebounce = useDebounce(search, 300);
+  const handleSearch = (s: string) => setSearch(s);
 
-  const fetchTabs = async (cursor?: Date) => {
+  const fetchTabs = async () => {
+    if (!hasMore) return;
+
     try {
-      const query = cursor ? `?limit=${limit}&cursor=${cursor.toISOString()}` : `?limit=${limit}`
-      const response = await postApi<PaginatedApiResponse<Tabs[]>>({
-        url: API_BRICKS_GET_TABS + `/${projectId}${query}`
-      })
+      const query = nextCursor.current
+        ? `?limit=${limit}&cursor=${encodeURIComponent(nextCursor.current)}&q=${search}`
+        : `?limit=${limit}&q=${search}`;
+
+
+      const response = await postApi<PaginatedApiResponse<BricksChat[]>>({
+        url: `${API_BRICKS_GET_TABS}/${projectId}${query}`,
+      });
 
       if (response?.success && response.data) {
-        setChats((prev) => [...prev, ...response.data])
-        setNextCursor(response.nextCursor || null)
-        setHasMore(Boolean(response.nextCursor))
+        dispatch(appendTabs(response.data));
+
+        // Save the next cursor string (no Date conversion)
+        nextCursor.current = response.nextCursor ?? null;
+
+        // Stop loading if no nextCursor or fewer than limit items
+        setHasMore(!!response.nextCursor);
+      } else {
+        setHasMore(false);
       }
     } catch (error) {
-      console.error("Error fetching chats:", error)
-      setHasMore(false)
+      console.error("Error fetching chats:", error);
+      setHasMore(false);
+    }
+  };
+
+
+  const handleChangeChat = async (chatId: string) => {
+    if (chatId == currentChatId) return;
+    setActiveChat(chatId);
+    const result = await getChatHistory(chatId);
+    if (result) {
+      dispatch(setChat({ chatId: chatId, messages: result }))
     }
   }
 
   useEffect(() => {
-    fetchTabs() 
+    fetchTabs()
   }, [projectId])
+
+  useEffect(() => {
+    setHasMore(true);
+    dispatch(setTabs([]));
+    nextCursor.current = null;
+    fetchTabs();
+  }, [searchDebounce])
 
   return (
     <div className="w-full h-[75%] px-4 my-6 text-gray-200 font-inter overflow-auto">
       <Tooltip content="New Chat">
         <button
-          onClick={() => console.log("🆕 New chat")}
+          onClick={handleNewChat}
           className="flex my-4 gap-1.5 text-sm items-center"
         >
           <SquarePen size={20} />
@@ -60,6 +94,8 @@ function ChatOpContent({ projectId }: { projectId: string }) {
         <input
           type="text"
           name="search"
+          value={search}
+          onChange={(e: any) => handleSearch(e.target.value)}
           placeholder="Search chats..."
           className="bg-transparent outline-none text-gray-200 placeholder-gray-500 w-full text-sm"
         />
@@ -68,22 +104,20 @@ function ChatOpContent({ projectId }: { projectId: string }) {
 
       <InfiniteScroll
         dataLength={chats.length}
-        next={() => fetchTabs(nextCursor!)}
+        next={fetchTabs}
         hasMore={hasMore}
+        height={360}
         loader={<p className="text-center text-gray-400 text-sm my-2">Loading...</p>}
-        height={500} // or the height of your scrollable container
-        scrollableTarget="scrollableDiv"
       >
         <div className="flex flex-col gap-1">
-          {chats.map((chat) => (
+          {chats.map((chat,idx) => (
             <button
-              key={chat._id}
-              onClick={() => setActiveChat(chat._id)}
-              className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 text-left ${
-                activeChat === chat._id
-                  ? "bg-[#1f1f1f] text-gray-300 border border-transparent"
-                  : "hover:bg-[#1f1f1f91] text-gray-300 border border-transparent"
-              }`}
+              key={chat._id + idx}
+              onClick={() => handleChangeChat(chat._id)}
+              className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 text-left ${((currentChatId === chat._id) || (currentChatId === chat._id))
+                ? "bg-[#1f1f1f] text-gray-300 border border-transparent"
+                : "hover:bg-[#1f1f1f91] text-gray-300 border border-transparent"
+                }`}
             >
               <MessageSquare className="w-4 h-4 opacity-70" />
               <span className="truncate text-sm font-medium">{chat.name}</span>

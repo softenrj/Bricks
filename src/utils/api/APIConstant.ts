@@ -26,6 +26,7 @@ export const API_BRICKS_PROJECT_CHILD: string = "/context/child"
 export const API_BRICKS_GET_BRICKS_CHATS: string = "/project/bricks-chat-tabs"
 export const API_BRICKS_GET_TABS: string = "/chat/tabs"
 export const API_BRICKS_PROMPT_RESPONSE: string = "/chat/brick-ai-response"
+export const API_BRICKS_GET_CHAT_HISTORY: string = "/chat/bricks-chat-recoll"
 
 // code completion
 export const API_BRICKS_CODE_SUGGESION: string = "/project/bricks-code-sugg"

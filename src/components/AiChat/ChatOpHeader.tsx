@@ -2,7 +2,7 @@
 import { PanelLeftClose, Sparkles } from 'lucide-react'
 import React from 'react'
 
-function ChatOpHeader({ onClose }: { onClose: () => void }) {
+function ChatOpHeader({ onClose, }: { onClose: () => void }) {
     return (
         <div className='text-gray-300 flex w-[85%] justify-between'>
             <div className='flex items-center gap-2'>

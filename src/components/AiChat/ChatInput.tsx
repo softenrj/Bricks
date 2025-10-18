@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from "react"
 import { Mic, Paperclip, SendHorizonal, X, Square } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
-import { addMessage, setAiFetching } from "@/store/Reducers/chatSlice"
+import { addMessage, setAiFetching, setChatId } from "@/store/Reducers/chatSlice"
 import { uIdProvider } from "@/feature/uid"
 import { getAiResponse } from "@/service/api.project"
+import { addTabs } from "@/store/Reducers/chatTabs"
 
 interface SelectedImage {
   id: number
@@ -166,7 +167,11 @@ export default function ChatInput({ projectId }: { projectId: string }) {
   }
 
   const handleSend = async () => {
-    if (!message.trim() && selectedImages.length === 0) return
+    setMessage("");
+
+    if (!message.trim() && selectedImages.length === 0) return;
+
+    // Dispatch user's message first
     dispatch(addMessage({
       chatId: currentChatId,
       message: {
@@ -175,20 +180,29 @@ export default function ChatInput({ projectId }: { projectId: string }) {
         content: message,
         ...(selectedImages[0] && selectedImages[0].url && { image: selectedImages[0].url })
       }
-    }))
-    dispatch(setAiFetching(true))
-    const result = await getAiResponse(projectId, currentChatId, message);
-    if (result) {
-      dispatch(addMessage({
-        chatId: currentChatId,
-        message: result
-      }))
-    }
-    dispatch(setAiFetching(false))
+    }));
 
-    setMessage("")
-    setSelectedImages([])
-  }
+    dispatch(setAiFetching(true));
+
+    const result = await getAiResponse(projectId, currentChatId, message);
+
+    if (result) {
+      if (!currentChatId && result?.chat?._id) {
+        dispatch(addTabs(result.chat))
+        dispatch(setChatId(result.chat._id));
+      }
+
+      dispatch(addMessage({
+        chatId: result.chat._id,
+        message: result.message,
+      }));
+    }
+
+    dispatch(setAiFetching(false));
+
+    setSelectedImages([]);
+  };
+
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

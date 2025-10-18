@@ -1,9 +1,9 @@
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_CODE_SUGGESION, API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_PROJECT, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_PROMPT_RESPONSE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
+import { API_BRICKS_CODE_SUGGESION, API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_BRICKS_CHATS, API_BRICKS_GET_CHAT_HISTORY, API_BRICKS_GET_PROJECT, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_PROMPT_RESPONSE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
-import { Message } from "../../types/chatMessage";
+import { BricksChat, Message } from "../../types/chatMessage";
 
 export interface Filter {
     sort: "asc" | "dsc",
@@ -305,9 +305,9 @@ export const __getSuggestion = async (cont: string): Promise<string | null> => {
     return lastPromise;
 };
 
-export const getAiResponse = async (projectId: string, chatId: string | null, prompt: string): Promise<Message | null> => {
+export const getAiResponse = async (projectId: string, chatId: string | null, prompt: string): Promise<{ message: Message, chat: BricksChat } | null> => {
     try {
-        const response = await postApi<ApiResponse<Message>> ({
+        const response = await postApi<ApiResponse<{ message: Message, chat: BricksChat }>> ({
             url: API_BRICKS_PROMPT_RESPONSE + `/${projectId}`,
             values: {
                 chatId: chatId as any,
@@ -315,11 +315,28 @@ export const getAiResponse = async (projectId: string, chatId: string | null, pr
             }
         })
         if (response?.success) {
+            return { message: response.data.message, chat: response.data.chat};
+        }
+        return null;
+    } catch (error: any) {
+        console.error("Error Getting Ai Response:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
+    }
+}
+
+export const getChatHistory = async (chatId: string): Promise<Message[] | null> => {
+    try {
+        const response = await getApi<ApiResponse<Message[]>>({
+            url: API_BRICKS_GET_CHAT_HISTORY + `/${chatId}`
+        })
+
+        if (response?.success) {
             return response.data;
         }
         return null;
     } catch (error: any) {
-        console.error("Error Getting details of project:", error);
+        console.error("Error Getting Chat histroy:", error);
         toast.error(error?.message ?? "Something went wrong");
         return null;
     }

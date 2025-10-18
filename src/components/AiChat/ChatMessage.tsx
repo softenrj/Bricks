@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
@@ -13,27 +13,43 @@ interface CodeProps {
   children: React.ReactNode
 }
 
-export default function ChatMessage({ message }: { message: Message }) {
-  const [typedText, setTypedText] = useState("")
+interface ChatMessageProps {
+  message: Message
+}
 
+export default function ChatMessage({ message }: ChatMessageProps) {
+  const [typedText, setTypedText] = useState(message.role === "user" ? message.content : "")
   const isUser = message.role === "user"
+  const rafRef = useRef<number | null>(null)
 
-  // Typing effect for AI messages
-useEffect(() => {
-  if (isUser) return
-  setTypedText("")
-  let index = 0
+  useEffect(() => {
+    if (isUser) return
 
-  const step = () => {
-    setTypedText(message.content.slice(0, index + 1))
-    index++
-    if (index < message.content.length) {
-      requestAnimationFrame(step)
+    const content = message.content
+    const CHUNK_SIZE = 5 
+    const LONG_MSG_THRESHOLD = 1000 
+    let index = 0
+
+    if (content.length > LONG_MSG_THRESHOLD) {
+      setTypedText(content)
+      return
     }
-  }
 
-  requestAnimationFrame(step)
-}, [message.content, isUser])
+    setTypedText("")
+    const step = () => {
+      index += CHUNK_SIZE
+      setTypedText(content.slice(0, index))
+      if (index < content.length) {
+        rafRef.current = requestAnimationFrame(step)
+      }
+    }
+
+    rafRef.current = requestAnimationFrame(step)
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [message.content, isUser])
 
   const components = {
     code({ inline, className, children, ...props }: CodeProps) {
