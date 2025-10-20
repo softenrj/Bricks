@@ -78,7 +78,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
   }, [searchDebounce])
 
   return (
-    <div className="w-full h-[75%] px-4 my-6 text-gray-200 font-inter overflow-auto">
+    <div className="w-full h-[90%] px-4 my-6 text-gray-200 font-inter overflow-auto">
       <Tooltip content="New Chat">
         <button
           onClick={handleNewChat}
@@ -106,7 +106,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
         dataLength={chats.length}
         next={fetchTabs}
         hasMore={hasMore}
-        height={360}
+        height={380}
         loader={<p className="text-center text-gray-400 text-sm my-2">Loading...</p>}
       >
         <div className="flex flex-col gap-1">

@@ -1,3 +1,7 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
+
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SidebarProvider } from "@/components/ui/sidebar";

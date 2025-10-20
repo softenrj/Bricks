@@ -1,6 +1,9 @@
 {
-  "name": "bricks",
+  "name": "bricks-ai",
   "version": "0.1.0",
+  "description": "Bricks AI – Web-based AI-powered Coding IDE",
+  "author": "Raj",
+  "license": "BUSL-1.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -33,6 +36,7 @@
     "@webcontainer/api": "^1.6.1",
     "@xyflow/react": "^12.8.6",
     "axios": "^1.11.0",
+    "bfg": "^0.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",

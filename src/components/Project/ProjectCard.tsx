@@ -20,7 +20,7 @@ function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Proj
         project && <div className="bg-[#1f1f1f]/80 p-3 rounded-md w-full max-w-[380px] relative shadow-sm hover:shadow-md border border-[#2d2d2d]">
             {/* Top Icon */}
             <div className="bg-[#2c2c2c] p-1.5 rounded-md w-fit border border-[#FD2787] absolute z-20 -top-4 left-4 shadow-sm">
-                <Image src="/icons/nextdotjs.svg" alt="next-js" width={22} height={22} />
+                <Image src="/icons/Vite.js.svg" alt="next-js" width={22} height={22} />
             </div>
 
             {/* Header */}
@@ -62,7 +62,7 @@ function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Proj
                             variant={"default"}
                             className="text-[10px] rounded-full px-2 py-0.5"
                         >
-                            Next.js
+                            Vite
                         </Badge>
                     </Tooltip>
                 </div>

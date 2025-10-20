@@ -12,11 +12,14 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState<TechLanguage>(TechLanguage.JS);
+    const [loading, setLoading] = React.useState<boolean>(false)
   const router = useRouter();
 
   const handleCreate = async () => {
-    const res = await createNewProject(projectName,description, WebTech.VITE, language)
-    if(res) handleCancel(res._id);
+    setLoading(true);
+    const res = await createNewProject(projectName, description, WebTech.VITE, language)
+    setLoading(false);
+    if (res) handleCancel(res._id);
   };
 
   const handleCancel = (projectId?: string) => {
@@ -65,7 +68,7 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
           <Code size={14} className="text-blue-400" />
           Language
         </label>
-        <Select value={language}>
+        <Select value={language} onValueChange={(val) => setLanguage(val as TechLanguage)}>
           <SelectTrigger className="w-full border border-gray-700/40 bg-gray-800/40 rounded-lg text-white placeholder:text-gray-400 hover:bg-gray-800/50 hover:border-gray-600/50 focus:ring-2 focus:ring-pink-400 transition-all duration-300">
             {language === "JS" ? "JavaScript" : language === "TS" ? "TypeScript" : "System"}
           </SelectTrigger>
@@ -80,6 +83,7 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
       <div className="flex justify-end gap-4 mt-4">
         <Button
           onClick={() => handleCancel()}
+          disabled={loading}
           className="px-5 py-2 border border-gray-700/40 text-white rounded-lg hover:bg-gray-800/50 hover:border-gray-600/50 transition-all duration-300"
         >
           Cancel
@@ -88,7 +92,7 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
           onClick={handleCreate}
           className="px-5 py-2 bg-gradient-to-r from-[#FD2787]/90 to-pink-500/80 text-white rounded-lg hover:shadow-lg transition-all duration-300"
         >
-          Create
+          {loading ? "Creating..." : "Create"}
         </Button>
       </div>
     </div>

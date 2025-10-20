@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 import { auth, app } from "@/feature/Firebase"
 import { onAuthStateChanged, User } from "@firebase/auth"
 import React from "react"
