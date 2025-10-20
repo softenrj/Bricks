@@ -39,6 +39,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# Firebase configuration (contains sensitive keys)
-/src/config/firebaseConfig.ts
