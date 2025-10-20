@@ -2,7 +2,7 @@
 
 # 🚀 BRICKS AI
 
-<img src="public/landingPage/transparent-bricks.png" alt="Bricks AI Logo" width="150" height="150" />
+<img src="public/landingPage/bricks.svg" alt="Bricks AI Logo" width="150" height="150" />
 
 <h2>Transform Ideas into Code — Instantly</h2>
 
@@ -15,11 +15,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=3178C6)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white&labelColor=38B2AC)](https://tailwindcss.com/)
 
-</div>
-
-[🌐 Live Demo](https://bricks-ai.vercel.app) • [📸 Demo Images](#demo-images) • [📖 Documentation](#) • [💬 Discord](#)
-
-</div>
 
 ---
 
@@ -165,10 +160,6 @@ BRICKS AI revolutionizes software development by bridging the gap between imagin
 <div align="center">
 
 ## 🚀 Ready to Build the Future?
-
-**Join thousands of developers who are already transforming their ideas into reality with BRICKS AI.**
-
-[🎯 Start Building Now](https://bricks-ai.vercel.app) • [📞 Contact Us](#) • [⭐ Star on GitHub](https://github.com/softenrj/bricks-ai)
 
 ---
 
