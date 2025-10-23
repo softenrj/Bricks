@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@source "../node_modules/streamdown/dist/index.js";
 @custom-variant dark (&:is(.dark *));
+
 
 @theme inline {
   --color-background: var(--background);
@@ -168,11 +169,13 @@ body {
   border: 1px solid transparent;
   transition: color 0.3s ease;
 }
+
 .Alex-btn {
   position: relative;
   border: 0.1px solid transparent;
   transition: color 0.3s ease;
 }
+
 .Alex-btn::before {
   content: "";
   position: absolute;
@@ -239,6 +242,7 @@ body {
   animation: neonBorder 4s linear infinite;
   opacity: 1;
 }
+
 .Alex-btn:hover::before {
   animation: neonBorder 4s linear infinite;
   opacity: 1;
@@ -300,9 +304,28 @@ body {
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+/** # region  Ai Response */
+
+code[data-streamdown="inline-code"] {
+  background-color: #212121 !important;
+  color: #e4e4e4 !important;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-family: "Fira Code", monospace;
+  border: 1px solid #333;
+}
+
+div[data-code-block-container="true"] {
+  border: 1px solid #323232;
 }

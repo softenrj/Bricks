@@ -120,7 +120,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
                 }`}
             >
               <MessageSquare className="w-4 h-4 opacity-70" />
-              <span className="truncate text-sm font-medium">{chat.name}</span>
+              <span className="truncate max-w-[80%] text-sm font-medium">{chat.name.replace(/\*/g, '')}</span>
             </button>
           ))}
         </div>

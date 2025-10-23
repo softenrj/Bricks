@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import ChatMessage from "./ChatMessage"
 import { useAppSelector } from "@/hooks/redux"
 import { Sparkles } from "lucide-react"
+import { Shimmer } from "../ai-elements/shimmer"
 
 export default function ChatArea() {
   const chatEndRef = useRef<HTMLDivElement>(null)
@@ -31,10 +32,7 @@ export default function ChatArea() {
             <ChatMessage message={message} />
           </motion.div>
         ))}
-        {isFetching && <div className="flex items-center w-fit gap-2 p-2 bg-[#2f2f2f] rounded-full animate-pulse">
-          <Sparkles size={16} className="text-green-400 animate-spin-slow" />
-          <span className="text-[#ececec] font-medium">AI is thinking...</span>
-        </div>}
+        {isFetching && <Shimmer>Loading your response...</Shimmer>}
       </AnimatePresence>
       <div ref={chatEndRef} />
     </div>
