@@ -39,8 +39,7 @@ function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Proj
 
             {/* Description */}
             <p className="mt-1 text-[11px] text-gray-300 leading-snug line-clamp-2">
-                React-based todo app where you can add, remove, and delete tasks with a
-                timer.
+                {project.description}
             </p>
 
             {/* Tech Icons */}
