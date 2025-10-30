@@ -124,22 +124,6 @@ function AppEditor() {
       noSyntaxValidation: true,
     });
 
-    // if (tailwindModule) {
-    //   tailwindModule.configureMonacoTailwindcss(monaco, {
-    //     languageSelector: ["html", "javascript", "typescript", "jsx", "tsx"],
-    //     tailwindConfig: "/tailwind.config.js",
-    //     worker: "/monaco/tailwindcss.worker.js",
-    //     enableWorker: false
-    //   });
-
-    //   // Optional: CSS data provider for extra completion
-    //   monaco.languages.css.cssDefaults.setOptions({
-    //     data: {
-    //       dataProviders: { tailwindcssData: tailwindModule.tailwindcssData },
-    //     },
-    //   });
-    // }
-
     // Ctrl + S → save file
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       const currentFile = currentFileRef.current;
@@ -148,12 +132,10 @@ function AppEditor() {
       const value = editor.getValue();
       const savedValue = selectedFileContentRef.current;
 
-      // Prevent save if no actual content change (normalized for line endings)
       if (
         savedValue &&
         value.replace(/\r\n/g, "\n").trimEnd() === savedValue.replace(/\r\n/g, "\n").trimEnd()
       ) {
-        console.log("No changes detected — skipping save.");
         return;
       }
 

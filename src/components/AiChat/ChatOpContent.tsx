@@ -41,11 +41,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
 
       if (response?.success && response.data) {
         dispatch(appendTabs(response.data));
-
-        // Save the next cursor string (no Date conversion)
         nextCursor.current = response.nextCursor ?? null;
-
-        // Stop loading if no nextCursor or fewer than limit items
         setHasMore(!!response.nextCursor);
       } else {
         setHasMore(false);
@@ -107,7 +103,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
         next={fetchTabs}
         hasMore={hasMore}
         height={380}
-        loader={<p className="text-center text-gray-400 text-sm my-2">Loading...</p>}
+        loader={null}
       >
         <div className="flex flex-col gap-1">
           {chats.map((chat,idx) => (
@@ -119,8 +115,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
                 : "hover:bg-[#1f1f1f91] text-gray-300 border border-transparent"
                 }`}
             >
-              <MessageSquare className="w-4 h-4 opacity-70" />
-              <span className="truncate max-w-[80%] text-sm font-medium">{chat.name.replace(/\*/g, '')}</span>
+              <span className="truncate text-sm font-medium">{chat.name.replace(/\*/g, '')}</span>
             </button>
           ))}
         </div>

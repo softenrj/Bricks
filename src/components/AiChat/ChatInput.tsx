@@ -150,7 +150,6 @@ export default function ChatInput({ projectId }: { projectId: string }) {
         mediaRecorder.ondataavailable = e => audioChunks.push(e.data)
         mediaRecorder.onstop = () => {
           const audioBlob = new Blob(audioChunks, { type: "audio/webm" })
-          console.log("Audio recorded:", audioBlob)
         }
 
         mediaRecorder.start()

@@ -28,7 +28,7 @@ export function FileContext({ children, onRename, onRemove, path, name, onNewFil
     <ContextMenu>
       <ContextMenuTrigger>{children}</ContextMenuTrigger>
 
-      <ContextMenuContent className="w-40 rounded-md p-1 bg-[#1f1f21] text-sm text-gray-300 shadow-lg border border-gray-700">
+      <ContextMenuContent className=" bg-[#1c1c1cf0] border-[#2d2d2d] text-white" >
         {/* Core Actions */}
         <ContextMenuItem
           className="flex items-center gap-2 rounded-md 
@@ -43,7 +43,7 @@ export function FileContext({ children, onRename, onRemove, path, name, onNewFil
         </ContextMenuItem>
 
         <ContextMenuItem
-          className="flex items-center gap-2 rounded-md 
+          className="flex items-center gap-2 rounded-sm 
                      data-[highlighted]:bg-gray-700/70 
                      data-[highlighted]:text-white 
                      focus:outline-none"

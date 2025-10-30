@@ -71,6 +71,12 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
     setFileName("New File");
   };
 
+  const handleCollapseFoldersAll = () => {
+    const _state: Record<string, boolean> = {}
+    Object.keys(collapsed).forEach(key => _state[key] = false );
+    setCollapsed(_state)
+  }
+
   const renderFile = (name: string, fullPath: string, depth: number) => {
     const isSelected = selectedFile === fullPath;
     return (
@@ -119,7 +125,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
   };
 
   const renderFolder = (name: string, fullPath: string, data: FSData, depth: number) => {
-    const isCollapsed = collapsed[fullPath];
+    const isCollapsed = !collapsed[fullPath];
     const hasChildren = Object.keys(data).length > 0;
 
     return (
@@ -227,6 +233,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
       <FScontroller
         onNewFile={() => startCreating(currentActivePath, "file")}
         onNewFolder={() => startCreating(currentActivePath, "folder")}
+        onFolderCollapse={handleCollapseFoldersAll}
       />
 
       <div className="flex-1 overflow-auto">

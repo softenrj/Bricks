@@ -9,6 +9,7 @@ import DashboardAICard from './Dashboard.topcard'
 import { getUser } from '@/service/api.user'
 import { useAppDispatch } from '@/hooks/redux'
 import { setUserdata } from '@/store/Reducers/user'
+import { getSocket } from '@/socket/socket'
 
 function Dashboard() {
   const dispatch = useAppDispatch()
@@ -27,7 +28,13 @@ function Dashboard() {
 
     fetchUser();
   }, [dispatch]);
-  
+
+  React.useEffect(() => {
+    // initialize Socket
+    const socket = getSocket();
+  }, [])
+
+
   return (
     <div className='theme-dashboard px-4 flex flex-col'>
       <HeadLine />

@@ -21,7 +21,7 @@ export default function ChatArea() {
   return (
     <div className="h-[82%] overflow-y-auto px-3 sm:px-5 py-5 space-y-4">
       <AnimatePresence>
-        {[...messages].sort((a, b) => new Date(a.createdAt as any).getTime() - new Date(b.createdAt as any).getTime()).map((message, ind) => (
+           {messages.map((message, ind) => (
           <motion.div
             key={`${message.id}-${ind}`}
             initial={{ opacity: 0, y: 10 }}

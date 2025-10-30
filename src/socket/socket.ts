@@ -14,7 +14,7 @@ export function getSocket(): Socket | null {
     });
 
     socket.on("connect", () => {
-      console.log("Connected with id:", socket!.id);
+      console.log("Bricks:webSocket connected with id:", socket!.id);
     });
 
     socket.on("disconnect", () => {
