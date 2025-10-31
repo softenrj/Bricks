@@ -3,6 +3,7 @@ export interface Message {
   role: "user" | "assistant"
   content: string
   image?: string | ArrayBuffer | undefined
+  isNew: boolean;
   timestamp?: string;
   createdAt?: Date;
   updatedAt?: Date;

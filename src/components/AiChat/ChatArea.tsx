@@ -6,7 +6,6 @@ import React, { useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import ChatMessage from "./ChatMessage"
 import { useAppSelector } from "@/hooks/redux"
-import { Sparkles } from "lucide-react"
 import { Shimmer } from "../ai-elements/shimmer"
 
 export default function ChatArea() {
@@ -19,7 +18,7 @@ export default function ChatArea() {
   }, [messages])
 
   return (
-    <div className="h-[82%] overflow-y-auto px-3 sm:px-5 py-5 space-y-4">
+    <div className="h-[82%] overflow-y-auto px-3 sm:px-5 py-5 space-y-4 flex flex-col items-center">
       <AnimatePresence>
            {messages.map((message, ind) => (
           <motion.div
@@ -28,6 +27,7 @@ export default function ChatArea() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
+            className="w-full sm:w-[90%] md:w-[80%] lg:w-[70%]"
           >
             <ChatMessage message={message} />
           </motion.div>
