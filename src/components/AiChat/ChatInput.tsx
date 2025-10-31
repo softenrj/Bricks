@@ -177,6 +177,7 @@ export default function ChatInput({ projectId }: { projectId: string }) {
         id: uIdProvider(),
         role: "user",
         content: message,
+        isNew: true,
         ...(selectedImages[0] && selectedImages[0].url && { image: selectedImages[0].url })
       }
     }));
