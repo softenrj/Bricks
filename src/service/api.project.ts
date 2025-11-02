@@ -3,7 +3,7 @@
 // See LICENSE for details.
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
-import { API_BRICKS_CODE_SUGGESION, API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_BRICKS_CHATS, API_BRICKS_GET_CHAT_HISTORY, API_BRICKS_GET_PROJECT, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_PROMPT_RESPONSE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
+import { API_BRICKS_CODE_COMPLETION, API_BRICKS_CODE_SUGGESION, API_BRICKS_DELETE_PROJECT_ARCHIEVE, API_BRICKS_DELETE_UNMARK_STAR, API_BRICKS_EXPORT_ALL_PROJECTS, API_BRICKS_EXPORT_ARCH_PROJECTS, API_BRICKS_GET_BRICKS_CHATS, API_BRICKS_GET_CHAT_HISTORY, API_BRICKS_GET_PROJECT, API_BRICKS_GET_PROJECT_FS, API_BRICKS_GET_PROJECTS, API_BRICKS_GET_RECENT_PROJECT, API_BRICKS_NEW_PROJECT, API_BRICKS_POST_MARK_STAR, API_BRICKS_POST_PROJECT_ARCHIEVE, API_BRICKS_PROMPT_RESPONSE, API_BRICKS_REMOVE_PROJECT } from "@/utils/api/APIConstant";
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 import { BricksChat, Message } from "../../types/chatMessage";
@@ -307,6 +307,27 @@ export const __getSuggestion = async (cont: string): Promise<string | null> => {
     });
     return lastPromise;
 };
+
+export const __getCodeCompletion = async (cont: string): Promise<string | null> => {
+    try {
+        const encodedContent = Buffer.from(cont, 'utf-8').toString('base64');
+        const response = await postApi<ApiResponse<string>>({
+            url: API_BRICKS_CODE_COMPLETION,
+            values: {
+                context: encodedContent
+            }
+        })
+        if (response?.success) {
+            const decode = atob(response.data);
+            return decode;
+        }
+        return null;
+    } catch (error: any) {
+        console.error("Error Getting Ai Response:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
+    }
+}
 
 export const getAiResponse = async (projectId: string, chatId: string | null, prompt: string): Promise<{ message: Message, chat: BricksChat } | null> => {
     try {

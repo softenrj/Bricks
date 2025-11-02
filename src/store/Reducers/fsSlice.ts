@@ -232,6 +232,10 @@ const fsSlice = createSlice({
 
       newFolderSocket(parentPath,name, projectId)
     },
+
+    aiCodeGen: (_state, action: PayloadAction<string>) => {
+      _state.selectedFileContent = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(writeFile.fulfilled, (state, action) => {
@@ -243,6 +247,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder } = fsSlice.actions;
+export const { setSelectedFile, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen } = fsSlice.actions;
 
 export default fsSlice.reducer;
