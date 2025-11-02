@@ -11,7 +11,7 @@ import { setFileChange, updateFileContent } from "@/store/Reducers/fsSlice";
 import MediaDisplay from "./MediaDisplay";
 import MarkDownPreview from "./MarkDownPreview";
 import { __getSuggestion } from "@/service/api.project";
-import { isEqual } from 'lodash'
+import { configureMonacoTailwindcss, tailwindcssData } from 'monaco-tailwindcss'
 
 function AppEditor() {
   const dispatch = useAppDispatch();
@@ -20,15 +20,41 @@ function AppEditor() {
   const editorRef = useRef<any>(null);
   const monacoRef = useRef<any>(null);
   const currentFileRef = useRef<string | null>(null);
-  const [tailwindModule, setTailwindModule] = useState<any>(null);
   const selectedFileContentRef = useRef<string | null>(null);
+  const codeCompletion = useAppSelector(state => state.IdeFeatures).codeCompletion;
+  const inlineProviderRef = useRef<any>(null);
 
-  useEffect(() => {
-    // Only run on client
-    import("monaco-tailwindcss").then((mod) => {
-      setTailwindModule(mod);
-    });
-  }, []);
+  window.MonacoEnvironment = {
+    getWorker(moduleId, label) {
+      switch (label) {
+        case 'editorWorkerService':
+          return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url))
+        case 'css':
+        case 'less':
+        case 'scss':
+          return new Worker(new URL('monaco-editor/esm/vs/language/css/css.worker', import.meta.url))
+        case 'handlebars':
+        case 'html':
+        case 'razor':
+          return new Worker(
+            new URL('monaco-editor/esm/vs/language/html/html.worker', import.meta.url)
+          )
+        case 'json':
+          return new Worker(
+            new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url)
+          )
+        case 'javascript':
+        case 'typescript':
+          return new Worker(
+            new URL('monaco-editor/esm/vs/language/typescript/ts.worker', import.meta.url)
+          )
+        case 'tailwindcss':
+          return new Worker(new URL('monaco-tailwindcss/tailwindcss.worker', import.meta.url))
+        default:
+          throw new Error(`Unknown label ${label}`)
+      }
+    }
+  }
 
   useEffect(() => {
     selectedFileContentRef.current = selectedFileContent;
@@ -56,6 +82,25 @@ function AppEditor() {
     }
   }, [selectedFile, selectedFileContent]);
 
+  // Update inline suggestions when codeCompletion changes
+  useEffect(() => {
+    if (inlineProviderRef.current) {
+      // The provider is already registered, and the callback will check codeCompletion
+      // No need to re-register, as the callback depends on codeCompletion
+    }
+  }, [codeCompletion]);
+
+
+
+  const codeCompletionSugg = async (snipts: string) => {
+    console.log(codeCompletion)
+    if (codeCompletion) {
+      console.log(codeCompletion)
+      return await __getSuggestion(snipts)
+    }
+    return null;
+  }
+
   // Inline suggestion provider
   const registerInlineSuggestions = useCallback(() => {
     if (!monacoRef.current || !editorRef.current) return;
@@ -71,7 +116,7 @@ function AppEditor() {
 
           // Send only few lines before cursor as context
           const beforeCursor = code.slice(0, cursorOffset);
-          const suggestion = await __getSuggestion(beforeCursor);
+          const suggestion = await codeCompletionSugg(beforeCursor);
 
           if (!suggestion || !suggestion.trim()) {
             return { items: [], dispose: () => { } };
@@ -109,6 +154,7 @@ function AppEditor() {
   }, [selectedLanguage]);
 
 
+
   // Editor mount
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -123,6 +169,43 @@ function AppEditor() {
       noSemanticValidation: true,
       noSyntaxValidation: true,
     });
+
+    // Enable TS/TSX IntelliSense
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
+      allowJs: true,
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
+      module: monaco.languages.typescript.ModuleKind.ESNext,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      esModuleInterop: true,
+      allowSyntheticDefaultImports: true,
+      noEmit: true,
+    })
+
+    // Enable JSX in plain JS files
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
+      allowJs: true,
+      module: monaco.languages.typescript.ModuleKind.ESNext,
+    });
+
+    // suppress built-in errors if you use virtual files
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
+
+    monaco.languages.css.cssDefaults.setOptions({
+      data: {
+        dataProviders: {
+          'tailwindcss': tailwindcssData
+        }
+      }
+    })
+
+    configureMonacoTailwindcss(monaco)
+
 
     // Ctrl + S → save file
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
@@ -145,10 +228,13 @@ function AppEditor() {
 
     // Register inline suggestion provider
     const provider = registerInlineSuggestions();
+    inlineProviderRef.current = provider;
 
     // Dispose provider on editor disposal
     editor.onDidDispose(() => provider?.dispose());
   };
+
+
 
   return (
     <div className="h-full flex flex-col">
@@ -164,6 +250,7 @@ function AppEditor() {
               value={selectedFileContent || ""}
               language={selectedLanguage || "plaintext"}
               theme="vs-dark"
+              path={selectedFile}
               onMount={handleEditorDidMount}
               options={{
                 automaticLayout: true,
@@ -171,10 +258,12 @@ function AppEditor() {
                 fontSize: 14,
                 scrollBeyondLastLine: false,
                 wordWrap: "on",
-                quickSuggestions: false,
-                hover: { enabled: false },
-                suggestOnTriggerCharacters: false,
+                quickSuggestions: true,
+                hover: { enabled: true },
+                suggestOnTriggerCharacters: true,
                 tabCompletion: "on",
+                smoothScrolling: true,
+                autoClosingBrackets: 'always'
               }}
               onChange={(newValue) => {
                 if ((newValue ?? "").replace(/\r\n/g, "\n") !== (selectedFileContent ?? "").replace(/\r\n/g, "\n")) {

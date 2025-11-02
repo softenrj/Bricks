@@ -303,7 +303,7 @@ export const __getSuggestion = async (cont: string): Promise<string | null> => {
                 toast.error(error?.message ?? "Something went wrong");
                 resolve(null);
             }
-        }, 400);
+        }, 600);
     });
     return lastPromise;
 };

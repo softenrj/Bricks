@@ -3,7 +3,11 @@
 // See LICENSE for details.
 "use client";
 import React from "react";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "../ui/resizable";
 import AppEditor from "../CodeEditor/AppEditor";
 import TerminalPanel from "../CodeEditor/Terminal";
 import PreviewPanel from "../CodeEditor/PreviewTab";
@@ -14,58 +18,69 @@ import { useAppDispatch } from "@/hooks/redux";
 import { initialFSWebContainer } from "@/service/webContainer";
 import ProcessBar from "../CodeEditor/ProcessBar";
 import RealTimePanel from "../common/RealTimePanel";
+import FooterController from "../CodeEditor/FooterController";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
+
   const getProjectFs = async () => {
     const response1 = await projectFileSystem(projectId);
     const response2 = await getProjectDetails(projectId);
-    dispatch(setTree(response1))
-    if (response2) dispatch(setProjectName(response2?.name))
-    // push to webContainer
+    dispatch(setTree(response1));
+    if (response2) dispatch(setProjectName(response2?.name));
     await initialFSWebContainer(response1);
-  }
+  };
 
   React.useEffect(() => {
-    getProjectFs()
-  }, [])
+    getProjectFs();
+  }, []);
 
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className="min-h-[200px] border md:min-w-[450px] h-full"
-    >
-      {/* Left FS */}
-      <ResizablePanel defaultSize={15} maxSize={25} minSize={10}>
-        <FileSystemPanel projectId={projectId} />
-      </ResizablePanel>
-      <ResizableHandle />
+    <div className="flex flex-col h-full w-full overflow-hidden">
+      {/* Main resizable area */}
+      <div className="flex-1 overflow-hidden">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="h-full border md:min-w-[450px]"
+        >
+          {/* Left FS */}
+          <ResizablePanel defaultSize={15} maxSize={25} minSize={10}>
+            <FileSystemPanel projectId={projectId} />
+          </ResizablePanel>
+          <ResizableHandle />
 
-      {/* Editor + Terminal */}
-      <ResizablePanel defaultSize={45}>
-        <div className="flex flex-col h-full">
-          <ResizablePanelGroup direction="vertical">
-            <ResizablePanel defaultSize={75}>
-              <AppEditor />
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={35} maxSize={45}>
-              <TerminalPanel />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
+          {/* Editor + Terminal */}
+          <ResizablePanel defaultSize={45}>
+            <div className="flex flex-col h-full">
+              <ResizablePanelGroup direction="vertical">
+                <ResizablePanel defaultSize={75}>
+                  <AppEditor />
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={35} maxSize={45}>
+                  <TerminalPanel />
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
+          </ResizablePanel>
 
-      {/* Preview */}
-      <ResizablePanel defaultSize={35}>
-        <div className="flex flex-col h-full">
-          <PreviewPanel />
-          <ProcessBar />
-        </div>
-      </ResizablePanel>
-        <RealTimePanel />
-    </ResizablePanelGroup>
+          <ResizableHandle />
+
+          {/* Preview */}
+          <ResizablePanel defaultSize={35}>
+            <div className="flex flex-col h-full">
+              <PreviewPanel />
+              <ProcessBar />
+            </div>
+          </ResizablePanel>
+
+          <RealTimePanel />
+        </ResizablePanelGroup>
+      </div>
+
+      {/* Bottom Strip */}
+      <FooterController />
+    </div>
   );
 }
 

@@ -8,6 +8,7 @@ import userSlice from "./Reducers/user"
 import contextSlice from "./Reducers/fileContext"
 import chatSlice from "./Reducers/chatSlice"
 import chatTabs from "./Reducers/chatTabs"
+import Idefeatures from "./Reducers/IdeFeatures"
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,8 @@ export const store = configureStore({
     user: userSlice,
     context: contextSlice,
     bricksChat: chatSlice,
-    chatTabs: chatTabs
+    chatTabs: chatTabs,
+    IdeFeatures: Idefeatures
   },
 })
 
