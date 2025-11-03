@@ -99,8 +99,8 @@ const fsSlice = createSlice({
       state.selectedFileContent = action.payload;
     },
 
-    updateFileContent: (state, action: PayloadAction<{ path: string; content: string }>) => {
-      const { path, content } = action.payload;
+    updateFileContent: (state, action: PayloadAction<{ path: string; content: string, projectId: string }>) => {
+      const { path, content, projectId } = action.payload;
       // Update current active file content if selected
       if (state.selectedFile === path) {
         state.selectedFileContent = content;
@@ -117,15 +117,15 @@ const fsSlice = createSlice({
       const name = segments.pop()!;
       const parentPath = segments.length > 0 ? segments.join('/') : '.';
 
-      fileUpdate(name, parentPath, content);
+      fileUpdate(name, parentPath, content, projectId);
 
       if (wc) {
         wc.fs.writeFile(path, content);
       }
     },
 
-    renameFileName: (state, action: PayloadAction<{ oldPath: string; newName: string }>) => {
-      const { oldPath, newName } = action.payload;
+    renameFileName: (state, action: PayloadAction<{ oldPath: string; newName: string, projectId: string }>) => {
+      const { oldPath, newName, projectId } = action.payload;
       const segments = oldPath.split("/");
       const oldName = segments.pop()!;
       if (oldName === newName) return;
@@ -149,11 +149,11 @@ const fsSlice = createSlice({
       }
 
       const parentPath = segments.length > 0 ? segments.join("/") : ".";
-      fileRename(parentPath, oldName, newName)
+      fileRename(parentPath, oldName, newName, projectId)
     },
 
-    deleteFile: (state, action: PayloadAction<{ fullPath: string; name: string }>) => {
-      const { fullPath, name } = action.payload;
+    deleteFile: (state, action: PayloadAction<{ fullPath: string; name: string, projectId: string }>) => {
+      const { fullPath, name, projectId } = action.payload;
       const segments = fullPath.split("/");
       segments.pop();
 
@@ -175,7 +175,7 @@ const fsSlice = createSlice({
           : "";
       }
       const parentPath = segments.length > 0 ? segments.join("/") : ".";
-      removeFile(parentPath, name);
+      removeFile(parentPath, name, projectId);
     },
     setActivepath: (state, action: PayloadAction<string>) => {
       let parentPath = action.payload.trim();
@@ -209,7 +209,7 @@ const fsSlice = createSlice({
         state.openTabs.push({ name: path, isEditing: false });
       }
 
-      fileUpdate(name, cleanParent || ".", "");
+      fileUpdate(name, cleanParent || ".", "", projectId);
       wc?.fs.writeFile(path, "");
       newFileSocket(parentPath,name, projectId)
     },

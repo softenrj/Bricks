@@ -10,14 +10,15 @@ const socket = getSocket();
  * @param fsc 
  * @returns 
  */
-export const fileUpdate = (name: string,src: string, fsc: string) => {
+export const fileUpdate = (name: string,src: string, fsc: string, projectId: string) => {
     if (!socket) return ;
     const encodedContent = Buffer.from(fsc, "utf-8").toString("base64");
     // Emit the socket event
     socket.emit(SOCKET_FILE_UPDATE, {
         path: src,
         fsContent: encodedContent,
-        name: name
+        name: name,
+        projectId: projectId
     });
 }
 
@@ -28,13 +29,14 @@ export const fileUpdate = (name: string,src: string, fsc: string) => {
  * @param name 
  * @returns 
  */
-export const fileRename = (src: string,oldName: string, name: string) => {
+export const fileRename = (src: string,oldName: string, name: string,projectId: string) => {
     if (!socket) return ;
 
     socket.emit(SOCKET_FILE_RENAME, {
         path: src,
         oldName,
-        name
+        name,
+        projectId: projectId
     })
 }
 
@@ -78,11 +80,12 @@ export const newFolderSocket = (src: string, name: string, projectId: string) =>
  * @param name 
  * @returns 
  */
-export const removeFile = (src: string, name: string) => {
+export const removeFile = (src: string, name: string, projectId: string) => {
     if (!socket) return ;
 
     socket.emit(SOCKET_REMOVE_FILE , {
         path: src,
-        name
+        name,
+        projectId: projectId
     })
 }

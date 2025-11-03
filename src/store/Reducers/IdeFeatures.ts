@@ -2,14 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IdeFeatures {
   codeCompletion: boolean;
+  autoSave: boolean;
+  realTimePanel: boolean;
 }
-
+const defaultState = { codeCompletion: false, autoSave: false, realTimePanel: true }
 const loadFromLocalStorage = (): IdeFeatures => {
   try {
     const saved = localStorage.getItem("Bricks:Ide-features");
-    return saved ? JSON.parse(saved) : { codeCompletion: false };
+    return saved ? JSON.parse(saved) : defaultState;
   } catch {
-    return { codeCompletion: false };
+    return defaultState;
   }
 };
 
@@ -31,8 +33,16 @@ const IdeFeaturesSlice = createSlice({
       state.codeCompletion = action.payload;
       saveToLocalStorage(state);
     },
+    toggleAutoSave: (state, action: PayloadAction<boolean>) => {
+      state.autoSave = action.payload;
+      saveToLocalStorage(state);
+    },
+    togglePanel: (state, action: PayloadAction<boolean>) => {
+      state.realTimePanel = action.payload;
+      saveToLocalStorage(state);
+    }
   },
 });
 
 export default IdeFeaturesSlice.reducer;
-export const { toggleCodeCompletion } = IdeFeaturesSlice.actions;
+export const { toggleCodeCompletion, toggleAutoSave, togglePanel } = IdeFeaturesSlice.actions;

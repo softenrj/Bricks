@@ -44,7 +44,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
   };
 
   const handleRename = (fullPath: string) => {
-    dispatch(renameFileName({ oldPath: fullPath, newName }));
+    dispatch(renameFileName({ oldPath: fullPath, newName, projectId: projectId }));
     setEditingPath(null);
   };
 
@@ -54,7 +54,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
   };
 
   const removeFile = (fullPath: string, name: string) => {
-    dispatch(deleteFile({ fullPath, name }));
+    dispatch(deleteFile({ fullPath, name, projectId }));
   };
 
   const startCreating = (parentPath: string, type: "file" | "folder") => {

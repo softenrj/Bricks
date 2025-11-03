@@ -10,7 +10,11 @@ export function getSocket(): Socket | null {
   if (!socket) {
     socket = io(serverUrl, {
       transports: ["websocket"],
-      auth: { token: token }
+      auth: { token: token },
+      autoConnect: true, 
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
     socket.on("connect", () => {
@@ -20,7 +24,20 @@ export function getSocket(): Socket | null {
     socket.on("disconnect", () => {
       console.log("Bricks:webSocket disconnected");
     });
+
+    socket.on("reconnect", () => {
+      console.log("Bricks:webSocket reconnected");
+    });
+
+    socket.on("reconnect_failed", () => {
+      console.log("Bricks:webSocket reconnection failed");
+    });
   }
 
   return socket;
+}
+
+// Auto-connect the socket when the module is loaded on the client-side
+if (typeof window !== "undefined") {
+  getSocket();
 }

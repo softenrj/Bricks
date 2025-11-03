@@ -7,6 +7,7 @@ import { API_BRICKS_CODE_COMPLETION, API_BRICKS_CODE_SUGGESION, API_BRICKS_DELET
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 import { BricksChat, Message } from "../../types/chatMessage";
+import { LanguageEnum } from "@/feature/LanguageEnum";
 
 export interface Filter {
     sort: "asc" | "dsc",
@@ -308,13 +309,15 @@ export const __getSuggestion = async (cont: string): Promise<string | null> => {
     return lastPromise;
 };
 
-export const __getCodeCompletion = async (cont: string): Promise<string | null> => {
+export const __getCodeCompletion = async (cont: string, fileName: string, fileLanguage: string): Promise<string | null> => {
     try {
         const encodedContent = Buffer.from(cont, 'utf-8').toString('base64');
         const response = await postApi<ApiResponse<string>>({
             url: API_BRICKS_CODE_COMPLETION,
             values: {
-                context: encodedContent
+                context: encodedContent,
+                fileName: fileName,
+                fileLanguage: fileLanguage
             }
         })
         if (response?.success) {

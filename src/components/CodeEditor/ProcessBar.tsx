@@ -34,7 +34,7 @@ function ProcessBar() {
     }, [socket]);
 
     return (
-        <div className="absolute z-999 bottom-4 right-4 flex items-center">
+        <div className="absolute z-1 bottom-10 right-4 flex items-center">
             <Tooltip content={message || "Idle"}>
                 <motion.div
                     initial={{ width: 40 }}

@@ -13,7 +13,7 @@ import MarkDownPreview from "./MarkDownPreview";
 import { __getSuggestion } from "@/service/api.project";
 import { configureMonacoTailwindcss, tailwindcssData } from 'monaco-tailwindcss'
 
-function AppEditor() {
+function AppEditor({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
   const { selectedFile, selectedFileContent, selectedLanguage } = useAppSelector((state) => state.fs);
   const [showMd, setShowMd] = useState<boolean>(false);
@@ -23,6 +23,7 @@ function AppEditor() {
   const selectedFileContentRef = useRef<string | null>(null);
   const codeCompletion = useAppSelector(state => state.IdeFeatures).codeCompletion;
   const inlineProviderRef = useRef<any>(null);
+  const isAutoSave = useAppSelector(state => state.IdeFeatures).autoSave
 
   window.MonacoEnvironment = {
     getWorker(moduleId, label) {
@@ -93,9 +94,7 @@ function AppEditor() {
 
 
   const codeCompletionSugg = async (snipts: string) => {
-    console.log(codeCompletion)
     if (codeCompletion) {
-      console.log(codeCompletion)
       return await __getSuggestion(snipts)
     }
     return null;
@@ -222,7 +221,7 @@ function AppEditor() {
         return;
       }
 
-      dispatch(updateFileContent({ path: currentFile, content: value }));
+      dispatch(updateFileContent({ path: currentFile, content: value, projectId}));
       dispatch(setFileChange({ name: currentFile, isEditing: false }));
     });
 
@@ -233,6 +232,12 @@ function AppEditor() {
     // Dispose provider on editor disposal
     editor.onDidDispose(() => provider?.dispose());
   };
+
+  const autoSave = (value: string) => {
+    if (!selectedFile) return ;
+    dispatch(updateFileContent({ path: selectedFile, content: value, projectId}));
+      dispatch(setFileChange({ name: selectedFile, isEditing: false }));
+  }
 
 
 
@@ -268,7 +273,8 @@ function AppEditor() {
               onChange={(newValue) => {
                 if ((newValue ?? "").replace(/\r\n/g, "\n") !== (selectedFileContent ?? "").replace(/\r\n/g, "\n")) {
                   dispatch(setFileChange({ name: selectedFile!, isEditing: true }));
-                }
+                  if (isAutoSave && newValue ) autoSave(newValue)
+                } 
               }}
             />
 

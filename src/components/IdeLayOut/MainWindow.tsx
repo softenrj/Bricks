@@ -54,11 +54,11 @@ function MainWindow({ projectId }: { projectId: string }) {
             <div className="flex flex-col h-full">
               <ResizablePanelGroup direction="vertical">
                 <ResizablePanel defaultSize={75}>
-                  <AppEditor />
+                  <AppEditor projectId={projectId} />
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={35} maxSize={45}>
-                  <TerminalPanel />
+                  <TerminalPanel projectId={projectId} />
                 </ResizablePanel>
               </ResizablePanelGroup>
             </div>

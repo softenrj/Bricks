@@ -13,6 +13,8 @@ import {
 import { getSocket } from '@/socket/socket'
 import { IO_BRICKS_REALTIME } from '@/utils/api/socket.events'
 import { RealtimeStatusSocket } from '@/types/realTimePanelType'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
+import { togglePanel } from '@/store/Reducers/IdeFeatures'
 
 const typeColors: Record<string, string> = {
   info: "text-blue-400",
@@ -33,9 +35,10 @@ const funColors = [
 function RealTimePanel() {
   const [messages, setMessages] = useState<RealtimeStatusSocket[]>([])
   const [visible, setVisible] = useState(false)
-  const [close, setClose] = useState(false)
   const socket = getSocket()
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const realTimePanel = useAppSelector(state => state.IdeFeatures).realTimePanel
+  const dispatch = useAppDispatch()
 
   const resetTimeout = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
@@ -73,20 +76,7 @@ function RealTimePanel() {
   }
 
   return (
-    close ? (
-      <div className="absolute z-[999] bottom-12 right-1 flex items-center">
-        <Tooltip content={"Real Time Process"}>
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            onClick={() => setClose(false)}
-          >
-            <Atom size={22} className="text-pink-500 cursor-pointer" />
-          </motion.div>
-        </Tooltip>
-      </div>
-    ) : (
+    realTimePanel && (
       <ContextMenu>
         <ContextMenuTrigger>
           <AnimatePresence>
@@ -96,7 +86,7 @@ function RealTimePanel() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.8 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="absolute right-10 bottom-5 w-80 h-48 bg-black/70 rounded-xl shadow-[0px_0px_33px_23px_rgba(0,0,0,0.7)] backdrop-blur-sm overflow-hidden flex flex-col p-4 gap-1"
+                className="absolute right-10 bottom-16 w-70 h-40 bg-black/70 rounded-xl shadow-[0px_0px_33px_23px_rgba(0,0,0,0.7)] backdrop-blur-sm overflow-hidden flex flex-col p-4 gap-1"
               >
                 <AnimatePresence>
                   {messages.map((msg, idx) => (
@@ -121,7 +111,7 @@ function RealTimePanel() {
         <ContextMenuContent>
           <ContextMenuItem
             className="flex items-center gap-2 rounded-md data-[highlighted]:bg-gray-700/70 data-[highlighted]:text-white focus:outline-none"
-            onClick={() => setClose(true)}
+            onClick={() => dispatch(togglePanel(!realTimePanel))}
           >
             <Minimize size={16} />
             Close Terminal

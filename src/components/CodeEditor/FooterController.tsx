@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import { Braces, ChevronsLeftRightEllipsis, ChevronLeft, ChevronRight } from "lucide-react";
+import { Braces, ChevronsLeftRightEllipsis, ChevronLeft, ChevronRight, Save, SaveOff } from "lucide-react";
 import { Tooltip } from "../common/Tooltip";
-import { Button } from "../ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { toggleCodeCompletion } from "@/store/Reducers/IdeFeatures";
+import { toggleAutoSave, toggleCodeCompletion, togglePanel } from "@/store/Reducers/IdeFeatures";
 import { getSocket } from "@/socket/socket";
 import { ProcessSocketType } from "@/types/processSocket";
 import { IO_BRICKS_PROCESS_STATUS } from "@/utils/api/socket.events";
 import { __getCodeCompletion } from "@/service/api.project";
 import { aiCodeGen, setFileChange, setFileContent } from "@/store/Reducers/fsSlice";
+import { Switch } from "../ui/switch";
 
 interface Snapshot {
   fileName: string;
@@ -27,8 +27,8 @@ export default function FooterController() {
   const socket = getSocket();
   const dispatch = useAppDispatch();
 
-  const { codeCompletion } = useAppSelector((state) => state.IdeFeatures);
-  const { selectedFile, selectedFileContent } = useAppSelector((state) => state.fs);
+  const { codeCompletion, autoSave, realTimePanel } = useAppSelector((state) => state.IdeFeatures);
+  const { selectedFile, selectedFileContent, selectedLanguage } = useAppSelector((state) => state.fs);
 
   /** Toggle inline code suggestion (on/off) */
   const handleCodeCompletion = () => {
@@ -51,7 +51,8 @@ export default function FooterController() {
       return newSnap;
     });
 
-    const response = await __getCodeCompletion(selectedFileContent);
+    if (!selectedFileContent || !selectedLanguage || !selectedFile) return ;
+    const response = await __getCodeCompletion(selectedFileContent, selectedFile, selectedLanguage);
     if (!response) return;
 
     dispatch(setFileChange({name: selectedFile || '', isEditing: true}))
@@ -135,8 +136,8 @@ export default function FooterController() {
         </button>
       </Tooltip>
 
-      {/* Snapshot Navigation */}
-      {snapshotData && snapshotData.snapshots.length > 0 && (
+      <div className="ml-auto flex items-center gap-3">
+        {snapshotData && snapshotData.snapshots.length > 0 && (
         <div className="flex items-center gap-1 ">
           <Tooltip content="Previous snapshot">
             <button
@@ -158,6 +159,16 @@ export default function FooterController() {
           </Tooltip>
         </div>
       )}
+
+      <Tooltip content={realTimePanel ? "RealTime Panel is on" : "RealTime Panel is off"}>
+        <Switch checked={realTimePanel} onClick={() => dispatch(togglePanel(!realTimePanel))} />
+      </Tooltip>
+      <Tooltip content={autoSave ? "Auto Save on" : "Auto Save close"}>
+        <div onClick={() => dispatch(toggleAutoSave(!autoSave))}>
+          {autoSave ? <SaveOff size={14} className="text-green-400" /> : <Save size={14} className="text-pink-500" />}
+        </div>
+      </Tooltip>
+      </div>
     </div>
   );
 }
