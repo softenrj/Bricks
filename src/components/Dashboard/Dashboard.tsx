@@ -18,6 +18,8 @@ function Dashboard() {
     const fetchUser = async () => {
       try {
         const user = await getUser();
+        // initialize Socket
+        const socket = getSocket();
         if (user) {
           dispatch(setUserdata(user));
         }
@@ -29,10 +31,6 @@ function Dashboard() {
     fetchUser();
   }, [dispatch]);
 
-  React.useEffect(() => {
-    // initialize Socket
-    const socket = getSocket();
-  }, [])
 
 
   return (

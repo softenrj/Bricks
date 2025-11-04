@@ -5,6 +5,7 @@ import { Badge } from '../ui/badge'
 import Image from 'next/image'
 import { Tooltip } from './Tooltip'
 import { useAppSelector } from '@/hooks/redux'
+import { getSocket } from '@/socket/socket'
 
 function DashboardNavStrip() {
   const today = new Date().toLocaleDateString("en-GB", {
@@ -14,12 +15,15 @@ function DashboardNavStrip() {
   });
 
   const user = useAppSelector(state => state.user);
+  const socket = getSocket();
 
   return (
     <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm max-w-screen">
       {/* Left side */}
       <div className="flex items-center gap-2">
-        <Activity size={16} className="text-green-500" />
+        <Tooltip content={socket ? "offline" : "online"}>
+          <Activity size={16} className={socket ? "text-green-500" : "text-pink-500"} />
+        </Tooltip>
         <Badge className="bg-green-700 text-[10px] px-2 py-0.5 rounded-full">
           RealTime
         </Badge>
