@@ -9,6 +9,7 @@ import ReduxProvider from "@/context/ReduxProvider";
 import { Toaster } from "react-hot-toast"
 import "./globals.css";
 import '@xyflow/react/dist/style.css';
+import "@/socket/socket"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
