@@ -1,7 +1,8 @@
 import { SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
 import { getSocket } from "./socket";
+import { Socket } from "socket.io-client";
 
-const socket = getSocket();
+let socket: Socket | null;
 
 /**
  * 
@@ -11,10 +12,10 @@ const socket = getSocket();
  * @returns 
  */
 export const fileUpdate = (name: string,src: string, fsc: string, projectId: string) => {
-    if (!socket) return ;
+    if (!socket) socket = getSocket();
     const encodedContent = Buffer.from(fsc, "utf-8").toString("base64");
     // Emit the socket event
-    socket.emit(SOCKET_FILE_UPDATE, {
+    socket?.emit(SOCKET_FILE_UPDATE, {
         path: src,
         fsContent: encodedContent,
         name: name,
@@ -30,9 +31,9 @@ export const fileUpdate = (name: string,src: string, fsc: string, projectId: str
  * @returns 
  */
 export const fileRename = (src: string,oldName: string, name: string,projectId: string) => {
-    if (!socket) return ;
+    if (!socket) socket = getSocket();
 
-    socket.emit(SOCKET_FILE_RENAME, {
+    socket?.emit(SOCKET_FILE_RENAME, {
         path: src,
         oldName,
         name,
@@ -48,9 +49,9 @@ export const fileRename = (src: string,oldName: string, name: string,projectId: 
  * @returns 
  */
 export const newFileSocket = (src: string, name: string, projectId: string) => {
-    if (!socket) return ;
+    if (!socket) socket = getSocket();
 
-    socket.emit(SOCKET_NEW_FILE, {
+    socket?.emit(SOCKET_NEW_FILE, {
         path: src,
         name,
         projectId
@@ -65,9 +66,9 @@ export const newFileSocket = (src: string, name: string, projectId: string) => {
  * @returns 
  */
 export const newFolderSocket = (src: string, name: string, projectId: string) => {
-    if (!socket) return ;
+    if (!socket) socket = getSocket();
 
-    socket.emit(SOCKET_NEW_FOLDER, {
+    socket?.emit(SOCKET_NEW_FOLDER, {
         path: src,
         name,
         projectId
@@ -81,9 +82,9 @@ export const newFolderSocket = (src: string, name: string, projectId: string) =>
  * @returns 
  */
 export const removeFile = (src: string, name: string, projectId: string) => {
-    if (!socket) return ;
+    if (!socket) socket = getSocket();
 
-    socket.emit(SOCKET_REMOVE_FILE , {
+    socket?.emit(SOCKET_REMOVE_FILE , {
         path: src,
         name,
         projectId: projectId
