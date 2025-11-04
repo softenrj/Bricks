@@ -21,7 +21,7 @@ function DashboardNavStrip() {
     <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm max-w-screen">
       {/* Left side */}
       <div className="flex items-center gap-2">
-        <Tooltip content={socket ? "offline" : "online"}>
+        <Tooltip content={socket ?  "online" : "offline"}>
           <Activity size={16} className={socket ? "text-green-500" : "text-pink-500"} />
         </Tooltip>
         <Badge className="bg-green-700 text-[10px] px-2 py-0.5 rounded-full">
