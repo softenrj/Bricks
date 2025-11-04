@@ -13,6 +13,7 @@ const getFreshToken = async (): Promise<string | null> => {
     const token = await user.getIdToken(true)
     return token
   }
+  if (typeof window === 'undefined') return null;
   const token = localStorage.getItem('bricks:auth')
   return token
 }
@@ -43,8 +44,10 @@ defaultAxios.interceptors.response.use(
           fontWeight: "500",
         }
       });
-      localStorage.removeItem("bricks:auth");
-      window.location.href = "/";
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("bricks:auth");
+        window.location.href = "/";
+      }
     }
     return Promise.reject(error);
   }

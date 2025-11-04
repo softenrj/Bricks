@@ -103,14 +103,19 @@ export class AuthProvider {
   }
 
   private static persistToken(token: string): void {
-    localStorage.setItem("bricks:auth", token);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("bricks:auth", token);
+    }
   }
 
   public static clearToken(): void {
-    localStorage.removeItem("bricks:auth");
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("bricks:auth");
+    }
   }
 
   public static getToken(): string | null {
+    if (typeof window === 'undefined') return null;
     return localStorage.getItem("bricks:auth");
   }
 }

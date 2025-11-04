@@ -5,6 +5,7 @@ let socket: Socket | null = null;
 
 export function getSocket(): Socket | null {
   if (!socket) {
+    if (typeof window === 'undefined') return null;
     const token = localStorage.getItem("bricks:auth");
     return connectSocket(token)
   };

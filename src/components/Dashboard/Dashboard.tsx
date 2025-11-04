@@ -36,8 +36,10 @@ function Dashboard() {
       const socket = getSocket();
 
       if (!socket?.connected) {
-        const token = localStorage.getItem("bricks:auth");
-        connectSocket(token);
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem("bricks:auth");
+          connectSocket(token);
+        }
         setTimeout(tryConnect, 2000);
       } else {
         console.log("✅ Socket connected successfully");

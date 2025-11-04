@@ -2,7 +2,7 @@ import { IUser } from "@/types/user";
 
 
 export const setLocalStorage = (user: Partial<IUser>): void => {
-    if (typeof window === 'undefined') return ;
+    if (typeof window === 'undefined') return;
     localStorage.setItem('bricks:user', JSON.stringify(user));
 }
 export const getUserLocalStorage = (): Partial<IUser> => {

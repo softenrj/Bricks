@@ -7,6 +7,7 @@ interface IdeFeatures {
 }
 const defaultState = { codeCompletion: false, autoSave: false, realTimePanel: true }
 const loadFromLocalStorage = (): IdeFeatures => {
+  if (typeof window === 'undefined') return defaultState;
   try {
     const saved = localStorage.getItem("Bricks:Ide-features");
     return saved ? JSON.parse(saved) : defaultState;

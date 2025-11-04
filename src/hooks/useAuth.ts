@@ -14,9 +14,13 @@ export const useAuth = () => {
             setUser(firebaseUser);
             if (firebaseUser) {
                 const token = await firebaseUser.getIdToken()
-                localStorage.setItem("bricks:auth", token);
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem("bricks:auth", token);
+                }
             } else {
-                localStorage.removeItem("bricks:auth")
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem("bricks:auth")
+                }
             }
             setChecking(false);
         })
