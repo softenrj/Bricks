@@ -89,13 +89,6 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
             onClick={() => {
               if (!editingPath) {
                 dispatch(setSelectedFile(fullPath));
-                try {
-                  const content = atob(name);
-                  dispatch(setFileContent(content));
-                  const ext = fullPath.split(".").pop()?.toLowerCase() as keyof typeof LanguageEnum;
-                  const lang = LanguageEnum[ext] || LanguageEnum.md;
-                  dispatch(setFileLanguage(lang));
-                } catch { }
               }
             }}
           >
