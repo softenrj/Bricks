@@ -42,7 +42,7 @@ function Dashboard() {
         }
         setTimeout(tryConnect, 2000);
       } else {
-        console.log("✅ Socket connected successfully");
+        console.log("Socket connected successfully");
       }
     };
 

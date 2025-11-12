@@ -281,21 +281,19 @@ export const getProjectDetails = async (projectId: string): Promise<Project | nu
 let suggestionTimeout: NodeJS.Timeout | null = null;
 let lastPromise: Promise<string | null> | null = null;
 
-export const __getSuggestion = async (cont: string): Promise<string | null> => {
+export const __getSuggestion = async (content: string): Promise<string | null> => {
     if (suggestionTimeout) clearTimeout(suggestionTimeout);
 
     lastPromise = new Promise((resolve) => {
         suggestionTimeout = setTimeout(async () => {
             try {
-                const encodedContent = Buffer.from(cont, "utf-8").toString("base64");
                 const response = await postApi<ApiResponse<string>>({
                     url: API_BRICKS_CODE_SUGGESION,
-                    values: { context: encodedContent },
+                    values: { context: content },
                 });
 
                 if (response?.success) {
-                    const decode = atob(response.data);
-                    resolve(decode);
+                    resolve(response.data);
                 } else {
                     resolve(null);
                 }
@@ -309,20 +307,18 @@ export const __getSuggestion = async (cont: string): Promise<string | null> => {
     return lastPromise;
 };
 
-export const __getCodeCompletion = async (cont: string, fileName: string, fileLanguage: string): Promise<string | null> => {
+export const __getCodeCompletion = async (content: string, fileName: string, fileLanguage: string): Promise<string | null> => {
     try {
-        const encodedContent = Buffer.from(cont, 'utf-8').toString('base64');
         const response = await postApi<ApiResponse<string>>({
             url: API_BRICKS_CODE_COMPLETION,
             values: {
-                context: encodedContent,
+                context: content,
                 fileName: fileName,
                 fileLanguage: fileLanguage
             }
         })
         if (response?.success) {
-            const decode = atob(response.data);
-            return decode;
+            return response.data;
         }
         return null;
     } catch (error: any) {

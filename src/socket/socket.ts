@@ -26,24 +26,24 @@ export function connectSocket(token: string | null): Socket | null {
     });
 
     socket.on("connect", () => {
-      console.log("✅ Bricks:webSocket connected with id:", socket!.id);
+      console.log("Bricks:webSocket connected with id:", socket!.id);
     });
 
     socket.on("disconnect", () => {
-      console.log("❌ Bricks:webSocket disconnected");
+      console.log("Bricks:webSocket disconnected");
     });
 
     socket.on("reconnect", () => {
-      console.log("♻️ Bricks:webSocket reconnected");
+      console.log("Bricks:webSocket reconnected");
     });
 
     socket.on("reconnect_failed", () => {
-      console.log("⚠️ Bricks:webSocket reconnection failed");
+      console.log("Bricks:webSocket reconnection failed");
     });
   }
 
   if (!socket?.connected) {
-    socket?.connect(); // ✅ ensure it actually tries to connect
+    socket?.connect(); // ensure it actually tries to connect
   }
 
   return socket;

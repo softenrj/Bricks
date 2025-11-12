@@ -31,8 +31,6 @@ export const getContextChild = async (projectId: string, fileId: string): Promis
             url: API_BRICKS_PROJECT_CHILD + `/${projectId}?projectFileId=${fileId}`
         })
 
-        console.log(response)
-
         if (response) {
             return response.data
         }

@@ -26,11 +26,9 @@ async function buildTree(
   for (const key of Object.keys(tree)) {
     const value = tree[key];
     const path = baseAddress === "." ? key : `${baseAddress}/${key}`;
-
     if (typeof value === "string") {
       // It's a file
-      const content = Buffer.from(value, "base64").toString("utf-8");
-      await container.fs.writeFile(path, content);
+      await container.fs.writeFile(path, value);
 
     } else {
       // It's a directory

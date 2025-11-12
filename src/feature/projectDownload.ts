@@ -24,21 +24,11 @@ const generatePhysicalFileSystem = (zip: JSZip, fs: FSData) => {
 
     if (typeof value === "string") {
       try {
-        let base64Content = value.trim();
+        let content = value.trim();
 
-        if (base64Content.includes(",")) {
-          base64Content = base64Content.split(",")[1];
-        }
-
-        if (isValidBase64(base64Content)) {
-          const content = atob(base64Content);
-          zip.file(key, content);
-        } else {
-          console.warn(`${key} is not valid Base64 — saving raw text`);
-          zip.file(key, value);
-        }
+        zip.file(key, content);
       } catch (err) {
-        console.error(` Failed to decode ${key}`, err);
+        console.error(` Failed to generate ${key}`, err);
         zip.file(key, value);
       }
     } else if (typeof value === "object" && value !== null) {

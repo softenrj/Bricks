@@ -13,11 +13,10 @@ let socket: Socket | null;
  */
 export const fileUpdate = (name: string,src: string, fsc: string, projectId: string) => {
     if (!socket) socket = getSocket();
-    const encodedContent = Buffer.from(fsc, "utf-8").toString("base64");
     // Emit the socket event
     socket?.emit(SOCKET_FILE_UPDATE, {
         path: src,
-        fsContent: encodedContent,
+        fsContent: fsc,
         name: name,
         projectId: projectId
     });
