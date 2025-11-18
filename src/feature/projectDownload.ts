@@ -24,9 +24,7 @@ const generatePhysicalFileSystem = (zip: JSZip, fs: FSData) => {
 
     if (typeof value === "string") {
       try {
-        let content = value.trim();
-
-        zip.file(key, content);
+        zip.file(key, value.trim());
       } catch (err) {
         console.error(` Failed to generate ${key}`, err);
         zip.file(key, value);
