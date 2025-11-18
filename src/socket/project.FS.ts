@@ -47,13 +47,14 @@ export const fileRename = (src: string,oldName: string, name: string,projectId: 
  * @param projectId 
  * @returns 
  */
-export const newFileSocket = (src: string, name: string, projectId: string) => {
+export const newFileSocket = (src: string, name: string, projectId: string, content?: string) => {
     if (!socket) socket = getSocket();
 
     socket?.emit(SOCKET_NEW_FILE, {
         path: src,
         name,
-        projectId
+        projectId,
+        content
     })
 }
 

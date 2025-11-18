@@ -214,6 +214,34 @@ const fsSlice = createSlice({
       newFileSocket(parentPath,name, projectId)
     },
 
+    newFileWithContent: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string, content: string}>) => {
+      const { parentPath, name, projectId, content } = action.payload;
+      const cleanParent = parentPath === "." ? "" : parentPath;
+      const path = cleanParent ? `${cleanParent}/${name}` : name;
+      const segments = path.split("/");
+
+      // walk tree
+      let node: any = state.tree;
+      for (let i = 0; i < segments.length - 1; i++) {
+        const seg = segments[i];
+        if (!node[seg]) node[seg] = {};
+        node = node[seg] as FSData;
+      }
+
+      node[segments[segments.length - 1]] = content;
+      state.selectedFile = path;
+      state.activePath = cleanParent || ".";
+      state.selectedFileContent = content;
+      state.selectedLanguage = detectLanguage(name);
+
+      if (!state.openTabs.some(t => t.name === path)) {
+        state.openTabs.push({ name: path, isEditing: false });
+      }
+
+      fileUpdate(name, cleanParent || ".", content, projectId);
+      newFileSocket(parentPath,name, projectId, content)
+    },
+
     newFolder: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string }>) => {
       const { parentPath, name, projectId } = action.payload;
       const cleanParent = parentPath === "." ? "" : parentPath;
@@ -247,6 +275,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen } = fsSlice.actions;
+export const { setSelectedFile, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent } = fsSlice.actions;
 
 export default fsSlice.reducer;

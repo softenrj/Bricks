@@ -82,6 +82,7 @@ export const startShell = createAsyncThunk<void, void>(
 export const sendToShell = async (
   command: string,
   dispatch: AppDispatch,
+  projectId: string,
   onPackageJsonUpdate?: (content: string) => void
 ) => {
   const npmCommandRegex = /^(npm\s+(install|i|uninstall|remove|update|add))/;
@@ -106,7 +107,7 @@ export const sendToShell = async (
       process.output.pipeTo(writer);
       await process.exit;
 
-      await initFsWatcherPipeLine(dispatch);
+      await initFsWatcherPipeLine(dispatch, projectId);
       // Refresh package.json after npm finishes
       // const content = await wc.fs.readFile("package.json", "utf-8");
       // onPackageJsonUpdate?.(content);

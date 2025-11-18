@@ -5,6 +5,7 @@ import { WebContainer } from "@webcontainer/api";
 import { FSData } from "../../types/fs";
 import { AppDispatch } from "@/store/store";
 import { addLog } from "@/store/Reducers/webContainer";
+import { newFile, newFileWithContent } from "@/store/Reducers/fsSlice";
 
 let wc: WebContainer | null = null;
 let wcBootPromise: Promise<WebContainer> | null = null;
@@ -46,18 +47,16 @@ export async function initialFSWebContainer(tree: FSData): Promise<void> {
 }
 
 
-export async function initFsWatcherPipeLine(dispatch: AppDispatch): Promise<void> {
-  console.log("watching bro....")
+export async function initFsWatcherPipeLine(dispatch: AppDispatch, projectId: string): Promise<void> {
   const container = await getWebContainer();
   if (!container) return;
-  const content = await container.fs.readFile("package.json", "utf-8")
-  console.log('check 2   ',content)
-  container.fs.watch('package.json', { recursive: true }, async (event, fileName) => {
+  const content = await container.fs.readdir("/", "utf-8")
+  container.fs.watch('/', { recursive: true }, async (event, fileName) => {
     if (!fileName) return;
-    console.log('check 3')
-    const filePath = String(fileName).startsWith("/")
-      ? fileName
-      : `/${fileName}`;
+
+    if (String(fileName).startsWith("node_modules") || String(fileName).includes("/node_modules/")) {
+      return;
+    }
 
     dispatch(addLog({
       text: `FS updated: ${event} → ${fileName}`,
@@ -66,14 +65,18 @@ export async function initFsWatcherPipeLine(dispatch: AppDispatch): Promise<void
     }));
 
     try {
-      const content = container.fs.readFile(fileName as string, 'utf-8');
-      console.log(content, fileName)
+      const content = await container.fs.readFile(fileName as string, 'utf-8');
+      const segments = String(fileName).split("/");
+      const filename = segments[segments.length - 1];
+      const parentPath = segments.slice(0, -1).join("/") || ".";
+
+      dispatch(newFileWithContent({ parentPath, name: filename, projectId, content }))
     } catch (error) {
       dispatch(addLog({
-      text: `VFS failed to write file`,
-      type: "error",
-      timestamp: new Date().toISOString()
-    }));
+        text: `VFS failed to write file`,
+        type: "error",
+        timestamp: new Date().toISOString()
+      }));
     }
   })
 }

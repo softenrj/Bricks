@@ -12,6 +12,7 @@ import {
 import { AppDispatch, RootState } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { updateFileContent } from "@/store/Reducers/fsSlice";
+import { initFsWatcherPipeLine } from "@/service/webContainer";
 
 export default function TerminalPanel({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch<AppDispatch>();
@@ -42,7 +43,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
       setCurrentCommand('');
       const command = currentCommand.trim();
       dispatch(addLog({ text: `$ ${command}`, type: "command", timestamp: new Date().toISOString() }));
-      await sendToShell(command,dispatch,handlePackageUpdater);
+      await sendToShell(command,dispatch,projectId,handlePackageUpdater);
       setCurrentCommand("");
     }
   };
@@ -57,6 +58,11 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
     }
   };
 
+  const installDependenciesHandler = async () => {
+    await initFsWatcherPipeLine(dispatch,projectId)
+    dispatch(installDependencies())
+  }
+
   return (
     <div className="flex flex-col h-full bg-black">
       {/* Header */}
@@ -67,7 +73,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
           <div className="text-xs text-gray-500">{logs.length} ln.</div>
         </div>
         <div className="flex items-center space-x-2">
-          <button onClick={() => dispatch(installDependencies())} className="py-1 px-1 bg-pink-500 hover:bg-pink-700 text-white text-xs rounded">
+          <button onClick={installDependenciesHandler} className="py-1 px-1 bg-pink-500 hover:bg-pink-700 text-white text-xs rounded">
             npm install
           </button>
           <button onClick={() => dispatch(startDevServer())} className="py-1 px-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded">
