@@ -2,7 +2,7 @@
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getWebContainer } from "@/service/webContainer";
+import { getWebContainer, initFsWatcherPipeLine } from "@/service/webContainer";
 import { WebContainer } from "@webcontainer/api";
 import { AppDispatch } from "../store";
 
@@ -106,9 +106,10 @@ export const sendToShell = async (
       process.output.pipeTo(writer);
       await process.exit;
 
+      await initFsWatcherPipeLine(dispatch);
       // Refresh package.json after npm finishes
-      const content = await wc.fs.readFile("package.json", "utf-8");
-      onPackageJsonUpdate?.(content);
+      // const content = await wc.fs.readFile("package.json", "utf-8");
+      // onPackageJsonUpdate?.(content);
 
       logWithDispatch(dispatch, `Dependencies installed successfully!`, "success");
     } catch (err: any) {

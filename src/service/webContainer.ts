@@ -3,6 +3,8 @@
 // See LICENSE for details.
 import { WebContainer } from "@webcontainer/api";
 import { FSData } from "../../types/fs";
+import { AppDispatch } from "@/store/store";
+import { addLog } from "@/store/Reducers/webContainer";
 
 let wc: WebContainer | null = null;
 let wcBootPromise: Promise<WebContainer> | null = null;
@@ -44,8 +46,34 @@ export async function initialFSWebContainer(tree: FSData): Promise<void> {
 }
 
 
-export async function installDep(): Promise<void> {
+export async function initFsWatcherPipeLine(dispatch: AppDispatch): Promise<void> {
+  console.log("watching bro....")
   const container = await getWebContainer();
-  const installProcess = await container.spawn("npm", ["install"]);
-  await installProcess.exit;
+  if (!container) return;
+  const content = await container.fs.readFile("package.json", "utf-8")
+  console.log('check 2   ',content)
+  container.fs.watch('package.json', { recursive: true }, async (event, fileName) => {
+    if (!fileName) return;
+    console.log('check 3')
+    const filePath = String(fileName).startsWith("/")
+      ? fileName
+      : `/${fileName}`;
+
+    dispatch(addLog({
+      text: `FS updated: ${event} → ${fileName}`,
+      type: "info",
+      timestamp: new Date().toISOString()
+    }));
+
+    try {
+      const content = container.fs.readFile(fileName as string, 'utf-8');
+      console.log(content, fileName)
+    } catch (error) {
+      dispatch(addLog({
+      text: `VFS failed to write file`,
+      type: "error",
+      timestamp: new Date().toISOString()
+    }));
+    }
+  })
 }
