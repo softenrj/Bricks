@@ -107,7 +107,7 @@ export const sendToShell = async (
       process.output.pipeTo(writer);
       await process.exit;
 
-      await initFsWatcherPipeLine(dispatch, projectId);
+      await initFsWatcherPipeLine(dispatch, projectId, true);
       // Refresh package.json after npm finishes
       // const content = await wc.fs.readFile("package.json", "utf-8");
       // onPackageJsonUpdate?.(content);

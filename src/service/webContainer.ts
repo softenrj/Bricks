@@ -47,11 +47,11 @@ export async function initialFSWebContainer(tree: FSData): Promise<void> {
 }
 
 
-export async function initFsWatcherPipeLine(dispatch: AppDispatch, projectId: string): Promise<void> {
+export async function initFsWatcherPipeLine(dispatch: AppDispatch, projectId: string, watch: boolean = false): Promise<void> {
   const container = await getWebContainer();
   if (!container) return;
   const content = await container.fs.readdir("/", "utf-8")
-  container.fs.watch('/', { recursive: true }, async (event, fileName) => {
+  watch && container.fs.watch('/', { recursive: true }, async (event, fileName) => {
     if (!fileName) return;
 
     if (String(fileName).startsWith("node_modules") || String(fileName).includes("/node_modules/")) {

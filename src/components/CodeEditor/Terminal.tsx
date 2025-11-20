@@ -59,7 +59,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   };
 
   const installDependenciesHandler = async () => {
-    await initFsWatcherPipeLine(dispatch,projectId)
+    await initFsWatcherPipeLine(dispatch,projectId, true)
     dispatch(installDependencies())
   }
 
