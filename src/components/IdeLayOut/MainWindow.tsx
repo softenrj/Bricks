@@ -13,15 +13,17 @@ import TerminalPanel from "../CodeEditor/Terminal";
 import PreviewPanel from "../CodeEditor/PreviewTab";
 import FileSystemPanel from "../CodeEditor/FileSystemPanel";
 import { getProjectDetails, projectFileSystem } from "@/service/api.project";
-import { setProjectName, setTree } from "@/store/Reducers/fsSlice";
-import { useAppDispatch } from "@/hooks/redux";
+import { resetFs, setProjectName, setTree } from "@/store/Reducers/fsSlice";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { initialFSWebContainer } from "@/service/webContainer";
 import ProcessBar from "../CodeEditor/ProcessBar";
 import RealTimePanel from "../common/RealTimePanel";
 import FooterController from "../CodeEditor/FooterController";
+import { chageWriteTree } from "@/store/Reducers/webContainer";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
+  const writing = useAppSelector(state => state.webContainer).writeTree
 
   const getProjectFs = async () => {
     const response1 = await projectFileSystem(projectId);
@@ -29,9 +31,11 @@ function MainWindow({ projectId }: { projectId: string }) {
     dispatch(setTree(response1));
     if (response2) dispatch(setProjectName(response2?.name));
     await initialFSWebContainer(response1);
+    dispatch(chageWriteTree(false))
   };
 
   React.useEffect(() => {
+    dispatch(resetFs(projectId))
     getProjectFs();
   }, []);
 

@@ -19,6 +19,7 @@ interface WebContainerState {
   status: "idle" | "booting" | "running" | "ready" | "error";
   installStatus: "idle" | "pending" | "done" | "error";
   devStatus: "idle" | "pending" | "running" | "error";
+  writeTree: boolean;
 }
 
 // ---------- Initial State ----------
@@ -28,6 +29,7 @@ const initialState: WebContainerState = {
   status: "idle",
   installStatus: "idle",
   devStatus: "idle",
+  writeTree: true
 };
 
 // ---------- Globals ----------
@@ -83,6 +85,7 @@ export const sendToShell = async (
   command: string,
   dispatch: AppDispatch,
   projectId: string,
+  writing: boolean,
   onPackageJsonUpdate?: (content: string) => void
 ) => {
   const npmCommandRegex = /^(npm\s+(install|i|uninstall|remove|update|add))/;
@@ -107,7 +110,7 @@ export const sendToShell = async (
       process.output.pipeTo(writer);
       await process.exit;
 
-      await initFsWatcherPipeLine(dispatch, projectId, true);
+      await initFsWatcherPipeLine(dispatch, projectId, writing);
       // Refresh package.json after npm finishes
       // const content = await wc.fs.readFile("package.json", "utf-8");
       // onPackageJsonUpdate?.(content);
@@ -233,6 +236,9 @@ const webContainerSlice = createSlice({
     setLiveUrl: (state, action: PayloadAction<string>) => {
       state.liveUrl = action.payload;
     },
+    chageWriteTree: (state, action: PayloadAction<boolean>) => {
+      state.writeTree = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // Start Shell
@@ -258,5 +264,5 @@ const webContainerSlice = createSlice({
   },
 });
 
-export const { addLog, clearLogs, setLiveUrl } = webContainerSlice.actions;
+export const { addLog, clearLogs, setLiveUrl, chageWriteTree } = webContainerSlice.actions;
 export default webContainerSlice.reducer;

@@ -1,6 +1,7 @@
-import { SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
+import { SOCKET_FILE_CREATE_UPDATE, SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
 import { getSocket } from "./socket";
 import { Socket } from "socket.io-client";
+import { FSTYPE } from "@/types/project";
 
 let socket: Socket | null;
 
@@ -88,5 +89,17 @@ export const removeFile = (src: string, name: string, projectId: string) => {
         path: src,
         name,
         projectId: projectId
+    })
+}
+
+export const fileUpdateCreate = (src: string, name: string, projectId: string, content: string, type: string) => {
+    if (!socket) socket = getSocket();
+
+    socket?.emit(SOCKET_FILE_CREATE_UPDATE , {
+        path: src,
+        name: name,
+        projectId: projectId,
+        content: content,
+        type: type
     })
 }

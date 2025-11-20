@@ -16,6 +16,7 @@ import { initFsWatcherPipeLine } from "@/service/webContainer";
 
 export default function TerminalPanel({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch<AppDispatch>();
+  const writing = useAppSelector(state => state.webContainer).writeTree;
   const { logs, status, liveUrl } = useAppSelector(
     (state: RootState) => state.webContainer
   );
@@ -43,7 +44,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
       setCurrentCommand('');
       const command = currentCommand.trim();
       dispatch(addLog({ text: `$ ${command}`, type: "command", timestamp: new Date().toISOString() }));
-      await sendToShell(command,dispatch,projectId,handlePackageUpdater);
+      await sendToShell(command,dispatch,projectId,writing,handlePackageUpdater);
       setCurrentCommand("");
     }
   };
@@ -59,7 +60,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   };
 
   const installDependenciesHandler = async () => {
-    await initFsWatcherPipeLine(dispatch,projectId, true)
+    await initFsWatcherPipeLine(dispatch,projectId, writing)
     dispatch(installDependencies())
   }
 

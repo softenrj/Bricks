@@ -2,9 +2,10 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { wc } from "./webContainer";
 import { getFSTree } from "@/service/fsWalker";
 import { LanguageEnum } from "@/feature/LanguageEnum";
-import { fileRename, fileUpdate, newFileSocket, newFolderSocket, removeFile } from "@/socket/project.FS";
+import { fileRename, fileUpdate, fileUpdateCreate, newFileSocket, newFolderSocket, removeFile } from "@/socket/project.FS";
 import { FSState } from "@/types/FSState";
 import { detectLanguage, getFileContent } from "@/feature/fsSystem";
+import { FSTYPE } from "@/types/project";
 export type FSData = { [key: string]: string | FSData };
 
 const initialState: FSState = {
@@ -49,6 +50,15 @@ const fsSlice = createSlice({
 
       state.selectedFileContent = getFileContent(state.tree, path);
       state.selectedLanguage = detectLanguage(path);
+    },
+    resetFs: (state, action: PayloadAction<string>) => {
+      const projectId = action.payload;
+      const oldProjectId = localStorage.getItem("bricks:projectId");
+
+      if (!oldProjectId || oldProjectId !== projectId) {
+        localStorage.setItem("bricks:projectId", projectId);
+        return { ...initialState };
+      }
     },
 
     switchTab: (state, action: PayloadAction<string>) => {
@@ -113,11 +123,6 @@ const fsSlice = createSlice({
         node = node[segments[i]] as FSData;
       }
       node[segments[segments.length - 1]] = content;
-
-      const name = segments.pop()!;
-      const parentPath = segments.length > 0 ? segments.join('/') : '.';
-
-      fileUpdate(name, parentPath, content, projectId);
 
       if (wc) {
         wc.fs.writeFile(path, content);
@@ -211,10 +216,10 @@ const fsSlice = createSlice({
 
       fileUpdate(name, cleanParent || ".", "", projectId);
       wc?.fs.writeFile(path, "");
-      newFileSocket(parentPath,name, projectId)
+      newFileSocket(parentPath, name, projectId)
     },
 
-    newFileWithContent: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string, content: string}>) => {
+    newFileWithContent: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string, content: string }>) => {
       const { parentPath, name, projectId, content } = action.payload;
       const cleanParent = parentPath === "." ? "" : parentPath;
       const path = cleanParent ? `${cleanParent}/${name}` : name;
@@ -238,8 +243,35 @@ const fsSlice = createSlice({
         state.openTabs.push({ name: path, isEditing: false });
       }
 
-      fileUpdate(name, cleanParent || ".", content, projectId);
-      newFileSocket(parentPath,name, projectId, content)
+      newFileSocket(parentPath, name, projectId, content)
+    },
+
+    fileCreateUpdateFlow: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string, content: string, type: string }>) => {
+      const { parentPath, name, projectId, content, type } = action.payload;
+      const cleanParent = parentPath === "." ? "" : parentPath;
+      const path = cleanParent ? `${cleanParent}/${name}` : name;
+      const segments = path.split("/");
+
+      // walk tree
+      let node: any = state.tree;
+      for (let i = 0; i < segments.length - 1; i++) {
+        const seg = segments[i];
+        if (!node[seg]) node[seg] = {};
+        node = node[seg] as FSData;
+      }
+
+      node[segments[segments.length - 1]] = content;
+      // state.selectedFile = path;
+      // state.activePath = cleanParent || ".";
+      // state.selectedFileContent = content;
+      // state.selectedLanguage = detectLanguage(name);
+
+      // if (!state.openTabs.some(t => t.name === path)) {
+      //   state.openTabs.push({ name: path, isEditing: false });
+      // }
+
+      // fileUpdate(name, cleanParent || ".", content, projectId);
+      fileUpdateCreate(parentPath, name, projectId, content, type)
     },
 
     newFolder: (state, action: PayloadAction<{ parentPath: string; name: string, projectId: string }>) => {
@@ -258,7 +290,7 @@ const fsSlice = createSlice({
       node[segments[segments.length - 1]] = {};
       state.activePath = path;
 
-      newFolderSocket(parentPath,name, projectId)
+      newFolderSocket(parentPath, name, projectId)
     },
 
     aiCodeGen: (_state, action: PayloadAction<string>) => {
@@ -275,6 +307,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent } = fsSlice.actions;
+export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow } = fsSlice.actions;
 
 export default fsSlice.reducer;
