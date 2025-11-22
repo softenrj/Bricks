@@ -91,7 +91,7 @@ Our mission: *Empower anyone to build software using natural inputs like speech,
 
 ## 🚀 Quick Start
 
-1. Visit **[bricks-ai.vercel.app](https://bricks-three-rose.vercel.app)**
+1. Visit **[https://bricks-three-rose.vercel.app](https://bricks-three-rose.vercel.app)**
 2. Sign up with your preferred provider
 3. Start building using text, voice, or image input!
 
