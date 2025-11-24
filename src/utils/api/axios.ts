@@ -6,7 +6,7 @@ import * as firebaseAuth from '@/feature/Firebase'
 
 const defaultAxios = axios.create({ baseURL: defaultApiRoute })
 
-const getFreshToken = async (): Promise<string | null> => {
+export const getFreshToken = async (): Promise<string | null> => {
   const auth = firebaseAuth.auth;
   const user = auth.currentUser
   if (user) {

@@ -8,6 +8,8 @@ import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 import { BricksChat, Message } from "../../types/chatMessage";
 import { LanguageEnum } from "@/feature/LanguageEnum";
+import { getFreshToken } from "@/utils/api/axios";
+import { defaultApiRoute } from "@/utils/constance";
 
 export interface Filter {
     sort: "asc" | "dsc",
@@ -328,9 +330,9 @@ export const __getCodeCompletion = async (content: string, fileName: string, fil
     }
 }
 
-export const getAiResponse = async (projectId: string, chatId: string | null, prompt: string): Promise<{ message: Message, chat: BricksChat } | null> => {
+export const getAiResponse = async (projectId: string, chatId: string | null, prompt: string, stream: boolean = false): Promise<{ message: Message, chat: BricksChat } | null> => {
     try {
-        const response = await postApi<ApiResponse<{ message: Message, chat: BricksChat }>> ({
+        const response = await postApi<ApiResponse<{ message: Message, chat: BricksChat }>>({
             url: API_BRICKS_PROMPT_RESPONSE + `/${projectId}`,
             values: {
                 chatId: chatId as any,
@@ -338,7 +340,7 @@ export const getAiResponse = async (projectId: string, chatId: string | null, pr
             }
         })
         if (response?.success) {
-            return { message: response.data.message, chat: response.data.chat};
+            return { message: response.data.message, chat: response.data.chat };
         }
         return null;
     } catch (error: any) {
@@ -347,6 +349,77 @@ export const getAiResponse = async (projectId: string, chatId: string | null, pr
         return null;
     }
 }
+
+export const getAiStreamResponse = async (
+  projectId: string,
+  chatId: string | null,
+  prompt: string,
+  onToken: (chunk: string) => void,
+): Promise<{ finalText: string } | null> => {
+
+  try {
+    const token = await getFreshToken();
+    if (!token) return null;
+
+    const response = await fetch(
+      `${defaultApiRoute}${API_BRICKS_PROMPT_RESPONSE}/${projectId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          chatId,
+          prompt,
+          stream: true
+        })
+      }
+    );
+
+    if (!response.body) {
+      toast.error("Stream failed: no response body");
+      return null;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let buffer = "";
+    let finalText = "";
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      let lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
+      for (let line of lines) {
+        if (!line.startsWith("data:")) continue;
+
+        let content = line.replace("data:", "");
+
+        if (!content) continue;
+        if (content === "[DONE]") {
+          return { finalText };
+        }
+        finalText += content;
+        onToken(content);
+      }
+    }
+
+    return { finalText };
+
+  } catch (error: any) {
+    console.error("Stream error:", error);
+    toast.error(error?.message ?? "Something went wrong");
+    return null;
+  }
+};
+
 
 export const getChatHistory = async (chatId: string): Promise<Message[] | null> => {
     try {

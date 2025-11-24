@@ -3,10 +3,15 @@
 import React, { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from "react"
 import { Mic, Paperclip, SendHorizonal, X, Square } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
-import { addMessage, setAiFetching, setChatId } from "@/store/Reducers/chatSlice"
+import { addMessage, setAiFetching, setChatId, updateMessage, updateMessageAppend } from "@/store/Reducers/chatSlice"
 import { uIdProvider } from "@/feature/uid"
-import { getAiResponse } from "@/service/api.project"
+import { getAiResponse, getAiStreamResponse } from "@/service/api.project"
 import { addTabs } from "@/store/Reducers/chatTabs"
+import { getApi, postApi } from "@/utils/api/common"
+import { ApiResponse } from "@/types/Api"
+import { BricksChat } from "../../../types/chatMessage"
+import { API_BRICKS_CHAT_METADATA } from "@/utils/api/APIConstant"
+import { fixMarkdownStreaming } from "@/feature/streamFormatFix"
 
 interface SelectedImage {
   id: number
@@ -166,9 +171,9 @@ export default function ChatInput({ projectId }: { projectId: string }) {
   }
 
   const handleSend = async () => {
-    setMessage("");
+    setMessage("")
 
-    if (!message.trim() && selectedImages.length === 0) return;
+    if (!message.trim() && selectedImages.length === 0) return
 
     // Dispatch user's message first
     dispatch(addMessage({
@@ -180,34 +185,83 @@ export default function ChatInput({ projectId }: { projectId: string }) {
         isNew: true,
         ...(selectedImages[0] && selectedImages[0].url && { image: selectedImages[0].url })
       }
-    }));
+    }))
 
-    dispatch(setAiFetching(true));
+    dispatch(setAiFetching(true))
 
-    const result = await getAiResponse(projectId, currentChatId, message);
+    const result = await getAiResponse(projectId, currentChatId, message)
 
     if (result) {
       if (!currentChatId && result?.chat?._id) {
         dispatch(addTabs(result.chat))
-        dispatch(setChatId(result.chat._id));
+        dispatch(setChatId(result.chat._id))
       }
 
       dispatch(addMessage({
         chatId: result.chat._id,
         message: result.message,
-      }));
+      }))
     }
 
-    dispatch(setAiFetching(false));
+    dispatch(setAiFetching(false))
 
-    setSelectedImages([]);
-  };
+    setSelectedImages([])
+  }
 
+  const handleStreamResponse = async () => {
+    const userMessage = message.trim()
+    if (!userMessage && selectedImages.length === 0) return
+
+    setMessage("")
+    setSelectedImages([])
+
+    dispatch(setAiFetching(true))
+
+    dispatch(addMessage({ chatId: currentChatId, message: { id: uIdProvider(), role: "user", content: message, isNew: true, ...(selectedImages[0] && selectedImages[0].url && { image: selectedImages[0].url }) } }))
+
+    const tempId = uIdProvider()
+    dispatch(addMessage({
+      chatId: currentChatId,
+      message: { id: tempId, role: "assistant", content: "", isNew: true }
+    }))
+
+    const chatRes = await postApi<ApiResponse<BricksChat>>({
+      url: API_BRICKS_CHAT_METADATA + `/${projectId}`,
+      values: { chatId: currentChatId as any, prompt: userMessage }
+    })
+
+    if (!chatRes) {
+      dispatch(setAiFetching(false))
+      return
+    }
+
+    const chat = chatRes.data
+    if (!currentChatId && chat?._id) {
+      dispatch(addTabs(chat))
+      dispatch(setChatId(chat._id))
+    }
+
+    function onToken(delta: string) {
+      dispatch(updateMessageAppend({
+        chatId: chat._id,
+        messageId: tempId,
+        append: delta,
+      }))
+    }
+    const final = await getAiStreamResponse(projectId, chat._id, userMessage, onToken)
+    dispatch(updateMessage({
+      chatId: chat._id,
+      messageId: tempId,
+      content: final?.finalText || ""
+    }))
+
+    dispatch(setAiFetching(false))
+  }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
-      handleSend()
+      handleStreamResponse()
     }
   }
 
@@ -232,9 +286,8 @@ export default function ChatInput({ projectId }: { projectId: string }) {
     }
     reader.readAsDataURL(file)
 
-    e.target.value = "" // reset input
+    e.target.value = ""
   }
-
 
   const removeImage = (id: number) => {
     setSelectedImages(prev => prev.filter(img => img.id !== id))
@@ -324,8 +377,8 @@ export default function ChatInput({ projectId }: { projectId: string }) {
           type="button"
           onClick={handleMicClick}
           className={`p-[5px] rounded-lg transition-colors duration-200 flex-shrink-0 ${isRecording
-            ? "bg-red-500 text-white hover:bg-red-600"
-            : "text-[#ececec] hover:bg-[#3e3e3e]"
+              ? "bg-red-500 text-white hover:bg-red-600"
+              : "text-[#ececec] hover:bg-[#3e3e3e]"
             }`}
           aria-label={isRecording ? "Stop recording" : "Voice input"}
         >
@@ -334,7 +387,7 @@ export default function ChatInput({ projectId }: { projectId: string }) {
 
         <button
           type="button"
-          onClick={handleSend}
+          onClick={handleStreamResponse}
           disabled={!message.trim() && selectedImages.length === 0}
           className="p-2 bg-[#ececec] text-[#0d0d0d] hover:bg-[#d9d9d9] rounded-full transition-colors duration-200 flex items-center justify-center flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Send message"
