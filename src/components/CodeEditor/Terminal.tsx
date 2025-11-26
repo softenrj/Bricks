@@ -44,7 +44,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
       setCurrentCommand('');
       const command = currentCommand.trim();
       dispatch(addLog({ text: `$ ${command}`, type: "command", timestamp: new Date().toISOString() }));
-      await sendToShell(command,dispatch,projectId,writing,handlePackageUpdater);
+      await sendToShell(command, dispatch, projectId, writing, handlePackageUpdater);
       setCurrentCommand("");
     }
   };
@@ -60,7 +60,6 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   };
 
   const installDependenciesHandler = async () => {
-    await initFsWatcherPipeLine(dispatch,projectId, writing)
     dispatch(installDependencies())
   }
 
@@ -74,13 +73,13 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
           <div className="text-xs text-gray-500">{logs.length} ln.</div>
         </div>
         <div className="flex items-center space-x-2">
-          <button onClick={installDependenciesHandler} className="py-1 px-1 bg-pink-500 hover:bg-pink-700 text-white text-xs rounded">
+          <button onClick={installDependenciesHandler} className="py-1 px-1 bg-pink-500 hover:bg-pink-700 text-white text-xs rounded cursor-pointer">
             npm install
           </button>
-          <button onClick={() => dispatch(startDevServer())} className="py-1 px-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded">
+          <button onClick={() => dispatch(startDevServer())} className="py-1 px-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded cursor-pointer">
             npm run dev
           </button>
-          <button onClick={() => dispatch(clearLogs())} className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded">
+          <button onClick={() => dispatch(clearLogs())} className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded cursor-pointer">
             <RotateCcw className="w-3 h-3" />
           </button>
         </div>
@@ -125,6 +124,10 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
           value={currentCommand}
           onChange={(e) => setCurrentCommand(e.target.value)}
           onKeyDown={handleKeyDown}
+          spellCheck={false}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
         />
         {currentCommand && (
           <button onClick={() => setCurrentCommand("")} className="ml-2 text-gray-500 hover:text-gray-300">
