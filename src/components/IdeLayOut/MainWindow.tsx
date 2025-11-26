@@ -15,7 +15,7 @@ import FileSystemPanel from "../CodeEditor/FileSystemPanel";
 import { getProjectDetails, projectFileSystem } from "@/service/api.project";
 import { resetFs, setProjectName, setTree } from "@/store/Reducers/fsSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { initialFSWebContainer } from "@/service/webContainer";
+import { initialFSWebContainer, stopFSWatcher } from "@/service/webContainer";
 import ProcessBar from "../CodeEditor/ProcessBar";
 import RealTimePanel from "../common/RealTimePanel";
 import FooterController from "../CodeEditor/FooterController";
@@ -30,8 +30,9 @@ function MainWindow({ projectId }: { projectId: string }) {
     const response2 = await getProjectDetails(projectId);
     dispatch(setTree(response1));
     if (response2) dispatch(setProjectName(response2?.name));
-    await initialFSWebContainer(response1);
-    dispatch(chageWriteTree(false))
+    stopFSWatcher();
+    await initialFSWebContainer(response1, dispatch, projectId);
+    dispatch(chageWriteTree(true))
   };
 
   React.useEffect(() => {

@@ -29,7 +29,7 @@ const initialState: WebContainerState = {
   status: "idle",
   installStatus: "idle",
   devStatus: "idle",
-  writeTree: true
+  writeTree: false
 };
 
 // ---------- Globals ----------
@@ -109,8 +109,6 @@ export const sendToShell = async (
       });
       process.output.pipeTo(writer);
       await process.exit;
-
-      await initFsWatcherPipeLine(dispatch, projectId, writing);
       // Refresh package.json after npm finishes
       // const content = await wc.fs.readFile("package.json", "utf-8");
       // onPackageJsonUpdate?.(content);
