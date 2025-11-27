@@ -1,5 +1,7 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 "use client";
-
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import {

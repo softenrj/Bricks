@@ -74,13 +74,13 @@ const flattenTree = (
 
   const rfEdges: Edge[] = parentId
     ? [
-        {
-          id: `${parentId}-${node._id}`,
-          source: parentId,
-          target: node._id,
-          animated: true,
-        },
-      ]
+      {
+        id: `${parentId}-${node._id}`,
+        source: parentId,
+        target: node._id,
+        animated: true,
+      },
+    ]
     : [];
 
   let allNodes = [rfNode];
@@ -161,6 +161,13 @@ function ContextNeurons() {
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         fitView
+        minZoom={0.0001}
+        maxZoom={10}
+        zoomOnDoubleClick={true}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
+        panOnDrag={true}
+        panOnScroll={true}
       >
         <Background />
         <Controls />

@@ -1,3 +1,7 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
+"use client"
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768

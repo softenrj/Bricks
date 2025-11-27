@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 "use client"
 import { Activity, Bell, BellDot, Sparkles } from 'lucide-react'
 import React from 'react'
@@ -6,8 +9,10 @@ import Image from 'next/image'
 import { Tooltip } from './Tooltip'
 import { useAppSelector } from '@/hooks/redux'
 import { getSocket } from '@/socket/socket'
+import { useIsMobile } from '@/hooks/use-mobile'
+import MobileTabs from '../IdeLayOut/MobileTabs'
 
-function DashboardNavStrip() {
+function DashboardNavStrip({projectId}: {projectId: string}) {
   const today = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -16,8 +21,10 @@ function DashboardNavStrip() {
 
   const user = useAppSelector(state => state.user);
   const socket = getSocket();
+  const isMobile = useIsMobile();
 
   return (
+    <>
     <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm max-w-screen">
       {/* Left side */}
       <div className="flex items-center gap-2">
@@ -85,6 +92,8 @@ function DashboardNavStrip() {
         </div>
       </div>
     </div>
+    {isMobile && <MobileTabs projectId={projectId} />}
+    </>
   );
 }
 

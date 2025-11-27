@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 import { SOCKET_FILE_CREATE_UPDATE, SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
 import { getSocket } from "./socket";
 import { Socket } from "socket.io-client";

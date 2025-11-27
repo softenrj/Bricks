@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 import { auth } from "@/feature/Firebase";
 import { ApiResponse } from "@/types/Api";
 import { API_BRICKS_SIGN_IN } from "@/utils/api/APIConstant";

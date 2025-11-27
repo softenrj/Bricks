@@ -1,3 +1,7 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
+"use client"
 import { Lightbulb, Code } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "../ui/button";

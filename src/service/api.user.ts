@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 import { ApiResponse } from "@/types/Api";
 import { IUser } from "@/types/user";
 import { API_BRICKS_GET_USRER } from "@/utils/api/APIConstant";

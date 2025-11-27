@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 import { FSTYPE, Project, ProjectContext, ProjectFile } from "@/types/project";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 

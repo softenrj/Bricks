@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
 import { io, Socket } from "socket.io-client";
 import { serverUrl } from "@/utils/constance";
 
