@@ -12,7 +12,7 @@ import { getSocket } from '@/socket/socket'
 import { useIsMobile } from '@/hooks/use-mobile'
 import MobileTabs from '../IdeLayOut/MobileTabs'
 
-function DashboardNavStrip({projectId}: {projectId: string}) {
+function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string, displayTabs?: boolean}) {
   const today = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -92,7 +92,7 @@ function DashboardNavStrip({projectId}: {projectId: string}) {
         </div>
       </div>
     </div>
-    {isMobile && <MobileTabs projectId={projectId} />}
+    {isMobile && displayTabs && <MobileTabs projectId={projectId || ''} />}
     </>
   );
 }
