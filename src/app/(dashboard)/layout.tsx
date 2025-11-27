@@ -9,9 +9,10 @@ import { useSidebar } from '@/components/ui/sidebar'
 import { useIsMobile } from '@/hooks/use-mobile'
 import React from 'react'
 
-function DashboardLayout({ children }: { children: React.ReactNode }) {
+function DashboardLayout({ children, probe }: { children: React.ReactNode,probe: { projectId: string }}) {
   const { open } = useSidebar();
   const isMobile = useIsMobile();
+  const projectId = probe.projectId;
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -25,7 +26,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
           ${open ? "ml-0" : "ml-8"}
         `}
       >
-        <DashboardNavStrip />
+        <DashboardNavStrip projectId={projectId} />
         { isMobile && <AppMobileNavbar />}
         <div>{children}</div>
       </main>
