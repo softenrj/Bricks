@@ -26,7 +26,6 @@ export default function FooterController() {
   const [processRunning, setProcessRunning] = React.useState(false);
   const [snapshotIndex, setSnapshotIndex] = React.useState<number>(-1);
   const [snapshotData, setSnapshotData] = React.useState<Snapshot | null>(null);
-
   const socket = getSocket();
   const dispatch = useAppDispatch();
 

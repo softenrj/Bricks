@@ -1,3 +1,4 @@
+import BricksSpeechLaunch from '@/components/ai-elements/BricksSpeechLaunch';
 import DashboardNavStrip from '@/components/common/DashboardNavStrip'
 import IdeTabs from '@/components/IdeLayOut/IdeTabs'
 import React from 'react'
@@ -14,6 +15,7 @@ async function IdeLayout({ children, params }: { children: React.ReactNode, para
         {children}
         </div>
       </main>
+      {/* <BricksSpeechLaunch /> ## Next Feature Dev Phased ## */}
     </div>
   )
 }

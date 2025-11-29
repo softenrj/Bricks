@@ -11,7 +11,7 @@ import { setFileChange, updateFileContent } from "@/store/Reducers/fsSlice";
 import MediaDisplay from "./MediaDisplay";
 import MarkDownPreview from "./MarkDownPreview";
 import { __getSuggestion } from "@/service/api.project";
-import { configureMonacoTailwindcss, tailwindcssData } from 'monaco-tailwindcss'
+import { flattenFS } from '@/service/monacoFeeder.client';
 
 function AppEditor({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
@@ -23,45 +23,48 @@ function AppEditor({ projectId }: { projectId: string }) {
   const selectedFileContentRef = useRef<string | null>(null);
   const codeCompletion = useAppSelector(state => state.IdeFeatures).codeCompletion;
   const inlineProviderRef = useRef<any>(null);
-  const isAutoSave = useAppSelector(state => state.IdeFeatures).autoSave
+  const isAutoSave = useAppSelector(state => state.IdeFeatures).autoSave;
+  const codeCompletionRef = React.useRef<boolean>(codeCompletion);
 
-  window.MonacoEnvironment = {
-    getWorker(moduleId, label) {
-      switch (label) {
-        case 'editorWorkerService':
-          return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url))
-        case 'css':
-        case 'less':
-        case 'scss':
-          return new Worker(new URL('monaco-editor/esm/vs/language/css/css.worker', import.meta.url))
-        case 'handlebars':
-        case 'html':
-        case 'razor':
-          return new Worker(
-            new URL('monaco-editor/esm/vs/language/html/html.worker', import.meta.url)
-          )
-        case 'json':
-          return new Worker(
-            new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url)
-          )
-        case 'javascript':
-        case 'typescript':
-          return new Worker(
-            new URL('monaco-editor/esm/vs/language/typescript/ts.worker', import.meta.url)
-          )
-        case 'tailwindcss':
-          return new Worker(new URL('monaco-tailwindcss/tailwindcss.worker', import.meta.url))
-        default:
-          throw new Error(`Unknown label ${label}`)
+  if (typeof window !== "undefined") {
+    window.MonacoEnvironment = {
+      getWorker(moduleId, label) {
+        switch (label) {
+          case 'editorWorkerService':
+            return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url))
+          case 'css':
+          case 'less':
+          case 'scss':
+            return new Worker(new URL('monaco-editor/esm/vs/language/css/css.worker', import.meta.url))
+          case 'handlebars':
+          case 'html':
+          case 'razor':
+            return new Worker(
+              new URL('monaco-editor/esm/vs/language/html/html.worker', import.meta.url)
+            )
+          case 'json':
+            return new Worker(
+              new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url)
+            )
+          case 'javascript':
+          case 'typescript':
+            return new Worker(
+              new URL('monaco-editor/esm/vs/language/typescript/ts.worker', import.meta.url)
+            )
+          case 'tailwindcss':
+            return new Worker(new URL('monaco-tailwindcss/tailwindcss.worker', import.meta.url))
+          default:
+            throw new Error(`Unknown label ${label}`)
+        }
       }
     }
   }
+
 
   useEffect(() => {
     selectedFileContentRef.current = selectedFileContent;
   }, [selectedFileContent]);
 
-  // Keep track of current file
   useEffect(() => {
     currentFileRef.current = selectedFile;
   }, [selectedFile]);
@@ -72,8 +75,6 @@ function AppEditor({ projectId }: { projectId: string }) {
     const imageFormats = ["png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "tiff"];
     return ext ? imageFormats.includes(ext) : false;
   }, [selectedFile]);
-
-  // Sync editor content with selected file content
   useEffect(() => {
     if (editorRef.current && selectedFileContent !== null) {
       const currentValue = editorRef.current.getValue();
@@ -83,15 +84,6 @@ function AppEditor({ projectId }: { projectId: string }) {
     }
   }, [selectedFile, selectedFileContent]);
 
-  // Update inline suggestions when codeCompletion changes
-  useEffect(() => {
-    if (inlineProviderRef.current) {
-      // The provider is already registered, and the callback will check codeCompletion
-      // No need to re-register, as the callback depends on codeCompletion
-    }
-  }, [codeCompletion]);
-
-
 
   const codeCompletionSugg = async (snipts: string) => {
     if (codeCompletion) {
@@ -100,9 +92,10 @@ function AppEditor({ projectId }: { projectId: string }) {
     return null;
   }
 
+
   // Inline suggestion provider
   const registerInlineSuggestions = useCallback(() => {
-    if (!monacoRef.current || !editorRef.current) return;
+    if (!monacoRef.current || !editorRef.current || !codeCompletionRef.current) return;
 
     const monaco = monacoRef.current;
     const language = selectedLanguage || "javascript";
@@ -152,12 +145,93 @@ function AppEditor({ projectId }: { projectId: string }) {
     return provider;
   }, [selectedLanguage]);
 
+  useEffect(() => {
+    if (!monacoRef.current || !editorRef.current) return;
+    const dispose = () => {
+      if (inlineProviderRef.current) {
+        inlineProviderRef.current.dispose();
+        inlineProviderRef.current = null;
+      }
+    };
+    if (codeCompletion) {
+      dispose();
+      inlineProviderRef.current = registerInlineSuggestions();
+    } else {
+      dispose();
+    }
+
+    return () => dispose();
+
+  }, [codeCompletion, registerInlineSuggestions]);
+
+  const tree = useAppSelector(state => state.fs.tree);
+  const allFiles = useMemo(() => flattenFS(tree), [tree]);
+
+  const allFilesRef = useRef(allFiles);
+
+  useEffect(() => {
+    allFilesRef.current = allFiles;
+
+    if (!monacoRef.current) return;
+
+    allFiles.forEach(path => {
+      const uri = monacoRef.current.Uri.file(path);
+      if (!monacoRef.current.editor.getModel(uri)) {
+        monacoRef.current.editor.createModel(
+          "",
+          undefined,
+          uri
+        );
+      }
+    });
+  }, [allFiles]);
 
 
   // Editor mount
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
+  const handleEditorDidMount: OnMount = async (editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
+
+    monaco.languages.registerCompletionItemProvider('typescript', {
+      triggerCharacters: ['/', '.', '"', "'"],
+      provideCompletionItems: (model, position) => {
+        const textUntilPosition = model.getValueInRange({
+          startLineNumber: position.lineNumber,
+          startColumn: 1,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column
+        });
+
+        const match = textUntilPosition.match(/(?:import|from|require\()\s*['"]([^'"]*)$/);
+
+        if (!match) {
+          return { suggestions: [] };
+        }
+
+        const word = model.getWordUntilPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn,
+        };
+
+        const suggestions = allFilesRef.current.map((file) => {
+          const label = file.replace(/\.(tsx|ts|js|jsx)$/, "");
+          return {
+            label: label,
+            kind: monaco.languages.CompletionItemKind.File,
+            insertText: file,
+            detail: file,
+            range: range,
+          };
+        });
+
+        return {
+          suggestions: suggestions,
+        };
+      },
+    });
 
     // Disable TS/JS errors
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
@@ -179,6 +253,11 @@ function AppEditor({ projectId }: { projectId: string }) {
       esModuleInterop: true,
       allowSyntheticDefaultImports: true,
       noEmit: true,
+      allowNonTsExtensions: true,
+      baseUrl: ".",
+      paths: {
+        "*": ["*"]
+      }
     })
 
     // Enable JSX in plain JS files
@@ -187,13 +266,14 @@ function AppEditor({ projectId }: { projectId: string }) {
       target: monaco.languages.typescript.ScriptTarget.ESNext,
       allowJs: true,
       module: monaco.languages.typescript.ModuleKind.ESNext,
+      allowNonTsExtensions: true,
+      baseUrl: ".",
+      paths: {
+        "*": ["*"]
+      }
     });
 
-    // suppress built-in errors if you use virtual files
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: true,
-      noSyntaxValidation: true,
-    });
+    const { configureMonacoTailwindcss, tailwindcssData } = await import('monaco-tailwindcss')
 
     monaco.languages.css.cssDefaults.setOptions({
       data: {
@@ -221,22 +301,15 @@ function AppEditor({ projectId }: { projectId: string }) {
         return;
       }
 
-      dispatch(updateFileContent({ path: currentFile, content: value, projectId}));
+      dispatch(updateFileContent({ path: currentFile, content: value, projectId }));
       dispatch(setFileChange({ name: currentFile, isEditing: false }));
     });
-
-    // Register inline suggestion provider
-    const provider = registerInlineSuggestions();
-    inlineProviderRef.current = provider;
-
-    // Dispose provider on editor disposal
-    editor.onDidDispose(() => provider?.dispose());
   };
 
   const autoSave = (value: string) => {
-    if (!selectedFile) return ;
-    dispatch(updateFileContent({ path: selectedFile, content: value, projectId}));
-      dispatch(setFileChange({ name: selectedFile, isEditing: false }));
+    if (!selectedFile) return;
+    dispatch(updateFileContent({ path: selectedFile, content: value, projectId }));
+    dispatch(setFileChange({ name: selectedFile, isEditing: false }));
   }
 
 
@@ -273,8 +346,8 @@ function AppEditor({ projectId }: { projectId: string }) {
               onChange={(newValue) => {
                 if ((newValue ?? "").replace(/\r\n/g, "\n") !== (selectedFileContent ?? "").replace(/\r\n/g, "\n")) {
                   dispatch(setFileChange({ name: selectedFile!, isEditing: true }));
-                  if (isAutoSave && newValue ) autoSave(newValue)
-                } 
+                  if (isAutoSave && newValue) autoSave(newValue)
+                }
               }}
             />
 

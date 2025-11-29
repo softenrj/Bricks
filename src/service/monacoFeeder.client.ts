@@ -3,6 +3,8 @@
 // See LICENSE for details.
 // import * as monaco from "monaco-editor";
 
+import { FSData } from "../../types/fs";
+
 // // This is the new part: set up compiler options
 // monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
 //   target: monaco.languages.typescript.ScriptTarget.ESNext,
@@ -84,3 +86,22 @@
 //   `,
 //   'file:///node_modules/@types/custom/index.d.ts'
 // );
+
+export function flattenFS(fs: FSData, base: string = ""): string[] {
+  const result: string[] = [];
+
+  for (const key in fs) {
+    const value = fs[key];
+    const fullPath = base ? `${base}/${key}` : key;
+
+    if (typeof value === "string") {
+      // It's a file
+      result.push(fullPath);
+    } else if (typeof value === "object") {
+      // It's a folder → recursive walk
+      result.push(...flattenFS(value, fullPath));
+    }
+  }
+
+  return result;
+}
