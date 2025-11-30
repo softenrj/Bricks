@@ -3,7 +3,7 @@
 // See LICENSE for details.
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Terminal, RotateCcw, X } from "lucide-react";
+import { Terminal, RotateCcw, X, BugOff, RefreshCcwDot } from "lucide-react";
 import {
   startShell,
   addLog,
@@ -16,6 +16,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { updateFileContent } from "@/store/Reducers/fsSlice";
 import { initFsWatcherPipeLine } from "@/service/webContainer";
+import { Tooltip } from "../common/Tooltip";
 
 export default function TerminalPanel({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch<AppDispatch>();
@@ -65,26 +66,47 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   const installDependenciesHandler = async () => {
     dispatch(installDependencies())
   }
-
+  
   return (
     <div className="flex flex-col h-full bg-black">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-1 bg-[#0D0D0D] border-b border-gray-700">
-        <div className="flex items-center space-x-2">
-          <Terminal className="w-4 h-4 text-green-400" />
-          <span className="text-sm font-medium text-gray-200">Terminal</span>
-          <div className="text-xs text-gray-500">{logs.length} ln.</div>
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 bg-[#0D0D0D] border-b border-gray-700">
+        <div className="flex items-center gap-2 min-w-[150px]">
+          <Terminal className="w-4 h-4 text-green-400 shrink-0" />
+          <span className="text-xs font-medium text-gray-200">Terminal</span>
+          <div className="text-xs text-gray-500 whitespace-nowrap">
+            {logs.length} ln.
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <button onClick={installDependenciesHandler} className="py-1 px-1 bg-pink-500 hover:bg-pink-700 text-white text-xs rounded cursor-pointer">
-            npm install
-          </button>
-          <button onClick={() => dispatch(startDevServer())} className="py-1 px-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded cursor-pointer">
-            npm run dev
-          </button>
-          <button onClick={() => dispatch(clearLogs())} className="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded cursor-pointer">
-            <RotateCcw className="w-3 h-3" />
-          </button>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Tooltip content="install dependencies">
+            <button
+              onClick={installDependenciesHandler}
+              className="py-1 px-1 bg-pink-500 hover:bg-pink-600 text-white text-xs rounded transition"
+            >
+              npm install
+            </button>
+          </Tooltip>
+
+          <Tooltip content={!!liveUrl ? "Dev Server is Already Running" : "Run Dev Server"}>
+            <button
+              onClick={() => dispatch(startDevServer())}
+              className="py-1 px-1 bg-green-600 hover:bg-green-700 disabled:opacity-80 disabled:cursor-not-allowed text-white text-xs rounded transition"
+              disabled={!!liveUrl}
+            >
+              npm run dev
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Clean Terminal">
+            <button
+              onClick={() => dispatch(clearLogs())}
+              className="p-1.5 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
+          </Tooltip>
         </div>
       </div>
 

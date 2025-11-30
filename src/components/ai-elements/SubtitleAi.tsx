@@ -10,7 +10,7 @@ function SubtitleAi() {
     return (
         <div className="w-fit max-w-[620px] absolute top-20 left-1/2 -translate-x-1/2 
                 bg-[#1f1f1f]/80 text-gray-300 p-3 rounded-md 
-                border border-[#2d2d2d] shadow-sm hover:shadow-md">
+                border border-[#2d2d2d] shadow-sm hover:shadow-md z-999">
 
             <div className="flex items-start gap-3">
                 <p className="leading-relaxed">

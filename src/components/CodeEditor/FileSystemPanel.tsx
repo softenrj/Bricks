@@ -83,7 +83,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
       <li key={fullPath} className="select-none">
         <FileContext onRename={renameRequest} onRemove={removeFile} path={fullPath} name={name} onNewFile={() => startCreating(currentActivePath, "file")} onNewFolder={() => startCreating(currentActivePath, "folder")}>
           <div
-            className={`group flex items-center gap-2 py-1 px-2 mx-0.5 cursor-pointer transition-all duration-150 relative ${isSelected ? "bg-blue-300/5 text-blue-100" : "hover:bg-gray-700/11 text-gray-300 hover:text-gray-100"
+            className={`group flex items-center gap-1 py-1 mx-0 cursor-pointer transition-all duration-150 relative ${isSelected ? "bg-blue-300/5 text-blue-100" : "hover:bg-gray-700/11 text-gray-300 hover:text-gray-100"
               }`}
             style={{ paddingLeft: `${depth * 16 + 12}px` }}
             onClick={() => {
@@ -124,8 +124,8 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
     return (
       <li key={fullPath} className="select-none">
         <div
-          className="group flex items-center gap-2 py-1.5 px-2 mx-0.5 cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
-          style={{ paddingLeft: `${depth * 16 + 12}px` }}
+          className="group flex items-center gap-0.5 py-0.5 cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
+          style={{ paddingLeft: `${depth * 16 + 10}px` }}
           onClick={() => handleFolderClick(fullPath)}
         >
           {hasChildren ? (
@@ -137,9 +137,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
           ) : (
             <div className="w-4" />
           )}
-
-          {isCollapsed ? <Folder className="w-4.5 h-4.5 text-sky-400 flex-shrink-0" /> : <FolderOpen className="w-4.5 h-4.5 text-sky-300 flex-shrink-0" />}
-          <span className="text-sm text-gray-200 group-hover:text-gray-100 truncate font-medium leading-relaxed">{name}</span>
+          <span className="text-xs text-gray-100 truncate font-normal leading-relaxed">{name}</span>
         </div>
 
         {!isCollapsed && (
@@ -230,8 +228,8 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
       />
 
       <div className="flex-1 overflow-auto">
-        <div className="py-1.5">
-          <ul className="space-y-px">{renderTree()}</ul>
+        <div className="py-1">
+          <ul className="space-y-0">{renderTree()}</ul>
         </div>
       </div>
     </div>

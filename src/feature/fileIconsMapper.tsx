@@ -185,5 +185,5 @@ export const getFileIcon = (fileName: string) => {
   };
   
   const icon = fileMap[lower] || (ext ? extMap[ext] : undefined) || "vscode-icons:file-type-apib";
-  return <Icon icon={icon} width="18" height="18" />;
+  return <Icon icon={icon} width="16" height="16" />;
 };
