@@ -106,14 +106,6 @@ export function startFSWatcher(
       }
 
       dispatch(
-        addLog({
-          text: `change --> ${name}`,
-          timestamp: new Date().toLocaleString(),
-          type: "success",
-        })
-      );
-
-      dispatch(
         fileCreateUpdateFlow({ parentPath, name, projectId, content, type })
       );
     } catch (err) {
