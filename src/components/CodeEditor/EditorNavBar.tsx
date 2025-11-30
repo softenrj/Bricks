@@ -37,9 +37,8 @@ function EditorNavBar({ showMd, setShowMd }: EditorNavBarProps) {
           const isActive = selectedFile === tab.name;
           const isEditing = tab.isEditing
           return (
-            <OpenedTabContext name={fileName}>
+            <OpenedTabContext name={fileName} key={tab.name}>
               <div
-                key={tab.name}
                 className={`flex items-center px-3 mr-1 h-full cursor-pointer select-none border-b-2 transition-all ${isActive
                   ? "bg-[#1E1E1E] border-blue-500/60 text-white"
                   : "bg-[#0D0D0D] border-transparent text-gray-300 hover:bg-[#111111]"
