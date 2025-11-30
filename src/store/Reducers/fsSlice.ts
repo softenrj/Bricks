@@ -30,7 +30,7 @@ export const writeFile = createAsyncThunk(
   "fs/writeFile",
   async ({ path, content }: { path: string; content: string }) => {
     await wc!.fs.writeFile(path, content);
-    return { path, content }; // raw string, no btoa
+    return { path, content }; //? # 90'th commit 
   }
 );
 
