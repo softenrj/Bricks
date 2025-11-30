@@ -8,6 +8,7 @@ import { switchTab, closeTab } from "@/store/Reducers/fsSlice";
 import { X } from "lucide-react";
 import { Switch } from "../ui/switch";
 import { Tooltip } from "../common/Tooltip";
+import OpenedTabContext from "./OpenedTabContext";
 
 interface EditorNavBarProps {
   showMd: boolean;
@@ -36,33 +37,35 @@ function EditorNavBar({ showMd, setShowMd }: EditorNavBarProps) {
           const isActive = selectedFile === tab.name;
           const isEditing = tab.isEditing
           return (
-            <div
-              key={tab.name}
-              className={`flex items-center px-3 mr-1 h-full cursor-pointer select-none border-b-2 transition-all ${isActive
-                ? "bg-[#1E1E1E] border-blue-500/60 text-white"
-                : "bg-[#0D0D0D] border-transparent text-gray-300 hover:bg-[#111111]"
-                }`}
-              onClick={() => dispatch(switchTab(tab.name))}
-            >
-              <span className="truncate max-w-[150px]">{fileName}</span>
-              {isEditing && (
-                <span
-                  className="ml-2 bg-[#cccccc5d] h-2 w-2 rounded-full 
+            <OpenedTabContext name={fileName}>
+              <div
+                key={tab.name}
+                className={`flex items-center px-3 mr-1 h-full cursor-pointer select-none border-b-2 transition-all ${isActive
+                  ? "bg-[#1E1E1E] border-blue-500/60 text-white"
+                  : "bg-[#0D0D0D] border-transparent text-gray-300 hover:bg-[#111111]"
+                  }`}
+                onClick={() => dispatch(switchTab(tab.name))}
+              >
+                <span className="truncate max-w-[150px]">{fileName}</span>
+                {isEditing && (
+                  <span
+                    className="ml-2 bg-[#cccccc5d] h-2 w-2 rounded-full 
       group-hover:opacity-0 transition-opacity duration-150"
-                ></span>
-              )}
+                  ></span>
+                )}
 
-              <X
-                size={12}
-                className={`ml-2 text-gray-400 
+                <X
+                  size={12}
+                  className={`ml-2 text-gray-400 
       ${isEditing ? "hidden hover:block" : ""} 
       transition-opacity duration-150`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(closeTab(tab.name));
-                }}
-              />
-            </div>
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(closeTab(tab.name));
+                  }}
+                />
+              </div>
+            </OpenedTabContext>
           );
         })}
       </div>

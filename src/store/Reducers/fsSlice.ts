@@ -298,6 +298,52 @@ const fsSlice = createSlice({
 
     aiCodeGen: (_state, action: PayloadAction<string>) => {
       _state.selectedFileContent = action.payload
+    },
+    closeOher: (_state, action: PayloadAction<string | undefined>) => {
+      const secureTabName = action.payload;
+      if (typeof secureTabName === 'undefined') return;
+      const tab = _state.openTabs.find(item => item.name === secureTabName)
+      if (tab) {
+        _state.openTabs = [tab];
+        _state.selectedFile = secureTabName;
+        _state.selectedFileContent = _state.selectedFile ? getFileContent(_state.tree, secureTabName) : "";
+        _state.selectedLanguage = _state.selectedFile ? detectLanguage(_state.selectedFile) : LanguageEnum.md;
+      }
+    },
+    closeToRight: (_state, action: PayloadAction<string | undefined>) => {
+      const startingTab = action.payload;
+      if (!startingTab) return;
+
+      const idx = _state.openTabs.findIndex(item => item.name === startingTab);
+      if (idx === -1) return;
+      _state.openTabs = _state.openTabs.filter((_, index) => index <= idx);
+      const isOpenTabRemoved = !_state.openTabs.some(item => item.name === _state.selectedFile);
+      if (isOpenTabRemoved) {
+        _state.selectedFile = startingTab;
+        _state.selectedFileContent = _state.selectedFile ? getFileContent(_state.tree, startingTab) : "";
+        _state.selectedLanguage = _state.selectedFile ? detectLanguage(_state.selectedFile) : LanguageEnum.md;
+      }
+    },
+    closeSaved: (_state, action: PayloadAction<string | undefined>) => {
+      const actionFile = action.payload;
+      if (typeof actionFile === "undefined") return ;
+      _state.openTabs = _state.openTabs.filter(item => item.isEditing);
+      if (_state.openTabs.length == 0) {
+        _state.selectedFile = null;
+        _state.selectedFileContent = null;
+        return ;
+      }
+      const isOpenTabRemoved = !_state.openTabs.some(item => item.name === _state.selectedFile);
+      if (isOpenTabRemoved) {
+        _state.selectedFile = actionFile;
+        _state.selectedFileContent = _state.selectedFile ? getFileContent(_state.tree, actionFile) : "";
+        _state.selectedLanguage = _state.selectedFile ? detectLanguage(_state.selectedFile) : LanguageEnum.md;
+      }
+    },
+    closeAll: (_state, action: PayloadAction<void>) => {
+      _state.openTabs = [];
+      _state.selectedFile = null;
+      _state.selectedFileContent = null;
     }
   },
   extraReducers: (builder) => {
@@ -310,6 +356,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow } = fsSlice.actions;
+export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow, closeOher, closeToRight, closeSaved, closeAll } = fsSlice.actions;
 
 export default fsSlice.reducer;

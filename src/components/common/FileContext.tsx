@@ -16,6 +16,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react"
+import { TabCss } from "../CodeEditor/OpenedTabContext";
 
 interface Prope { children: React.ReactNode,
   onRename: (path: string, name: string) => void;
@@ -34,54 +35,40 @@ export function FileContext({ children, onRename, onRemove, path, name, onNewFil
       <ContextMenuContent className=" bg-[#1c1c1cf0] border-[#2d2d2d] text-white" >
         {/* Core Actions */}
         <ContextMenuItem
-          className="flex items-center gap-2 rounded-md 
-                     data-[highlighted]:bg-gray-700/70 
-                     data-[highlighted]:text-white 
-                     focus:outline-none"
+          className={TabCss}
           onClick={onNewFile}
         >
-          <FilePlus size={16} />
+          <FilePlus size={16} className="text-gray-300" />
           Add File
-          <ContextMenuShortcut>⌘N</ContextMenuShortcut>
         </ContextMenuItem>
 
         <ContextMenuItem
-          className="flex items-center gap-2 rounded-sm 
-                     data-[highlighted]:bg-gray-700/70 
-                     data-[highlighted]:text-white 
-                     focus:outline-none"
+         className={TabCss}
           onClick={onNewFolder}
         >
-          <FolderPlus size={16} />
+          <FolderPlus size={16} className="text-gray-300" />
           Add Folder
-          <ContextMenuShortcut>⇧⌘N</ContextMenuShortcut>
         </ContextMenuItem>
 
         <ContextMenuSeparator className="bg-gray-700" />
 
         {/* Edit / File Management */}
         <ContextMenuItem
-          className="flex items-center gap-2 rounded-md 
-                     data-[highlighted]:bg-gray-700/70 
-                     data-[highlighted]:text-white 
-                     focus:outline-none"
+          className={TabCss}
           onClick={() => onRename(path, name)}
         >
-          <Pencil size={16} />
+          <Pencil size={16} className="text-gray-300" />
           Rename
-          <ContextMenuShortcut>F2</ContextMenuShortcut>
+          <ContextMenuShortcut className="text-gray-300">⌘R</ContextMenuShortcut>
         </ContextMenuItem>
 
         <ContextMenuItem
-          className="flex items-center gap-2 rounded-md text-red-400
-                     data-[highlighted]:bg-red-600/70 
-                     data-[highlighted]:text-white 
-                     focus:outline-none"
+          className={TabCss}
           onClick={() => onRemove(path, name)}
         >
-          <Trash2 size={16} />
+          <Trash2 size={16} className="text-gray-300" />
           Delete
-          <ContextMenuShortcut>⌘⌫</ContextMenuShortcut>
+          <ContextMenuShortcut className="text-gray-300">⌘D</ContextMenuShortcut>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

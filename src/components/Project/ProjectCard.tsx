@@ -59,7 +59,7 @@ function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Proj
                             React
                         </Badge>
                     </Tooltip>
-                    <Tooltip content="Next.js">
+                    <Tooltip content="Vite">
                         <Badge
                             variant={"default"}
                             className="text-[10px] rounded-full px-2 py-0.5"
