@@ -7,10 +7,11 @@ import React from 'react'
 import { Badge } from '../ui/badge'
 import Image from 'next/image'
 import { Tooltip } from './Tooltip'
-import { useAppSelector } from '@/hooks/redux'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { getSocket } from '@/socket/socket'
 import { useIsMobile } from '@/hooks/use-mobile'
 import MobileTabs from '../IdeLayOut/MobileTabs'
+import { toggleArch } from '@/store/Reducers/IdeFeatures'
 
 function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string, displayTabs?: boolean}) {
   const today = new Date().toLocaleDateString("en-GB", {
@@ -22,6 +23,9 @@ function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string
   const user = useAppSelector(state => state.user);
   const socket = getSocket();
   const isMobile = useIsMobile();
+  const dispatch = useAppDispatch();
+  const archForge = useAppSelector(state => state.IdeFeatures).ArchForgePanel;
+  const handleArchForge = async () => dispatch(toggleArch(!archForge));
 
   return (
     <>
@@ -47,12 +51,13 @@ function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string
       {/* Right side */}
       <div className="flex items-center gap-2 md:gap-4">
         {/* User Tag */}
-        <div className="flex items-center bg-black border Alex-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition">
+        {displayTabs && <Tooltip content='ArchForge Panel'>
+          <div className="flex items-center bg-black border Alex-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition" onClick={handleArchForge}>
           <Sparkles size={14} className="text-yellow-400" />
           <p className="ml-1 text-[11px] text-gray-400 hover:text-gray-200 transition">
-            Alex
+            ArchForge
           </p>
-        </div>
+        </div></Tooltip>}
 
         {/* Notifications */}
         <button className="relative">

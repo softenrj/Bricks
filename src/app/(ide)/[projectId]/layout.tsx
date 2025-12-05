@@ -15,7 +15,7 @@ async function IdeLayout({ children, params }: { children: React.ReactNode, para
         {children}
         </div>
       </main>
-      {/* <BricksSpeechLaunch /> ## Next Feature Dev Phased ## */}
+      <BricksSpeechLaunch />
     </div>
   )
 }

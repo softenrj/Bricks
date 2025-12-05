@@ -141,3 +141,17 @@ export async function toggleFSWatcher(
     startFSWatcher(container, projectId, dispatch);
   }
 }
+
+export async function archWebContainerProcess(
+  fileName: string,
+  path: string,
+  content: string,
+  projectId: string,
+  dispatch: AppDispatch
+): Promise<void> {
+  const container = await getWebContainer();
+  stopFSWatcher();
+  const fullPath = path;
+  await container.fs.writeFile(fullPath, content);
+  startFSWatcher(container, projectId,dispatch);
+}

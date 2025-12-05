@@ -9,6 +9,7 @@ import { fileRename, fileUpdate, fileUpdateCreate, newFileSocket, newFolderSocke
 import { FSState } from "@/types/FSState";
 import { detectLanguage, getFileContent } from "@/feature/fsSystem";
 import { FSTYPE } from "@/types/project";
+import { ArchProjectCode } from "@/types/arch.typs";
 export type FSData = { [key: string]: string | FSData };
 
 const initialState: FSState = {
@@ -344,6 +345,27 @@ const fsSlice = createSlice({
       _state.openTabs = [];
       _state.selectedFile = null;
       _state.selectedFileContent = null;
+    },
+    archCodeGeneration: (state, action: PayloadAction<ArchProjectCode>) => {
+      const { projectId, path, content, fileName } = action.payload;
+      const segments = path.split("/");
+
+      // walk tree
+      let node: any = state.tree;
+      for (let i = 0; i < segments.length - 1; i++) {
+        const seg = segments[i];
+        if (!node[seg]) node[seg] = {};
+        node = node[seg] as FSData;
+      }
+
+      node[segments[segments.length - 1]] = content;
+      state.selectedFile = path;
+      state.selectedFileContent = content;
+      state.selectedLanguage = detectLanguage(fileName);
+
+      if (!state.openTabs.some(t => t.name === path)) {
+        state.openTabs.push({ name: path, isEditing: false });
+      }
     }
   },
   extraReducers: (builder) => {
@@ -356,6 +378,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow, closeOher, closeToRight, closeSaved, closeAll } = fsSlice.actions;
+export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow, closeOher, closeToRight, closeSaved, closeAll, archCodeGeneration } = fsSlice.actions;
 
 export default fsSlice.reducer;

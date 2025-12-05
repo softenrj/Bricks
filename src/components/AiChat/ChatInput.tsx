@@ -314,7 +314,7 @@ export default function ChatInput({ projectId }: { projectId: string }) {
             value={message}
             onChange={e => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Message ChatGPT"
+            placeholder="Message "
             rows={1}
             disabled={isRecording}
             className="w-full resize-none bg-transparent text-[#ececec] placeholder-[#8e8e8e] outline-none text-[15px] overflow-y-auto py-1.5 max-h-[160px] leading-relaxed disabled:opacity-50 hide-scrollbar"

@@ -489,3 +489,25 @@ div[data-code-block-container="true"] {
   0%   { opacity: 0; transform: scale(0.98); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+.strike-container {
+  position: relative;
+  display: inline-block;
+}
+
+.strike-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 1px;
+  width: 0%;
+  background: currentColor;
+  transform: translateY(-50%);
+  opacity: 0.7;
+  transition: width 0.4s ease;
+}
+
+.strike-active::after {
+  width: 100%;
+}

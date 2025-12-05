@@ -7,8 +7,9 @@ interface IdeFeatures {
   codeCompletion: boolean;
   autoSave: boolean;
   realTimePanel: boolean;
+  ArchForgePanel: boolean;
 }
-const defaultState = { codeCompletion: false, autoSave: false, realTimePanel: true }
+const defaultState = { codeCompletion: false, autoSave: false, realTimePanel: true, ArchForgePanel: false }
 const loadFromLocalStorage = (): IdeFeatures => {
   if (typeof window === 'undefined') return defaultState;
   try {
@@ -44,9 +45,12 @@ const IdeFeaturesSlice = createSlice({
     togglePanel: (state, action: PayloadAction<boolean>) => {
       state.realTimePanel = action.payload;
       saveToLocalStorage(state);
+    },
+    toggleArch: (state, action: PayloadAction<boolean>) => {
+      state.ArchForgePanel = action.payload;
     }
   },
 });
 
 export default IdeFeaturesSlice.reducer;
-export const { toggleCodeCompletion, toggleAutoSave, togglePanel } = IdeFeaturesSlice.actions;
+export const { toggleCodeCompletion, toggleAutoSave, togglePanel, toggleArch } = IdeFeaturesSlice.actions;
