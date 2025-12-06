@@ -15,7 +15,7 @@ async function IdeLayout({ children, params }: { children: React.ReactNode, para
         {children}
         </div>
       </main>
-      <BricksSpeechLaunch />
+      <BricksSpeechLaunch projectId={projectId} />
     </div>
   )
 }

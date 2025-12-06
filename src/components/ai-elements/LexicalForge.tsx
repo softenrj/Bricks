@@ -5,17 +5,34 @@
 import { ChevronRight } from "lucide-react";
 import React from "react";
 import { Tooltip } from "../common/Tooltip";
+import { motion } from "framer-motion";
+import { postApi } from "@/utils/api/common";
+import { ApiResponse } from "@/types/Api";
+import { API_BRICKS_ARCH_REQUEST } from "@/utils/api/APIConstant";
 
-export default function LexicalForge() {
+export default function LexicalForge({projectId}:{projectId: string}) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-  const [message, setMessage] = React.useState("");
+  const [prompt, setPrompt] = React.useState("");
+  const [processing, setProcessing] = React.useState<boolean>(false);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      // handleSend();
+      handleSend()
     }
   };
+
+  const handleSend = async () => {
+    if (prompt.trim() === "") return ;
+    setProcessing(true);
+    const response = await postApi<ApiResponse<void>>({
+      url: API_BRICKS_ARCH_REQUEST,
+      values: { projectId, prompt }
+    })
+    setProcessing(false);
+    setPrompt("");
+    if(response?.success){}
+  }
 
   React.useEffect(() => {
     const el = textareaRef.current;
@@ -23,10 +40,14 @@ export default function LexicalForge() {
 
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
-  }, [message]);
+  }, [prompt]);
 
   return (
-    <div
+    <motion.div
+      initial={{ y: 10, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.2, ease: "easeIn" }}
+      exit={{ y: 10, opacity: 0 }}
       className="
         fixed bottom-10 left-1/2 -translate-x-1/2
         inline-flex items-center gap-2
@@ -41,8 +62,8 @@ export default function LexicalForge() {
     >
       <textarea
         ref={textareaRef}
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Message"
         rows={1}
@@ -70,11 +91,14 @@ export default function LexicalForge() {
             bg-gray-800/30
             hover:bg-gray-700/50
             transition
+            disabled:opacity-75
+            disabled:cursor-progress
           "
+          disabled={processing}
         >
           <ChevronRight size={14} />
         </button>
       </Tooltip>
-    </div>
+    </motion.div>
   );
 }

@@ -153,5 +153,5 @@ export async function archWebContainerProcess(
   stopFSWatcher();
   const fullPath = path;
   await container.fs.writeFile(fullPath, content);
-  startFSWatcher(container, projectId,dispatch);
+  startFSWatcher(container, projectId, dispatch);
 }

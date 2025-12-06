@@ -20,7 +20,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={`
           max-w-full sm:max-w-3xl rounded-2xl px-4 py-3 text-sm sm:text-base leading-relaxed
-          overflow-x-auto shadow-sm transition-all duration-200
+          overflow-x-auto transition-all duration-200
           ${isUser
             ? "bg-[#2f2f2f] text-white rounded-2xl"
             : " text-[#e4e4e4]"}

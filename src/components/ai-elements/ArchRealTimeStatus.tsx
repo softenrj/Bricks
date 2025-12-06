@@ -6,13 +6,51 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Spinner } from "../ui/spinner";
+import { ArchEnginStatusSocket } from "@/types/processSocket";
+import { getSocket } from "@/socket/socket";
+import { ARCH_BRICKS_PROCESS_STATUS } from "@/utils/api/socket.events";
 
 function ArchRealTimeStatus() {
-  const [processRunning, setProcessRunning] = React.useState(true);
+  const [pipeline, setPipeline] = React.useState<ArchEnginStatusSocket[]>([]);
+  const socket = getSocket();
+
+  React.useEffect((): any => {
+    if (!socket) return;
+
+    const handler = (process: ArchEnginStatusSocket) => {
+      setPipeline(prev => {
+        const index = prev.findIndex(p => p.processId === process.processId);
+
+        if (process.process === "render") {
+          if (index === -1) return [...prev, process];
+          return prev;
+        }
+
+        if (process.process === "complete" && index !== -1) {
+          const updated = [...prev];
+          updated[index] = process;
+
+          // hide after delay
+          setTimeout(() => {
+            setPipeline(p => p.filter(x => x.processId !== process.processId));
+          }, 1000);
+
+          return updated;
+        }
+
+        return prev;
+      });
+    };
+
+    socket.on(ARCH_BRICKS_PROCESS_STATUS, handler);
+    return () => socket.off(ARCH_BRICKS_PROCESS_STATUS, handler);
+  }, [socket]);
 
 
-  return (
-    0 && <motion.div
+  const last = pipeline[pipeline.length - 1];
+
+  return last ? (
+    <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
@@ -28,20 +66,20 @@ function ArchRealTimeStatus() {
         z-[999]
       "
     >
-      {processRunning && (
+      {last.process === "render" && (
         <Spinner className="w-4 h-4 text-green-400" />
       )}
 
       <p
         className={`
-          strike-container truncate max-w-full leading-relaxed
-          ${!processRunning ? "strike-active text-gray-400" : ""}
+          truncate max-w-full leading-relaxed
+          ${last.process === "complete" ? "line-through text-gray-400" : ""}
         `}
       >
-        dsf
+        {last.message}
       </p>
     </motion.div>
-  );
+  ) : null;
 }
 
 export default ArchRealTimeStatus;

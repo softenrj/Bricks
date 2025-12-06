@@ -31,3 +31,6 @@ export const API_BRICKS_GET_CHAT_HISTORY: string = "/chat/bricks-chat-recoll"
 // code completion
 export const API_BRICKS_CODE_SUGGESION: string = "/project/bricks-code-sugg"
 export const API_BRICKS_CODE_COMPLETION: string = "/project/bricks-code-improvement"
+
+// ArchForge
+export const API_BRICKS_ARCH_REQUEST: string = "/ai/bricks-arch-forge"
