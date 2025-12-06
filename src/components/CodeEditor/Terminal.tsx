@@ -93,7 +93,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
             <button
               onClick={() => dispatch(startDevServer())}
               className="py-1 px-1 bg-green-600 hover:bg-green-700 disabled:opacity-80 disabled:cursor-not-allowed text-white text-xs rounded transition"
-              disabled={!!liveUrl}
+              // disabled={!!liveUrl}
             >
               npm run dev
             </button>

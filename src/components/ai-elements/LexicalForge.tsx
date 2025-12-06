@@ -95,6 +95,7 @@ export default function LexicalForge({projectId}:{projectId: string}) {
             disabled:cursor-progress
           "
           disabled={processing}
+          onClick={handleSend}
         >
           <ChevronRight size={14} />
         </button>

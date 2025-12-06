@@ -142,6 +142,32 @@ export async function toggleFSWatcher(
   }
 }
 
+async function ensureDir(container: any, filePath: string) {
+  const lastSlashIndex = filePath.lastIndexOf('/');
+  
+  if (lastSlashIndex === -1) return;
+
+  const dirPath = filePath.substring(0, lastSlashIndex);
+
+  try {
+    await container.fs.mkdir(dirPath, { recursive: true });
+  } catch (e: any) {
+    if (e?.code !== 'EEXIST') {
+      console.error("Directory creation failed:", e);
+      throw e;
+    }
+  }
+}
+function toContainerPath(path: string): string {
+  const idx = path.indexOf("src/");
+  
+  if (idx !== -1) {
+    return "/" + path.slice(idx); 
+  }
+  
+  return "/src/" + path.replace(/^\/?src\//, "");
+}
+
 export async function archWebContainerProcess(
   fileName: string,
   path: string,
@@ -151,7 +177,12 @@ export async function archWebContainerProcess(
 ): Promise<void> {
   const container = await getWebContainer();
   stopFSWatcher();
-  const fullPath = path;
-  await container.fs.writeFile(fullPath, content);
+
+  const containerPath = toContainerPath(path);
+
+  await ensureDir(container, containerPath);
+
+  await container.fs.writeFile(containerPath, content);
+
   startFSWatcher(container, projectId, dispatch);
 }
