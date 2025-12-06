@@ -2,6 +2,7 @@ import BricksSpeechLaunch from '@/components/ai-elements/BricksSpeechLaunch';
 import DashboardNavStrip from '@/components/common/DashboardNavStrip'
 import IdeTabs from '@/components/IdeLayOut/IdeTabs'
 import React from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 async function IdeLayout({ children, params }: { children: React.ReactNode, params: Promise<{ projectId: string }> }) {
   const param = await params;
@@ -16,6 +17,7 @@ async function IdeLayout({ children, params }: { children: React.ReactNode, para
         </div>
       </main>
       <BricksSpeechLaunch projectId={projectId} />
+      <SpeedInsights />
     </div>
   )
 }
