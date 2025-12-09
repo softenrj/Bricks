@@ -37,7 +37,7 @@ function AppNavBarOptions({ show = true, onClose }: { show?: boolean, onClose: (
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <MobileOptionTemplet name="Settings" Icon={Settings} href="/settings" onClose={onClose} />
+            <MobileOptionTemplet name="Account" Icon={Settings} href="/account" onClose={onClose} />
           </motion.div>
         </motion.div>
       )}

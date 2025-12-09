@@ -1,15 +1,19 @@
 // Copyright (c) 2025 Raj 
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
+
 "use client";
+
 import React, { useState, useEffect } from "react";
 
 interface AiTyperProps {
   messages: string[];
-  typingSpeed?: number; // ms per char
-  pauseTime?: number; // ms pause at end of sentence
-  loop?: boolean; // whether to loop
-  cursorColor?: string; // cursor glow color
+  typingSpeed?: number;
+  pauseTime?: number;
+  loop?: boolean;
+  cursorColor?: string;
+  textColour?: string;
+  className?: string;
 }
 
 const AiTyper: React.FC<AiTyperProps> = ({
@@ -18,41 +22,53 @@ const AiTyper: React.FC<AiTyperProps> = ({
   pauseTime = 1500,
   loop = true,
   cursorColor = "#ff4fd8",
+  textColour = "text-white",
+  className = "",
 }) => {
-  const [displayed, setDisplayed] = useState("");
-  const [msgIndex, setMsgIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [displayed, setDisplayed] = useState<string>("");
+  const [msgIndex, setMsgIndex] = useState<number>(0);
+  const [charIndex, setCharIndex] = useState<number>(0);
+  const [paused, setPaused] = useState<boolean>(false);
 
   useEffect(() => {
     if (msgIndex >= messages.length) return;
 
+    // typing each character
     if (charIndex < messages[msgIndex].length) {
-      // Typing each character
       const timeout = setTimeout(() => {
         setDisplayed((prev) => prev + messages[msgIndex][charIndex]);
         setCharIndex((prev) => prev + 1);
       }, typingSpeed);
+
       return () => clearTimeout(timeout);
-    } else if (!paused) {
-      // Pause at end of message
+    }
+
+    // pause at the end
+    if (!paused) {
       setPaused(true);
       const timeout = setTimeout(() => {
         setPaused(false);
-        setDisplayed(""); // optional: clear before next message
+        setDisplayed(""); // clear
         setCharIndex(0);
+
         setMsgIndex((prev) => {
           if (loop) return (prev + 1) % messages.length;
           return prev + 1;
         });
       }, pauseTime);
+
       return () => clearTimeout(timeout);
     }
   }, [charIndex, msgIndex, paused, messages, typingSpeed, pauseTime, loop]);
 
   return (
     <div className="flex items-center">
-      <span className="text-sm md:text-base text-white">{displayed}</span>
+      <span
+        className={`text-sm md:text-base ${textColour} ${className}`}
+      >
+        {displayed}
+      </span>
+
       <span
         className="ml-1 animate-pulse"
         style={{

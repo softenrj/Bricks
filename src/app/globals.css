@@ -315,6 +315,16 @@ body {
   /* Chrome, Safari, Opera */
 }
 
+.smooth-scroll {
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 1rem;
+}
+
+.smooth-scroll > * {
+  scroll-snap-align: center;
+}
+
 /** # region  Ai Response */
 
 code[data-streamdown="inline-code"] {

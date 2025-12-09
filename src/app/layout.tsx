@@ -10,6 +10,8 @@ import { Toaster } from "react-hot-toast"
 import "./globals.css";
 import '@xyflow/react/dist/style.css';
 import "@/socket/socket"
+
+import { ReactQueryProvider } from "@/lib/ReactQueryProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -41,12 +43,14 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Bricks Ai" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ReduxProvider>
-          <SidebarProvider>
-            {children}
-            <Toaster position="bottom-right" reverseOrder />
-          </SidebarProvider>
-        </ReduxProvider>
+        <ReactQueryProvider>
+          <ReduxProvider>
+            <SidebarProvider>
+              {children}
+              <Toaster position="bottom-right" reverseOrder />
+            </SidebarProvider>
+          </ReduxProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

@@ -1,3 +1,7 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
+
 // File sync
 export const SOCKET_NEW_FILE: string = "file:add"
 export const SOCKET_NEW_FOLDER: string = "folder:add"

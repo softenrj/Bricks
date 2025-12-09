@@ -6,7 +6,7 @@ import defaultAxios from "./axios";
 type ApiRequest = {
     url: string,
     param?: Record<string, string | number>,
-    values?: Record<string, string | number| undefined>
+    values?: Record<string, string | number| undefined> | FormData
 }
 
 const handleApiError = (err: any) => {

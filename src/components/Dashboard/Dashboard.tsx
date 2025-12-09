@@ -7,29 +7,21 @@ import React from "react";
 import HeadLine from "./Dashboard.headline";
 import DashboardRecent from "./Dashboard.recent";
 import DashboardAICard from "./Dashboard.topcard";
-import { getUser } from "@/service/api.user";
 import { useAppDispatch } from "@/hooks/redux";
 import { setUserdata } from "@/store/Reducers/user";
 import { connectSocket, getSocket } from "@/socket/socket";
+import { useUser } from "@/service/api.user";
 
 function Dashboard() {
   const dispatch = useAppDispatch();
+  const { data: user, isLoading } = useUser();
 
   React.useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getUser();
-        if (user) {
-          dispatch(setUserdata(user));
-          ensureSocketConnection();
-        }
-      } catch (error) {
-        console.error("Failed to fetch user", error);
-      }
-    };
+    if (!user) return
 
-    fetchUser();
-  }, [dispatch]);
+    dispatch(setUserdata(user))
+    ensureSocketConnection()
+  }, [user, dispatch])
 
   const ensureSocketConnection = React.useCallback(() => {
     const tryConnect = () => {

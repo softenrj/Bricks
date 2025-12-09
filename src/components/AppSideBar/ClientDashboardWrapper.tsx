@@ -18,7 +18,6 @@ export default function ClientDashboardWrapper({
 }) {
   const { open } = useSidebar();
   const isMobile = useIsMobile();
-  console.log(projectId)
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">

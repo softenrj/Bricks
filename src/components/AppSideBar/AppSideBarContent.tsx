@@ -47,8 +47,8 @@ const sidebarItems: AppSideBarItems[] = [
         color: "#0ea5e9", // bright cyan
     },
     {
-        title: "Settings",
-        href: "/settings",
+        title: "Account",
+        href: "/account",
         icon: Settings,
         color: "#f472b6", // soft pink
     },

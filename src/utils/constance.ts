@@ -5,3 +5,5 @@
 // :: Production ::
 export const defaultApiRoute = 'https://bricks-backend-a048.onrender.com/api';
 export const serverUrl = "https://bricks-backend-a048.onrender.com"
+
+export const defaultAppUrl = "https://bricks-three-rose.vercel.app"

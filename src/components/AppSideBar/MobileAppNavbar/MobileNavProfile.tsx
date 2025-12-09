@@ -14,7 +14,7 @@ function MobileNavProfile({ onOpen }: { onOpen: () => void }) {
         <div className='flex '>
             <Tooltip content={user.username || ""} >
                 <Avatar onClick={onOpen} className="h-8 w-8 rounded-full overflow-hidden ring-2 ring-blue-500/50 shadow-sm transition-all duration-300">
-                <AvatarImage src="https://avatars.githubusercontent.com/u/149652817?v=4" />
+                <AvatarImage src={user.profile || "https://avatars.githubusercontent.com/u/149652817?v=4"} />
                 <AvatarFallback>RS</AvatarFallback>
             </Avatar>
             </Tooltip>

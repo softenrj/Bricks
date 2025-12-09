@@ -1,8 +1,15 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
+
 // Auth Flow
 export const API_BRICKS_SIGN_IN: string = "/user/signIn"
 
 // user
 export const API_BRICKS_GET_USRER: string = "/user/bricks-user"
+export const API_BRICKS_DAILY_LOGIN: string = "/user/daily-login"
+export const API_BRICKS_USER_STATS: string = "/user/bricks-stats"
+export const API_BRICKS_USER_PROFILE_PATCH: string = "/user/update"
 
 // project
 export const API_BRICKS_NEW_PROJECT: string = "/project/bricks-new-project"
@@ -34,3 +41,12 @@ export const API_BRICKS_CODE_COMPLETION: string = "/project/bricks-code-improvem
 
 // ArchForge
 export const API_BRICKS_ARCH_REQUEST: string = "/ai/bricks-arch-forge"
+
+// History
+export const API_BRICKS_USER_HISTORY: string = "/history/user"
+export const API_BRICKS_REMOVE_USER_HISTORY: string = "/history/user"
+export const API_BRICKS_CLEAN_USER_HISTORY: string = "/history/user"
+
+export const API_BRICKS_PROJECT_HISTORY: string = "/history/project"
+export const API_BRICKS_REMOVE_PROJECT_HISTORY: string = "/history/project"
+export const API_BRICKS_CLEAN_PROJECT_HISTORY: string = "/history/project"
