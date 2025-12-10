@@ -37,6 +37,7 @@ export default function AccountProfile() {
                             <AvatarImage
                                 src={user.profile}
                                 className="object-cover"
+                                crossOrigin="anonymous"
                             />
                             <AvatarFallback>RS</AvatarFallback>
                         </Avatar>
