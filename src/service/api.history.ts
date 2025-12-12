@@ -2,7 +2,7 @@ import { IBricksHistry } from "@/types/history";
 import { Filter } from "./api.project";
 import { deleteApi, getApi } from "@/utils/api/common";
 import { ApiResponse, PaginatedApiResponse } from "@/types/Api";
-import { API_BRICKS_CLEAN_USER_HISTORY, API_BRICKS_REMOVE_USER_HISTORY, API_BRICKS_USER_HISTORY } from "@/utils/api/APIConstant";
+import { API_BRICKS_CLEAN_USER_HISTORY, API_BRICKS_GET_ALL_USER_HISTORY, API_BRICKS_REMOVE_USER_HISTORY, API_BRICKS_USER_HISTORY } from "@/utils/api/APIConstant";
 import toast from "react-hot-toast";
 
 export enum BrickHistoryTypeEnum {
@@ -51,7 +51,7 @@ export const getUserHistory = async (
 
         return { nextCursor, data: [] };
     } catch (error: any) {
-        console.error("Error fetching projects:", error);
+        console.error("Error fetching UserHistory:", error);
         toast.error(error?.message ?? "Something went wrong");
         return { nextCursor, data: [] };
     }
@@ -72,7 +72,7 @@ export const removeUserHistory = async (historyId: string): Promise<boolean> => 
         }
         return false;
     } catch (error: any) {
-        console.error("Error fetching projects:", error);
+        console.error("Error While Removing History:", error);
         toast.error(error?.message ?? "Something went wrong");
         return false;
     }
@@ -93,8 +93,28 @@ export const cleanUserHistory = async (): Promise<boolean> => {
         }
         return false;
     } catch (error: any) {
-        console.error("Error fetching projects:", error);
+        console.error("Error While Clean History Request:", error);
         toast.error(error?.message ?? "Something went wrong");
         return false;
+    }
+}
+
+/**
+ * 
+ * @returns 
+ */
+export const getAllUserHistory = async (): Promise<IBricksHistry[] | null> => {
+    try {
+        const response = await getApi<ApiResponse<IBricksHistry[]>>({
+            url: API_BRICKS_GET_ALL_USER_HISTORY
+        })
+        if (response?.success) {
+            return response.data;
+        }
+        return null;
+    } catch (error: any) {
+        console.error("Error fetching All user History:", error);
+        toast.error(error?.message ?? "Something went wrong");
+        return null;
     }
 }

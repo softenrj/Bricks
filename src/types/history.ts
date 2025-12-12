@@ -4,6 +4,6 @@ export interface IBricksHistry {
     projectId?: string;
     type: string;
     description: string;
-    createAt: Date;
+    createdAt: Date;
     updatedAt: Date;
 }

@@ -13,7 +13,8 @@ import { useSearchParams } from 'next/navigation'
 import { exportProjects, Filter } from '@/service/api.project'
 import { useDebounce } from '@/hooks/debounce'
 import jsPDF from "jspdf";
-
+import { getAllUserHistory } from '@/service/api.history'
+import autoTable from "jspdf-autotable";
 
 function HistoryFilter({
     fallback,
@@ -27,9 +28,83 @@ function HistoryFilter({
     const textDebounce = useDebounce<string>(textQ, 200);
 
     const handleExportPDF = async () => {
+        const history = await getAllUserHistory();
+        if (!history || history.length === 0) {
+            alert("No history found to export.");
+            return;
+        }
+        const doc = new jsPDF("p", "mm", "a4");
+        const secondaryColor = "#2C3E50";
+        const pageWidth = doc.internal.pageSize.width;
 
+        doc.setFillColor(secondaryColor);
+        doc.rect(0, 0, pageWidth, 20, "F");
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+        doc.text("User History Report", 14, 13);
+
+        const dateStr = new Date().toLocaleDateString();
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Generated: ${dateStr}`, pageWidth - 14, 13, { align: "right" });
+
+        const tableBody = history.map((item) => [
+            item.type.toUpperCase(),
+            item.description,
+            new Date(item.createdAt).toLocaleDateString() + " " + new Date(item.createdAt).toLocaleTimeString(),
+        ]);
+
+        autoTable(doc, {
+            head: [["Type", "Description", "Created At"]],
+            body: tableBody,
+            startY: 25,
+            theme: "grid",
+            styles: {
+                fontSize: 9,
+                cellPadding: 3,
+                lineColor: [220, 220, 220],
+                lineWidth: 0.1,
+            },
+            headStyles: {
+                fillColor: secondaryColor,
+                textColor: [255, 255, 255],
+                fontStyle: "bold",
+            },
+            columnStyles: {
+                0: { fontStyle: "bold", cellWidth: 30 },
+                1: { cellWidth: "auto" },
+                2: { cellWidth: 40, halign: "right" },
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245],
+            },
+
+            didDrawPage: (data) => {
+                const pageSize = doc.internal.pageSize;
+                const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                const footerY = pageHeight - 15;
+
+                doc.saveGraphicsState();
+
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.setFont("helvetica", "bold");
+                doc.text("Bricks AI", pageWidth / 2 - 16, footerY);
+
+                doc.text(
+                    "Page " + data.pageNumber,
+                    data.settings.margin.left,
+                    pageHeight - 10
+                );
+
+                doc.restoreGraphicsState();
+            },
+        });
+
+        doc.save(`Bricks_History_${new Date().toISOString().split("T")[0]}.pdf`);
     };
-
 
     const handleSearch = (): void => setFilter(prev => ({ ...prev, q: textQ }));
     React.useEffect(handleSearch, [textDebounce])

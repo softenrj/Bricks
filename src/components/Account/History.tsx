@@ -50,6 +50,7 @@ function History() {
     }
 
     const onFallBack = (type: string) => {
+        console.log("clicked", type, hasMore)
         if (type === "LOADMORE" && hasMore) fetchHistory()
     }
 

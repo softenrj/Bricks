@@ -50,3 +50,6 @@ export const API_BRICKS_CLEAN_USER_HISTORY: string = "/history/user"
 export const API_BRICKS_PROJECT_HISTORY: string = "/history/project"
 export const API_BRICKS_REMOVE_PROJECT_HISTORY: string = "/history/project"
 export const API_BRICKS_CLEAN_PROJECT_HISTORY: string = "/history/project"
+
+export const API_BRICKS_GET_ALL_USER_HISTORY: string = "/history/user-all"
+export const API_BRICKS_GET_ALL_PROJECT_HISTORY: string = "/history/project-all"

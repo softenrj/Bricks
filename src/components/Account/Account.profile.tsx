@@ -33,7 +33,7 @@ export default function AccountProfile() {
             >
                 <div className="flex-shrink-0 flex justify-center cursor-pointer z-50" onClick={() => setOpen(true)}>
                     <div className="relative">
-                        <Avatar className="h-28 w-28 sm:h-36 sm:w-36 lg:h-40 lg:w-40 rounded-xl ring-1 ring-blue-500/30 overflow-hidden shadow-[0_0_20px_5px_rgba(0,122,255,0.35)]">
+                        <Avatar className="h-48 w-44 mt-4 md:mt-0 sm:h-36 sm:w-36 lg:h-40 lg:w-40 rounded-xl ring-1 ring-blue-500/30 overflow-hidden shadow-[0_0_20px_5px_rgba(0,122,255,0.35)]">
                             <AvatarImage
                                 src={user.profile}
                                 className="object-cover"

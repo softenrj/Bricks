@@ -14,7 +14,8 @@ import { useSearchParams } from 'next/navigation'
 import { exportProjects, Filter } from '@/service/api.project'
 import { useDebounce } from '@/hooks/debounce'
 import jsPDF from "jspdf";
-
+import autoTable from "jspdf-autotable";
+import { Project } from '@/types/project'
 
 function FilterOptions({
     extraOptions = false,
@@ -31,40 +32,115 @@ function FilterOptions({
 
     const handleExportPDF = async () => {
         const mode = filter.ach ? 'arch' : 'all';
-        const projects = await exportProjects(mode); // your API data
+        const projects: Project[] | null = await exportProjects(mode);
 
-        if (!projects || projects.length === 0) return;
+        if (!projects || projects.length === 0) {
+            alert("No projects found to export.");
+            return;
+        }
 
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const margin = 10;
-        let y = 10;
+        const doc = new jsPDF("p", "mm", "a4");
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
 
-        pdf.setFontSize(16);
-        pdf.text("Projects List", pageWidth / 2, y, { align: "center" });
-        y += 10;
+        const primaryColor = "#FF5733"; 
+        const darkColor = "#1a1a1a"; 
 
-        pdf.setFontSize(10);
-        projects.forEach((proj: any, idx: number) => {
-            const text = `
-${idx + 1}. ${proj.name}
-   Description: ${proj.description}
-   Tech: ${proj.tech_language}, Web: ${proj.web_technology}
-   Starred: ${proj.starred ? "Yes" : "No"}, Archived: ${proj.archived ? "Yes" : "No"}
-   Created At: ${new Date(proj.createdAt).toLocaleDateString()}
-    `.trim();
+        doc.setFillColor(darkColor);
+        doc.rect(0, 0, pageWidth, 25, "F");
 
-            pdf.text(text, margin, y);
-            y += 25; // spacing between projects
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text("Project Portfolio", 14, 16);
 
-            // Add new page if needed
-            if (y > pdf.internal.pageSize.getHeight() - 20) {
-                pdf.addPage();
-                y = 10;
+        doc.setFontSize(10);
+        doc.setTextColor(200, 200, 200);
+        doc.setFont("helvetica", "normal");
+        const reportType = mode === 'arch' ? "Archived Projects Report" : "Full Project Overview";
+        doc.text(reportType, 14, 22);
+
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 14, 16, { align: "right" });
+
+        const tableBody = projects.map((proj) => {
+            const status: string[] = [];
+            if (proj.starred) status.push("★ Starred");
+            if (proj.archived) status.push("Archived");
+            const statusText = status.length > 0 ? status.join(" | ") : "Active";
+
+            const techStack = [proj.tech_language, proj.web_technology]
+                .filter(Boolean)
+                .join(", ");
+
+            return [
+                proj.name,
+                techStack,
+                statusText,
+                new Date(proj.createdAt).toLocaleDateString()
+            ];
+        });
+
+        autoTable(doc, {
+            head: [["Project Name", "Tech Stack", "Status", "Created"]],
+            body: tableBody,
+            startY: 30,
+            theme: 'grid',
+
+            headStyles: {
+                fillColor: darkColor,
+                textColor: [255, 255, 255],
+                fontStyle: 'bold',
+                halign: 'left'
+            },
+            styles: {
+                fontSize: 10,
+                cellPadding: 4,
+                lineColor: [230, 230, 230],
+                lineWidth: 0.1,
+                valign: 'middle'
+            },
+            columnStyles: {
+                0: { fontStyle: 'bold', textColor: [33, 33, 33] }, 
+                1: { textColor: [74, 144, 226] }, 
+                2: { fontSize: 8, fontStyle: 'italic' }, 
+                3: { halign: 'right', cellWidth: 30 } 
+            },
+            alternateRowStyles: {
+                fillColor: [250, 250, 250] 
+            },
+
+
+            didDrawCell: (data) => {
+               
+                if (data.section === 'body' && data.column.index === 0) {
+                    const rawRow = projects[data.row.index];
+                    if (rawRow && rawRow.starred) {
+                        const { x, y, height } = data.cell;
+                        doc.setFillColor(255, 215, 0); 
+                        doc.rect(x, y, 1.5, height, 'F'); 
+                    }
+                }
+            },
+
+            didDrawPage: (data) => {
+                const footerY = pageHeight - 15;
+                doc.setFontSize(10);
+                doc.setTextColor(primaryColor);
+                doc.setFont("helvetica", "bold");
+                doc.text("Bricks AI", 14, footerY + 2);
+
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(150, 150, 150);
+                doc.text(
+                    `Page ${data.pageNumber}`,
+                    pageWidth - 14,
+                    footerY + 2,
+                    { align: "right" }
+                );
             }
         });
 
-        pdf.save("projects.pdf");
+        doc.save(`Bricks_Projects_${new Date().toISOString().split('T')[0]}.pdf`);
     };
 
 
@@ -89,17 +165,17 @@ ${idx + 1}. ${proj.name}
                 }
 
                 <div className="relative">
-                        <Search
-                            size={14}
-                            className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Search projects..."
-                            className="pl-7 pr-3 py-1.5 text-xs rounded-md bg-gradient-to-r from-gray-700/40 to-gray-600/40 border border-gray-600/30 text-gray-200 focus:outline-none focus:border-pink-400/60 focus:ring-[0.2px] focus:ring-pink-400/100 transition"
-                            onChange={(e) => setTextQ(e.target.value)}
-                        />
-                    </div>
+                    <Search
+                        size={14}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Search projects..."
+                        className="pl-7 pr-3 py-1.5 text-xs rounded-md bg-gradient-to-r from-gray-700/40 to-gray-600/40 border border-gray-600/30 text-gray-200 focus:outline-none focus:border-pink-400/60 focus:ring-[0.2px] focus:ring-pink-400/100 transition"
+                        onChange={(e) => setTextQ(e.target.value)}
+                    />
+                </div>
 
 
                 <Tooltip content="Sort projects">

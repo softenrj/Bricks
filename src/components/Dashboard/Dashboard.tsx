@@ -10,7 +10,7 @@ import DashboardAICard from "./Dashboard.topcard";
 import { useAppDispatch } from "@/hooks/redux";
 import { setUserdata } from "@/store/Reducers/user";
 import { connectSocket, getSocket } from "@/socket/socket";
-import { useUser } from "@/service/api.user";
+import { dailyLogIn, useUser } from "@/service/api.user";
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -22,6 +22,10 @@ function Dashboard() {
     dispatch(setUserdata(user))
     ensureSocketConnection()
   }, [user, dispatch])
+
+  React.useEffect(() => {
+    (async () => ( await dailyLogIn()))();
+  },[])
 
   const ensureSocketConnection = React.useCallback(() => {
     const tryConnect = () => {

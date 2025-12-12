@@ -9,11 +9,12 @@ import { ApiResponse } from "@/types/Api";
 import { IUser } from "@/types/user";
 import { IUserStats } from "@/types/userStats";
 import {
+    API_BRICKS_DAILY_LOGIN,
     API_BRICKS_GET_USRER,
     API_BRICKS_USER_PROFILE_PATCH,
     API_BRICKS_USER_STATS,
 } from "@/utils/api/APIConstant";
-import { getApi, patchApi } from "@/utils/api/common";
+import { getApi, patchApi, postApi } from "@/utils/api/common";
 import { QUERY_KEYS } from "@/utils/api/query-keys";
 
 
@@ -87,5 +88,18 @@ export const setUser = async (formdata: FormData): Promise<IUser | null> => {
         console.error("Error fetching stats:", error);
         throw new Error(error?.message ?? "Failed to set user profile");
         return null;
+    }
+}
+
+export const dailyLogIn = async (): Promise<void> => {
+    try {
+        await postApi<ApiResponse<void>>({
+            url: API_BRICKS_DAILY_LOGIN
+        })
+        return ;
+    } catch (error: any) {
+        console.error("Error fetching stats:", error);
+        throw new Error(error?.message ?? "Failed to set user profile");
+        return;
     }
 }
