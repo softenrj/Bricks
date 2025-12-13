@@ -23,8 +23,6 @@ import { chageWriteTree } from "@/store/Reducers/webContainer";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
-  const writing = useAppSelector(state => state.webContainer).writeTree
-
   const getProjectFs = async () => {
     const response1 = await projectFileSystem(projectId);
     const response2 = await getProjectDetails(projectId);

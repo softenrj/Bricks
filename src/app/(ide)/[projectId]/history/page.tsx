@@ -1,4 +1,5 @@
 import React from 'react'
+import History from "@/components/History"
 
 export const metadata = {
   title: "History - Bricks IDE",
@@ -6,9 +7,11 @@ export const metadata = {
   keywords: ["history", "changes", "versions", "tracking", "IDE", "Bricks"],
 };
 
-function page() {
+async function page({ params }: { params: Promise<{ projectId: string}>}) {
+  const param = await params;
+  const projectId = param.projectId;
   return (
-    <div>page</div>
+    <History projectId={projectId} />
   )
 }
 

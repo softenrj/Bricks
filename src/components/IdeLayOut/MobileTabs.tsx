@@ -88,7 +88,7 @@ function MobileTabs({ projectId }: { projectId: string }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.7, y: -5 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-4 right-4 text-white
+            className="absolute z-999 top-4 right-4 text-white
                        bg-white/10 backdrop-blur rounded-full
                        border border-white/20 shadow-lg"
           >

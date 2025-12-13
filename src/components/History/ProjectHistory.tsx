@@ -5,14 +5,14 @@
 import React, { Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { Filter } from '@/service/api.project'
-import HistoryFilter from './HistoryFilter'
+import HistoryFilter from '../Account/HistoryFilter'
 import { IBricksHistry } from '@/types/history'
-import { cleanUserHistory, getUserHistory, removeUserHistory } from '@/service/api.history'
+import { cleanUserHistory, getProjectHistory, removeProjectHistory } from '@/service/api.history'
 import { Cookie, Trash, User } from 'lucide-react'
 import { historyIcons } from '@/feature/HistoryIconMap'
 import { Tooltip } from '../common/Tooltip'
 
-function History() {
+function ProjectHistory({projectId}: {projectId: string}) {
     const [filter, setFilter] = React.useState<Partial<Filter>>({});
     const [history, setHistory] = React.useState<IBricksHistry[]>([]);
     const [nextCursor, setNextCursor] = React.useState<Date | null>(null);
@@ -30,7 +30,7 @@ function History() {
         setLoading(true);
         try {
             const cursor = reset ? null : nextCursor;
-            const result = await getUserHistory(10, cursor, filter);
+            const result = await getProjectHistory(10,projectId, cursor, filter);
 
             if (reset) {
                 setHistory(result.data);
@@ -54,7 +54,7 @@ function History() {
     }
 
     const handleRemoveHistory = async (historyId: string) => {
-        const res = await removeUserHistory(historyId);
+        const res = await removeProjectHistory(historyId);
         if (res) {
             setHistory(history.filter(item => item._id !== historyId))
         }
@@ -82,7 +82,7 @@ function History() {
                 History
             </h5>
             <Suspense fallback={<div>Loading filters...</div>}>
-                <HistoryFilter extraOptions={true} fallback={onFallBack} filter={filter} setFilter={setFilter} />
+                <HistoryFilter extraOptions={true} fallback={onFallBack} filter={filter} setFilter={setFilter} mode='project' projectId={projectId} />
             </Suspense>
 
             {history.map((item, index) => {
@@ -123,4 +123,5 @@ function History() {
     )
 }
 
-export default History
+export default ProjectHistory
+
