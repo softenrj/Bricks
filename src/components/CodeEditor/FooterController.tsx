@@ -22,7 +22,7 @@ interface Snapshot {
   }[];
 }
 
-export default function FooterController() {
+export default function FooterController({projectId}: {projectId: string}) {
   const [processRunning, setProcessRunning] = React.useState(false);
   const [snapshotIndex, setSnapshotIndex] = React.useState<number>(-1);
   const [snapshotData, setSnapshotData] = React.useState<Snapshot | null>(null);
@@ -54,7 +54,7 @@ export default function FooterController() {
     });
 
     if (!selectedFileContent || !selectedLanguage || !selectedFile) return ;
-    const response = await __getCodeCompletion(selectedFileContent, selectedFile, selectedLanguage);
+    const response = await __getCodeCompletion(selectedFileContent, selectedFile, selectedLanguage, projectId);
     if (!response) return;
 
     dispatch(setFileChange({name: selectedFile || '', isEditing: true}))

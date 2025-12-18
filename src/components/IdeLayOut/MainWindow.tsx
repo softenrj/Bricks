@@ -12,7 +12,7 @@ import AppEditor from "../CodeEditor/AppEditor";
 import TerminalPanel from "../CodeEditor/Terminal";
 import PreviewPanel from "../CodeEditor/PreviewTab";
 import FileSystemPanel from "../CodeEditor/FileSystemPanel";
-import { getProjectDetails, projectFileSystem } from "@/service/api.project";
+import { projectFileSystem, useProject, useProjectFile } from "@/service/api.project";
 import { resetFs, setProjectName, setTree } from "@/store/Reducers/fsSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { initialFSWebContainer, stopFSWatcher } from "@/service/webContainer";
@@ -23,20 +23,32 @@ import { chageWriteTree } from "@/store/Reducers/webContainer";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
-  const getProjectFs = async () => {
-    const response1 = await projectFileSystem(projectId);
-    const response2 = await getProjectDetails(projectId);
-    dispatch(setTree(response1));
-    if (response2) dispatch(setProjectName(response2?.name));
-    stopFSWatcher();
-    await initialFSWebContainer(response1, dispatch, projectId);
-    dispatch(chageWriteTree(true))
-  };
+  const { data: project } = useProject(projectId);
+  const { data: projectFile } = useProjectFile(projectId);
 
   React.useEffect(() => {
-    dispatch(resetFs(projectId))
-    getProjectFs();
-  }, []);
+    dispatch(resetFs(projectId));
+  }, [dispatch, projectId]);
+
+  React.useEffect(() => {
+    if (project) {
+      dispatch(setProjectName(project.name));
+    }
+  }, [project, dispatch]);
+
+  React.useEffect(() => {
+    if (!projectFile) return;
+
+    dispatch(setTree(projectFile));
+    stopFSWatcher();
+
+    const initFs = async () => {
+      await initialFSWebContainer(projectFile, dispatch, projectId);
+      dispatch(chageWriteTree(true));
+    };
+
+    initFs();
+  }, [projectFile, dispatch, projectId]);
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
@@ -82,7 +94,7 @@ function MainWindow({ projectId }: { projectId: string }) {
       </div>
 
       {/* Bottom Strip */}
-      <FooterController />
+      <FooterController projectId={projectId} />
     </div>
   );
 }

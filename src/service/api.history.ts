@@ -1,3 +1,7 @@
+// Copyright (c) 2025 Raj 
+// Licensed under the Business Source License 1.1 (BUSL-1.1)
+// See LICENSE for details.
+
 import { IBricksHistry } from "@/types/history";
 import { Filter } from "./api.project";
 import { deleteApi, getApi } from "@/utils/api/common";

@@ -1,6 +1,7 @@
 // Copyright (c) 2025 Raj 
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
+
 "use client"
 import React, { Suspense } from 'react'
 import { motion } from 'framer-motion'
@@ -89,7 +90,7 @@ function ProjectHistory({projectId}: {projectId: string}) {
                 const { Icon, color } = historyIcons[item.type]
 
                 return (
-                    <div key={index} className="flex items-start my-1 gap-3 w-full bg-white/2 hover:bg-white/4 backdrop-blur-xl border border-white/10 rounded-lg px-3 py-2 transition-all duration-200 group">
+                    <div key={item._id} className="flex items-start my-1 gap-3 w-full bg-white/2 hover:bg-white/4 backdrop-blur-xl border border-white/10 rounded-lg px-3 py-2 transition-all duration-200 group">
 
                         <motion.div
                             whileHover={{ scale: 1.1 }}

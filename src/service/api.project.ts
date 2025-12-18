@@ -7,7 +7,8 @@ import { API_BRICKS_CODE_COMPLETION, API_BRICKS_CODE_SUGGESION, API_BRICKS_DELET
 import { deleteApi, getApi, postApi } from "@/utils/api/common";
 import toast from "react-hot-toast";
 import { BricksChat, Message } from "../../types/chatMessage";
-import { LanguageEnum } from "@/feature/LanguageEnum";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/utils/api/query-keys";
 
 export interface Filter {
     sort: "asc" | "dsc",
@@ -256,6 +257,19 @@ export const projectFileSystem = async (projectId: string): Promise<any> => {
     }
 }
 
+export const useProjectFile = (prjectId: string) => (
+    useQuery({
+        queryKey: QUERY_KEYS.PROJECT_FILE,
+        queryFn: () => projectFileSystem(prjectId),
+        meta: {
+            onError: (error: any) => {
+                toast.error(error?.message ?? "Something went wrong");
+            },
+        },
+        staleTime: 1000 * 60 * 5,
+    })
+)
+
 /**
  * 
  * @param projectId 
@@ -273,10 +287,22 @@ export const getProjectDetails = async (projectId: string): Promise<Project | nu
         return null;
     } catch (error: any) {
         console.error("Error Getting details of project:", error);
-        toast.error(error?.message ?? "Something went wrong");
         return null;
     }
 }
+
+export const useProject = (projectId: string) => (
+    useQuery({
+        queryKey: QUERY_KEYS.PROJECT_INFO,
+        queryFn: () => getProjectDetails(projectId),
+        meta: {
+            onError: (error: any) => {
+                toast.error(error?.message ?? "Something went wrong");
+            },
+        },
+        staleTime: 1000 * 60 * 5,
+    })
+)
 
 let suggestionTimeout: NodeJS.Timeout | null = null;
 let lastPromise: Promise<string | null> | null = null;
@@ -307,14 +333,15 @@ export const __getSuggestion = async (content: string): Promise<string | null> =
     return lastPromise;
 };
 
-export const __getCodeCompletion = async (content: string, fileName: string, fileLanguage: string): Promise<string | null> => {
+export const __getCodeCompletion = async (content: string, fileName: string, fileLanguage: string, projectId: string): Promise<string | null> => {
     try {
         const response = await postApi<ApiResponse<string>>({
             url: API_BRICKS_CODE_COMPLETION,
             values: {
                 context: content,
                 fileName: fileName,
-                fileLanguage: fileLanguage
+                fileLanguage: fileLanguage,
+                projectId: projectId
             }
         })
         if (response?.success) {

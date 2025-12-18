@@ -1,4 +1,5 @@
 import React from 'react'
+import Doc from "@/components/Document"
 
 export const metadata = {
   title: "Documentation - Bricks IDE",
@@ -6,10 +7,10 @@ export const metadata = {
   keywords: ["documentation", "guides", "project", "IDE", "Bricks"],
 };
 
-function page() {
-  return (
-    <div>page</div>
-  )
+async function page({ params }: { params: Promise<{ projectId: string}>}) {
+  const param = await params;
+  const projectId = param.projectId;
+  return <Doc projectId={projectId} />
 }
 
 export default page

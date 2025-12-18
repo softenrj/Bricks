@@ -24,6 +24,9 @@ export const API_BRICKS_EXPORT_ALL_PROJECTS: string = "/project/bricks-all-proje
 export const API_BRICKS_EXPORT_ARCH_PROJECTS: string = "/project/bricks-arch-projects-list-export"
 export const API_BRICKS_REMOVE_PROJECT: string = "/project/bricks-remove-project"
 export const API_BRICKS_GET_PROJECT_FS: string = "/project/bricks-project-files"
+export const API_BRICKS_CODE_LENSE: string = "/project/project-code-lense"
+export const API_BRICKS_PROJECT_DEPENDENCY_LIST: string = "/project/project-dep"
+export const API_BRICKS_PROJECT_DOC: string = "/project/project-doc"
 
 // project Context
 export const API_BRICKS_PROJECT_CONTEXT: string = "/context/pxt"
