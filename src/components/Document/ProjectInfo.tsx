@@ -50,7 +50,7 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                     
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="text-3xl font-bold tracking-tight">
+                            <h1 className="text-xl md:text-3xl font-bold tracking-tight">
                                 {project.name}
                             </h1>
                             {isArch && (
