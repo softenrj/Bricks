@@ -5,7 +5,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileOptionTemplet from "./MobileOptionTemplet";
-import { FileText, Grid, Layers, Settings } from "lucide-react";
+import { Fan, FileText, Grid, Layers, Settings, User } from "lucide-react";
 
 const itemVariants = {
   hidden: { opacity: 0, x: 20 },
@@ -37,8 +37,13 @@ function AppNavBarOptions({ show = true, onClose }: { show?: boolean, onClose: (
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <MobileOptionTemplet name="Account" Icon={Settings} href="/account" onClose={onClose} />
+            <MobileOptionTemplet name="Events" Icon={Fan} href="/events" onClose={onClose} />
           </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <MobileOptionTemplet name="Account" Icon={User} href="/account" onClose={onClose} />
+          </motion.div>
+
         </motion.div>
       )}
     </AnimatePresence>

@@ -56,3 +56,14 @@ export const API_BRICKS_CLEAN_PROJECT_HISTORY: string = "/history/project-all"
 
 export const API_BRICKS_GET_ALL_USER_HISTORY: string = "/history/user-all"
 export const API_BRICKS_GET_ALL_PROJECT_HISTORY: string = "/history/project-all"
+
+// Event
+export const API_BRICKS_EVENTS: string = "/event/get"
+export const API_BRICKS_LIKE_EVENT: string = "/event/like"
+export const API_BRICKS_UNLIKE_EVENT: string = "/event/unlike"
+
+// Comment
+export const API_BRICKS_ADD_COMMENT: string = "/comment/new"
+export const API_BRICKS_GET_COMMENTS: string = "/comment/comments"
+export const API_BRICKS_GET_REPLIES: string = "/comment/replies"
+export const API_BRICKS_REMOVE_COMMENT: string = "/comment/remove"

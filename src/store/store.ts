@@ -9,6 +9,7 @@ import contextSlice from "./Reducers/fileContext"
 import chatSlice from "./Reducers/chatSlice"
 import chatTabs from "./Reducers/chatTabs"
 import Idefeatures from "./Reducers/IdeFeatures"
+import EventEffect from "./Reducers/effects"
 
 export const store = configureStore({
   reducer: {
@@ -18,7 +19,8 @@ export const store = configureStore({
     context: contextSlice,
     bricksChat: chatSlice,
     chatTabs: chatTabs,
-    IdeFeatures: Idefeatures
+    IdeFeatures: Idefeatures,
+    Effects: EventEffect
   },
 })
 

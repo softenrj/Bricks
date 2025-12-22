@@ -7,6 +7,8 @@ import {
     FileText,
     Grid,
     Layers,
+    Fan,
+    User,
 } from "lucide-react"
 import React from "react"
 import {
@@ -24,7 +26,7 @@ const sidebarItems: AppSideBarItems[] = [
         title: "Dashboard",
         href: "/dashboard",
         icon: Grid, // unique alternative to Home
-        color: "#2563eb", // vibrant blue
+        color: "#daf512", // vibrant blue
         subItems: [
             { title: "Overview", href: "/dashboard", color: "#facc15" },
             { title: "Stats", href: "/dashboard?stats", color: "#16a34a" },
@@ -34,7 +36,7 @@ const sidebarItems: AppSideBarItems[] = [
         title: "Projects",
         href: "/projects",
         icon: Layers,
-        color: "#7c3aed",
+        color: "#dd1944",
         subItems: [
             { title: "All Projects", href: "/projects", color: "#ef4444" },
             { title: "Starred", href: "/projects?starred", color: "#f59e0b" },
@@ -47,10 +49,16 @@ const sidebarItems: AppSideBarItems[] = [
         color: "#0ea5e9", // bright cyan
     },
     {
+        title: "Events",
+        href: "/events",
+        icon: Fan,
+        color: "#089e0a", // bright cyan
+    },
+    {
         title: "Account",
         href: "/account",
-        icon: Settings,
-        color: "#f472b6", // soft pink
+        icon: User,
+        color: "#8a3beb", // Vo
     },
 ];
 
@@ -58,7 +66,7 @@ function AppSideBarContent() {
     const tab = usePathname()
     const { open } = useSidebar();
     return (
-        <div className="ml-4 mt-4">
+        <div className="ml-4 mt-4 ">
             <SidebarMenu>
                 {sidebarItems.map((item, index) => (
                     <AppSlideBarBtnsCard

@@ -7,4 +7,5 @@ export const QUERY_KEYS = {
   CODE_LENSE: ["code-lense"],
   PROJECT_DEP: ["project-dependencies"],
   PROJECT_DOC: ["project-doc"],
+  EVENTS: ["event"]
 };

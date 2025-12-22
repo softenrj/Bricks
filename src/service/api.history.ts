@@ -17,7 +17,10 @@ export enum BrickHistoryTypeEnum {
   unknown = "unknown",
   user = "user",
   project = "project",
+  Achievement = "Achievement",
+  Rank = "RankChange"
 }
+
 
 
 

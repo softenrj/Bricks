@@ -12,6 +12,7 @@ import '@xyflow/react/dist/style.css';
 import "@/socket/socket"
 
 import { ReactQueryProvider } from "@/lib/ReactQueryProvider";
+import EventEffects from "@/components/common/EventEffects";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <ReduxProvider>
             <SidebarProvider>
+              <EventEffects />
               {children}
               <Toaster position="bottom-right" reverseOrder />
             </SidebarProvider>

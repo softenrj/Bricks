@@ -10,7 +10,7 @@ import HistoryFilter from '../Account/HistoryFilter'
 import { IBricksHistry } from '@/types/history'
 import { cleanUserHistory, getProjectHistory, removeProjectHistory } from '@/service/api.history'
 import { Cookie, Trash, User } from 'lucide-react'
-import { historyIcons } from '@/feature/HistoryIconMap'
+import { getHistoryIcon, historyIcons, resolveHistoryType } from '@/feature/HistoryIconMap'
 import { Tooltip } from '../common/Tooltip'
 
 function ProjectHistory({projectId}: {projectId: string}) {
@@ -87,7 +87,7 @@ function ProjectHistory({projectId}: {projectId: string}) {
             </Suspense>
 
             {history.map((item, index) => {
-                const { Icon, color } = historyIcons[item.type]
+                const { Icon, color } = getHistoryIcon(resolveHistoryType(item?.type))
 
                 return (
                     <div key={item._id} className="flex items-start my-1 gap-3 w-full bg-white/2 hover:bg-white/4 backdrop-blur-xl border border-white/10 rounded-lg px-3 py-2 transition-all duration-200 group">

@@ -51,7 +51,7 @@ function AppSlideBarBtnsCard({ item, index, tab, open }: Props) {
               <Tooltip content={item.title} show={!open}>
                 <item.icon
                   color={item.color}
-                  className="svg-glow flex-shrink-0"
+                  className="flex-shrink-0"
                   size={20}
                 />
               </Tooltip>
