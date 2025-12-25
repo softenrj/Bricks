@@ -2,9 +2,11 @@ export interface IEvent {
     _id: string;
     name: string;
     description: string;
-    status: 'upcoming' | 'live' | 'expire'
+    liveAt: Date;
+    expireAt: Date;
     thumbnail: string; 
-    like: number;
+    liked: number;
+    isLiked: boolean;
     comments: number;
     audio?: string;
     effect?: EffectEnum;

@@ -8,7 +8,7 @@ import { Calendar, ThumbsUp, MessageSquare } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-function Events({ events }: { events: IEvent[] }) {
+function Events({ events, eventFallback }: { events: IEvent[], eventFallback: (eventId: string) => void }) {
     return (
         <div className=" grid gap-6 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {events.map((event, idx) => (
@@ -27,7 +27,7 @@ function Events({ events }: { events: IEvent[] }) {
                     <div className="p-4 flex flex-col gap-2">
                         <div className="flex items-center justify-between">
                             <span className="text-xs font-semibold uppercase text-indigo-400">
-                                {event.status}
+                                {/* {event.} */}
                             </span>
 
                             <span className="flex items-center gap-1 text-xs text-zinc-500">
@@ -48,7 +48,7 @@ function Events({ events }: { events: IEvent[] }) {
                             <div className="flex items-center gap-4 text-zinc-400 text-sm">
                                 <div className="flex items-center gap-1.5 hover:text-indigo-400 transition cursor-pointer">
                                     <ThumbsUp size={16} />
-                                    <span>{event.like}</span>
+                                    <span>{event.liked}</span>
                                 </div>
 
                                 <div className="flex items-center gap-1.5 hover:text-indigo-400 transition cursor-pointer">
@@ -57,7 +57,7 @@ function Events({ events }: { events: IEvent[] }) {
                                 </div>
                             </div>
 
-                            <button className=" text-sm font-medium text-indigo-400 hover:text-indigo-300 transition ">
+                            <button className=" text-sm font-medium text-indigo-400 hover:text-indigo-300 transition " onClick={() => eventFallback(event._id)}>
                                 View →
                             </button>
                         </div>

@@ -13,12 +13,13 @@ type AppTooltipProps = {
   children: React.ReactNode
   content: string
   show?: boolean
+  triggClass?: string
 } & React.HtmlHTMLAttributes<HTMLDivElement>
 
-export function Tooltip({ children, content, show=true, ...probe }: AppTooltipProps) {
+export function Tooltip({ children, content, show=true, triggClass,  ...probe}: AppTooltipProps) {
   return (
     <ToolTipComp {...probe}>
-      <TooltipTrigger asChild className="cursor-pointer">
+      <TooltipTrigger asChild className={`${triggClass ? triggClass : "cursor-pointer"}`}>
         {children}
       </TooltipTrigger>
       {

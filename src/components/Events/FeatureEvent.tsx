@@ -6,20 +6,48 @@
 import React, { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { EffectEnum, IEvent } from '@/types/event'
-import { ThumbsUp, MessageSquare, Calendar, ArrowRight, Sparkles } from 'lucide-react'
+import { MessageSquare, Calendar, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { Tooltip } from '../common/Tooltip'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, isBefore, isWithinInterval } from 'date-fns'
 import { Switch } from '../ui/switch'
 import EventAudio from './EventAudio'
-import { useAppDispatch } from '@/hooks/redux'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { clearEffect, setEffect } from '@/store/Reducers/effects'
+import { Icon } from '@iconify/react'
+import EventCommentSection from './EventCommentSection'
 
-function FeatureEvent({ event }: { event: IEvent }) {
-  const [effect, setEffectS] = React.useState<boolean>(false);
+function FeatureEvent({
+  event,
+  incLikeToEvent,
+  decLikeToEvent
+}: {
+  event: IEvent,
+  incLikeToEvent: (eventId: string) => void,
+  decLikeToEvent: (eventId: string) => void
+}) {
+  const eventEffect = useAppSelector(state => state).Effects;
   const dispatch = useAppDispatch();
-  const ref = useRef<HTMLDivElement>(null)
 
+  const [effectEnabled, setEffectEnabled] = React.useState<boolean>(!!eventEffect.effect);
+  const [comment, setComment] = React.useState<boolean>(false);
+
+  const now = new Date();
+  const start = new Date(event.liveAt);
+  const end = new Date(event.expireAt);
+
+  let status = "Expired";
+
+  if (isBefore(now, start)) {
+    status = "Upcoming";
+  } else if (isWithinInterval(now, { start, end })) {
+    status = "Live";
+  }
+  React.useEffect(() => {
+    setEffectEnabled(!!eventEffect.effect);
+  }, [eventEffect.effect]);
+
+  const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
 
@@ -42,14 +70,24 @@ function FeatureEvent({ event }: { event: IEvent }) {
   }
 
   const handleEffect = () => {
-    if (effect) {
+    if (effectEnabled) {
       dispatch(clearEffect())
-      setEffectS(false);
+      setEffectEnabled(false);
     } else {
-      dispatch(setEffect(EffectEnum.CHRISTMAS))
-      setEffectS(true);
+      dispatch(setEffect(event.effect as EffectEnum))
+      setEffectEnabled(true);
     }
   }
+
+  const handleLike = () => {
+    if (event.isLiked) {
+      decLikeToEvent(event._id);
+    } else {
+      incLikeToEvent(event._id);
+    }
+  }
+
+  const handleComment = () => setComment(!comment);
 
   return (
     <div className="w-full py-1 flex justify-center">
@@ -74,23 +112,20 @@ function FeatureEvent({ event }: { event: IEvent }) {
               priority
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
-
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent md:hidden" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/60 hidden md:block" />
           </div>
 
           <div className="relative flex-1 p-6 md:p-12 flex flex-col justify-center gap-4">
-
             <div className="flex flex-wrap items-center gap-3">
               <span className="px-2 py-1 text-xs font-semibold uppercase rounded-full bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
-                Featured · {event.status}
+                Featured · {status}
               </span>
-
               <span className="flex items-center gap-1.5 text-xs text-zinc-500">
                 <Calendar size={14} />
                 {formatDistanceToNow(new Date(event.createdAt))} ago
               </span>
-              { event.audio && <EventAudio src={`/api/audio?src=${encodeURIComponent(event.audio)}`} />}
+              {event.audio && <EventAudio src={`/api/audio?src=${encodeURIComponent(event.audio)}`} isValid={status !== "Upcoming"} />}
             </div>
 
             <h1 className="text-2xl md:text-3xl xl:text-4xl font-extrabold tracking-tight leading-tight text-white">
@@ -102,26 +137,34 @@ function FeatureEvent({ event }: { event: IEvent }) {
             </p>
 
             <div className="flex flex-wrap justify-between items-center gap-6 pt-4">
-              <div className='flex gap-3'><Tooltip content="Likes">
-                <div className="flex items-center gap-2">
-                  <ThumbsUp className="text-zinc-400" size={18} />
-                  <span className="text-zinc-300 font-medium">{event.like || 0}</span>
-                </div>
-              </Tooltip>
+              <div className='flex gap-3'>
+                <Tooltip content="Likes">
+                  <div className="flex items-center gap-2 cursor-pointer" onClick={handleLike}>
+                    {event.isLiked ? (
+                      <Icon icon="heroicons-solid:thumb-up" width="18" height="18" style={{ color: "#eb195f" }} />
+                    ) : (
+                      <Icon icon="heroicons-outline:thumb-up" width="22" height="22" style={{ color: "#ffffff99" }} />
+                    )}
+                    <span className="text-zinc-300 font-medium">{event.liked || 0}</span>
+                  </div>
+                </Tooltip>
 
                 <Tooltip content="Comments">
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="text-zinc-400" size={18} />
+                    <MessageSquare className="text-zinc-400" size={18} onClick={handleComment} />
                     <span className="text-zinc-300 font-medium">{event.comments || 0}</span>
                   </div>
-                </Tooltip></div>
-              <Tooltip content={'On Special Effect'}>
-                <div className='flex gap-2 justify-center items-center'>
+                </Tooltip>
+              </div>
+
+              {event.effect && <Tooltip content={'On Special Effect'} triggClass={`${status === "Upcoming" ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}>
+                <div className={`flex gap-2 justify-center items-center `}>
                   <Sparkles className='text-green-400' size={18} />
-                  <Switch checked={effect} onClick={handleEffect} />
+                  <Switch disabled={status === "Upcoming"} checked={effectEnabled} onClick={handleEffect} />
                 </div>
-              </Tooltip>
+              </Tooltip>}
             </div>
+            <EventCommentSection fallback={handleComment} open={comment} eventId={event._id} />
           </div>
         </div>
       </motion.div>

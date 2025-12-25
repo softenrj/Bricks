@@ -5,12 +5,13 @@
 import React, { useEffect, useRef, useState } from "react"
 import { CirclePause, CirclePlay } from "lucide-react"
 
-function EventAudio({ src }: { src: string }) {
+function EventAudio({ src, isValid }: { src: string, isValid: boolean }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
     if (!src) return
+    setIsPlaying(false) 
 
     const audio = new Audio(src)
     audio.loop = true
@@ -22,10 +23,10 @@ function EventAudio({ src }: { src: string }) {
       audio.pause()
       audioRef.current = null
     }
-  }, [src]) 
+  }, [src])
 
   const handlePlay = async () => {
-    if (!audioRef.current) return
+    if (!audioRef.current || !isValid) return 
 
     try {
       if (isPlaying) {
@@ -36,11 +37,15 @@ function EventAudio({ src }: { src: string }) {
       setIsPlaying(!isPlaying)
     } catch (err) {
       console.error("Audio play failed:", err)
+      setIsPlaying(false) 
     }
   }
 
   return (
-    <span className="mr-2 mt-1 cursor-pointer" onClick={handlePlay}>
+    <span 
+      className={`mr-2 mt-1 inline-block ${!isValid ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`} 
+      onClick={handlePlay}
+    >
       {isPlaying ? (
         <CirclePause size={14} className="text-pink-500" />
       ) : (

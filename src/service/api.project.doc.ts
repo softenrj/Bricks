@@ -32,7 +32,7 @@ export const getProjectCodeLense = async (projectId: string): Promise<CodeLense[
 
 export function useCodeLense(projectId: string) {
     return useQuery({
-        queryKey: QUERY_KEYS.CODE_LENSE,
+        queryKey: [QUERY_KEYS.CODE_LENSE, projectId],
         queryFn: () => getProjectCodeLense(projectId),
         meta: {
             onError: (error: any) => {
@@ -67,7 +67,7 @@ export const getprojectDependencyList = async (projectId: string): Promise<Depen
 
 export function useProjectDependencies(projectId: string) {
     return useQuery({
-        queryKey: QUERY_KEYS.PROJECT_DEP,
+        queryKey: [QUERY_KEYS.PROJECT_DEP, projectId],
         queryFn: () => getprojectDependencyList(projectId),
         meta: {
             onError: (error: any) => {
@@ -102,7 +102,7 @@ export const getprojectDoc = async (projectId: string): Promise<ProjectDocMetada
 
 export function useProjectDoc(projectId: string) {
     return useQuery({
-        queryKey: QUERY_KEYS.PROJECT_DOC,
+        queryKey: [QUERY_KEYS.PROJECT_DOC, projectId],
         queryFn: () => getprojectDoc(projectId),
         meta: {
             onError: (error: any) => {

@@ -259,7 +259,7 @@ export const projectFileSystem = async (projectId: string): Promise<any> => {
 
 export const useProjectFile = (prjectId: string) => (
     useQuery({
-        queryKey: QUERY_KEYS.PROJECT_FILE,
+        queryKey: [QUERY_KEYS.PROJECT_FILE, prjectId],
         queryFn: () => projectFileSystem(prjectId),
         meta: {
             onError: (error: any) => {
@@ -293,7 +293,7 @@ export const getProjectDetails = async (projectId: string): Promise<Project | nu
 
 export const useProject = (projectId: string) => (
     useQuery({
-        queryKey: QUERY_KEYS.PROJECT_INFO,
+        queryKey: [QUERY_KEYS.PROJECT_INFO, projectId],
         queryFn: () => getProjectDetails(projectId),
         meta: {
             onError: (error: any) => {

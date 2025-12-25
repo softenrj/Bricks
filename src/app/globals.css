@@ -521,3 +521,34 @@ div[data-code-block-container="true"] {
 .strike-active::after {
   width: 100%;
 }
+
+.flag-row {
+  position: absolute;
+  width: 110%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  animation: sway 5s ease-in-out infinite;
+}
+
+.flag {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 18px solid currentColor;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(1.2deg); }
+}
+
+@keyframes ping-once {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-ping-once {
+  animation: ping-once 0.8s cubic-bezier(0, 0, 0.2, 1);
+}

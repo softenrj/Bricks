@@ -3,7 +3,7 @@
 // See LICENSE for details.
 
 "use client"
-import { useEvent } from '@/service/api.event'
+import { useEvent, useLikeEvent } from '@/service/api.event'
 import { IEvent } from '@/types/event'
 import React from 'react'
 import FeatureEvent from './FeatureEvent'
@@ -11,7 +11,7 @@ import Events from './Events'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 function EventsPage() {
-    const [featured, setFeatured] = React.useState<IEvent | null>(null)
+    const [selectedEventId, setSelectedEventId] = React.useState<string | null>(null);
 
     const {
         data,
@@ -26,17 +26,24 @@ function EventsPage() {
         return data.pages.flatMap(page => page?.data ?? [])
     }, [data])
 
-    // Set featured event ONCE
-    React.useEffect(() => {
-        if (!featured && allEvents.length > 0) {
-            setFeatured(allEvents[0])
+    const featuredEvent = React.useMemo(() => {
+        if (selectedEventId) {
+            return allEvents.find(e => e._id === selectedEventId) || allEvents[0];
         }
-    }, [allEvents, featured])
+        return allEvents[0];
+    }, [allEvents, selectedEventId]);
+
+    const likeMutation = useLikeEvent();
+
+    const handleEventChange = (eventId: string) => setSelectedEventId(eventId);
+    const incLikeToEvent = (eventId: string) => likeMutation.mutate({ eventId: eventId, isLiked: false});
+    const decLikeToEvent = (eventId: string) => likeMutation.mutate({ eventId: eventId, isLiked: true});
+
 
     return (
-        <div className="flex flex-col gap-6 px-4 md:px-6 lg:px-10 max-w-[1600px] mx-auto">
+        <div className="flex flex-col gap-6 py-4 px-4 md:px-6 lg:px-10 max-w-[1600px] mx-auto">
 
-            {featured && <FeatureEvent event={featured} />}
+            {featuredEvent && <FeatureEvent event={featuredEvent} incLikeToEvent={incLikeToEvent} decLikeToEvent={decLikeToEvent} />}
 
             <h2 className="text-lg md:text-xl font-semibold tracking-tight text-gray-200">
                 All Events
@@ -62,7 +69,7 @@ function EventsPage() {
                         </p>
                     }
                 >
-                    <Events events={allEvents} />
+                    <Events events={allEvents} eventFallback={handleEventChange} />
                 </InfiniteScroll>
             </div>
 
