@@ -53,7 +53,7 @@ function NewYearSequence() {
 
     setTimeout(() => {
       setStage(prev => ({ ...prev, confetti: true }))
-    }, 300)
+    }, 1500)
   }
 
   return (
