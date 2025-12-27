@@ -4,9 +4,14 @@
 "use client"
 import React, { useEffect, useRef, useState } from "react"
 import { CirclePause, CirclePlay } from "lucide-react"
+import { EffectEnum } from "@/types/event"
+import { useAppDispatch, useAppSelector } from "@/hooks/redux"
+import { setEffect } from "@/store/Reducers/effects"
 
-function EventAudio({ src, isValid }: { src: string, isValid: boolean }) {
+function EventAudio({ src, isValid, effect }: { src: string, isValid: boolean, effect: EffectEnum }) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const activeEffect = useAppSelector(state => state).Effects
+  const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
@@ -33,6 +38,9 @@ function EventAudio({ src, isValid }: { src: string, isValid: boolean }) {
         audioRef.current.pause()
       } else {
         await audioRef.current.play()
+        if (!activeEffect.effect) {
+          dispatch(setEffect(effect));
+        }
       }
       setIsPlaying(!isPlaying)
     } catch (err) {

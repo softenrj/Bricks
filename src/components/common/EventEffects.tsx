@@ -40,7 +40,7 @@ function NewYearSequence() {
     if (countdown === null) return
 
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+      const timer = setTimeout(() => setCountdown(countdown - 1), 300)
       return () => clearTimeout(timer)
     } else {
       setCountdown(null)
@@ -53,7 +53,7 @@ function NewYearSequence() {
 
     setTimeout(() => {
       setStage(prev => ({ ...prev, confetti: true }))
-    }, 2500)
+    }, 300)
   }
 
   return (
