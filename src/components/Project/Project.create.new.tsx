@@ -31,12 +31,13 @@ function CreateNewProject({
       >
         {/* Background video */}
         <video
-          src="/video/ai-card-bg.mp4"
+          src="https://res.cloudinary.com/dcyn3ewpv/video/upload/v1767630846/cosmic-bg_gqcncx.mp4"
           autoPlay
           loop
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover -z-10 rounded-xl opacity-40"
+          crossOrigin="anonymous"
         />
 
         <DialogHeader className="text-center">

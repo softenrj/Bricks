@@ -15,6 +15,8 @@ function Logo() {
   const tab = usePathname();
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const url = "https://res.cloudinary.com/dcyn3ewpv/video/upload/v1767631081/landingst_dmil9j.mp3"
+  const src = `/api/audio?src=${encodeURIComponent(url)}`
 
   useEffect(() => {
     // Create audio instance once

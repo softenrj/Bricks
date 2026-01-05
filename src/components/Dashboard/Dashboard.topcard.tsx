@@ -28,11 +28,12 @@ function DashboardAICard() {
 
       {/* Video background */}
       <video
-        src="/video/ai-card-bg.mp4"
+        src="https://res.cloudinary.com/dcyn3ewpv/video/upload/v1767630846/cosmic-bg_gqcncx.mp4"
         autoPlay
         loop
         muted
         className="absolute inset-0 w-full h-full object-cover -z-10 rounded-xl opacity-50"
+        crossOrigin="anonymous"
       />
 
       {/* Optional overlay for better readability */}

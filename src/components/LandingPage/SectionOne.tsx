@@ -5,16 +5,31 @@
 import Image from "next/image";
 import React from "react";
 import FeatureBadge from "../common/FeatureBadge";
+import { motion } from "framer-motion";
 
 function SectionOne() {
   return (
     <div className="flex flex-col items-center text-center w-full px-4 pt-8 sm:pt-8 md:pt-12 lg:pt-16">
       {/* Logo */}
-      <div className="relative mb-6">
-        {/* Glow behind logo */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-800 via-fuchsia-800 to-blue-800 blur-3xl opacity-50 animate-glow"></div>
+      <div className="relative flex items-center justify-center">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-red-800 via-fuchsia-800 to-blue-800 blur-[60px] opacity-50"
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 180, 360],
+            borderRadius: [
+              "30% 70% 70% 30% / 30% 30% 70% 70%",
+              "60% 40% 30% 70% / 60% 30% 70% 40%",
+              "30% 70% 70% 30% / 30% 30% 70% 70%",
+            ],
+          }}
+          transition={{
+            duration: 10,
+            ease: "easeInOut",
+            repeat: Infinity,
+          }}
+        />
 
-        {/* Actual logo */}
         <Image
           src="/landingPage/bricks.svg"
           width={180}

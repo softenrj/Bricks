@@ -8,10 +8,11 @@ import SectionOne from "./SectionOne"
 import HeroButtons from "./HeroButtons"
 import Footer from "../common/Footer"
 import Image from "next/image"
+import SectionTwo from "./SectionTwo"
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-r from-[#01040b] via-[#111823] to-[#010814] relative overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-r from-[#000102] via-[#0c1118] to-[#010814] relative overflow-hidden">
       {/* Circuit background */}
       <div className="absolute inset-0 opacity-20">
         <Image
@@ -28,17 +29,19 @@ export default function Home() {
 
       <div className="relative z-10 flex flex-col min-h-screen overflow-x-hidden">
         <video
-          src="/video/cosmic-bg.mp4"
+          src="https://res.cloudinary.com/dcyn3ewpv/video/upload/v1767630846/cosmic-bg_gqcncx.mp4"
           autoPlay
           loop
           muted
           className="absolute inset-0 w-full h-full object-cover -z-10 rounded-xl opacity-35"
+          crossOrigin="anonymous"
         />
         <Navbar />
         <main className="flex-1 flex flex-col gap-12">
           <SectionOne />
           <HeroButtons />
           {/* working */}
+          <SectionTwo />
           {/* features card */}
           {/* live demo */}
         </main>
