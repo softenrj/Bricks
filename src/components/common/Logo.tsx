@@ -20,7 +20,7 @@ function Logo() {
 
   useEffect(() => {
     // Create audio instance once
-    audioRef.current = new Audio("/soundtrack/landingst.mp3");
+    audioRef.current = new Audio(src);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.2; 
 
