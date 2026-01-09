@@ -52,7 +52,7 @@ function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string
       <div className="flex items-center gap-2 md:gap-4">
         {/* User Tag */}
         {displayTabs && <Tooltip content='ArchForge Panel'>
-          <div className="flex items-center bg-black border Alex-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition" onClick={handleArchForge}>
+          <div className="flex items-center bg-black border Ai-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition" onClick={handleArchForge}>
           <Sparkles size={14} className="text-yellow-400" />
           <p className="ml-1 text-[11px] text-gray-400 hover:text-gray-200 transition">
             ArchForge

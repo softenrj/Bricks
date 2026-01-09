@@ -9,12 +9,13 @@ import HeroButtons from "./HeroButtons"
 import Footer from "../common/Footer"
 import Image from "next/image"
 import SectionTwo from "./SectionTwo"
+import Features from "./Features"
 
 export default function Home() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-[#000102] via-[#0c1118] to-[#010814] relative overflow-hidden">
       {/* Circuit background */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-40">
         <Image
           src="/landingPage/circuit-board.svg"
           alt="circuit background"
@@ -33,7 +34,8 @@ export default function Home() {
           autoPlay
           loop
           muted
-          className="absolute inset-0 w-full h-full object-cover -z-10 rounded-xl opacity-35"
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover -z-10 rounded-xl opacity-50"
           crossOrigin="anonymous"
         />
         <Navbar />
@@ -43,6 +45,7 @@ export default function Home() {
           {/* working */}
           <SectionTwo />
           {/* features card */}
+          <Features />
           {/* live demo */}
         </main>
         <Footer />

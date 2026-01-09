@@ -38,7 +38,7 @@ function Navbar(): React.JSX.Element {
 
 function SignInButton(): React.JSX.Element {
   return (
-    <button className="py-1.5 px-4 sm:px-5 rounded-full bg-[#000000] bg-gradient-to-l from-[#06112b] via-[#0a2c63] to-[#010c20] text-white hover:shadow-lg transition signIn-btn cursor-pointer">
+    <button className="py-1.5 px-4 sm:px-5 rounded-full bg-[#000000] bg-gradient-to-l from-[#06112b] via-[#0a2c63] to-[#010c20] text-white hover:shadow-lg transition signIn-btn2 cursor-pointer">
       <div className="flex gap-1 items-center">
         <Sparkles size={18} className="sm:w-5 sm:h-5" />
         <span className="text-sm sm:text-base">Sign In</span>

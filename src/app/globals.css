@@ -208,13 +208,47 @@ body {
   transition: color 0.3s ease;
 }
 
-.Alex-btn {
+.signIn-btn2 {
   position: relative;
   border: 0.1px solid transparent;
   transition: color 0.3s ease;
 }
 
-.Alex-btn::before {
+.signIn-btn2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50;
+  padding: 2px;
+  background: linear-gradient(90deg,
+      #ff7300,
+      #ff00ff,
+      #ffee00,
+      #00f0ff
+    );
+  background-size: 300% 300%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.signIn-btn2:hover::before {
+  animation: neonBorder 4s linear infinite;
+  opacity: 1;
+}
+
+
+.Ai-btn {
+  position: relative;
+  border: 0.1px solid transparent;
+  transition: color 0.3s ease;
+}
+
+.Ai-btn::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -244,7 +278,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 50;
+  border-radius: 8;
   padding: 2px;
   background: linear-gradient(90deg,
       #00f0ff,
@@ -271,7 +305,7 @@ body {
   z-index: 1;
 }
 
-.Alex-btn span {
+.Ai-btn span {
   position: relative;
   z-index: 1;
 }
@@ -281,7 +315,7 @@ body {
   opacity: 1;
 }
 
-.Alex-btn:hover::before {
+.Ai-btn:hover::before {
   animation: neonBorder 4s linear infinite;
   opacity: 1;
 }
