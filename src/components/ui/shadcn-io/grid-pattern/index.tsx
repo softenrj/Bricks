@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn } from "@repo/shadcn-ui/lib/utils";
+import { cn } from "@/lib/utils"
 
 interface GridPatternProps {
   width?: number;
