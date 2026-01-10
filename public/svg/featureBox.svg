@@ -1,0 +1,23 @@
+<svg width="2172" height="1142" viewBox="0 0 2172 1142" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_g_97_4)">
+<g filter="url(#filter1_f_97_4)">
+<g clip-path="url(#paint0_angular_97_4_clip_path)" data-figma-skip-parse="true"><g transform="matrix(-0.7635 -0.49 0.372698 -0.580724 1318.5 712)"><foreignObject x="-1143.79" y="-1143.79" width="2287.58" height="2287.58"><div xmlns="http://www.w3.org/1999/xhtml" style="background:conic-gradient(from 90deg,rgba(240, 48, 115, 0.9933) 0deg,rgba(240, 50, 120, 1) 11.4313deg,rgba(238, 17, 21, 0.86) 134.27deg,rgba(240, 48, 115, 0.9933) 360deg);height:100%;width:100%;opacity:1"></div></foreignObject></g></g><path d="M1772 920H400V222H1772V920Z" data-figma-gradient-fill="{&#34;type&#34;:&#34;GRADIENT_ANGULAR&#34;,&#34;stops&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.94184511899948120,&#34;g&#34;:0.19698427617549896,&#34;b&#34;:0.47105348110198975,&#34;a&#34;:1.0},&#34;position&#34;:0.031753577291965485},{&#34;color&#34;:{&#34;r&#34;:0.93557697534561157,&#34;g&#34;:0.068368867039680481,&#34;b&#34;:0.082822337746620178,&#34;a&#34;:0.86000001430511475},&#34;position&#34;:0.37297222018241882}],&#34;stopsVar&#34;:[{&#34;color&#34;:{&#34;r&#34;:0.94184511899948120,&#34;g&#34;:0.19698427617549896,&#34;b&#34;:0.47105348110198975,&#34;a&#34;:1.0},&#34;position&#34;:0.031753577291965485},{&#34;color&#34;:{&#34;r&#34;:0.93557697534561157,&#34;g&#34;:0.068368867039680481,&#34;b&#34;:0.082822337746620178,&#34;a&#34;:0.86000001430511475},&#34;position&#34;:0.37297222018241882}],&#34;transform&#34;:{&#34;m00&#34;:-1527.0001220703125,&#34;m01&#34;:745.39544677734375,&#34;m02&#34;:1709.3023681640625,&#34;m10&#34;:-980.00018310546875,&#34;m11&#34;:-1161.447753906250,&#34;m12&#34;:1782.7239990234375},&#34;opacity&#34;:1.0,&#34;blendMode&#34;:&#34;SCREEN&#34;,&#34;visible&#34;:true}" style="mix-blend-mode:screen"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_g_97_4" x="-100" y="-100" width="2372" height="1342" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.3333333432674408 0.3333333432674408" numOctaves="3" seed="4303" />
+<feDisplacementMap in="shape" scale="200" xChannelSelector="R" yChannelSelector="G" result="displacedImage" width="100%" height="100%" />
+<feMerge result="effect1_texture_97_4">
+<feMergeNode in="displacedImage"/>
+</feMerge>
+</filter>
+<filter id="filter1_f_97_4" x="200" y="22" width="1772" height="1098" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="100" result="effect1_foregroundBlur_97_4"/>
+</filter>
+<clipPath id="paint0_angular_97_4_clip_path"><path d="M1772 920H400V222H1772V920Z" style="mix-blend-mode:screen"/></clipPath></defs>
+</svg>

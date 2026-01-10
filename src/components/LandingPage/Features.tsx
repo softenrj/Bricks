@@ -52,7 +52,7 @@ function HeadingSection() {
     const ref = useRef(null);
     const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
     const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.3, 1]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1, 0.6]);
+    const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1, 1]);
 
     return (
         <motion.h2

@@ -35,10 +35,9 @@ function SectionTwo() {
         <motion.div
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className="relative rounded-xl border border-white/10 overflow-hidden
-                     bg-gradient-to-b from-white/[0.04] to-transparent"
+          className="relative rounded-xl border border-white/10 overflow-hidden bg-gradient-to-b from-white/[0.04] to-transparent"
         >
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-white/[0.03]">
+          <div className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-3 border-b border-white/10 bg-white/[0.03]">
             <div className="w-2 h-2 rounded-full bg-red-500/80" />
             <div className="w-2 h-2 rounded-full bg-yellow-500/80" />
             <div className="w-2 h-2 rounded-full bg-green-500/80" />
