@@ -14,6 +14,7 @@ interface AiTyperProps {
   cursorColor?: string;
   textColour?: string;
   className?: string;
+  cursor?: boolean;
 }
 
 const AiTyper: React.FC<AiTyperProps> = ({
@@ -23,7 +24,8 @@ const AiTyper: React.FC<AiTyperProps> = ({
   loop = true,
   cursorColor = "#ff4fd8",
   textColour = "text-white",
-  className = "",
+  className = "text-sm md:text-base",
+  cursor = true
 }) => {
   const [displayed, setDisplayed] = useState<string>("");
   const [msgIndex, setMsgIndex] = useState<number>(0);
@@ -64,12 +66,12 @@ const AiTyper: React.FC<AiTyperProps> = ({
   return (
     <div className="flex items-center">
       <span
-        className={`text-sm md:text-base ${textColour} ${className}`}
+        className={` ${textColour} ${className}`}
       >
         {displayed}
       </span>
 
-      <span
+      {cursor && <span
         className="ml-1 animate-pulse"
         style={{
           color: cursorColor,
@@ -77,7 +79,7 @@ const AiTyper: React.FC<AiTyperProps> = ({
         }}
       >
         |
-      </span>
+      </span>}
     </div>
   );
 };
