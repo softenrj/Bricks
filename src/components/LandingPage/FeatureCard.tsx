@@ -66,7 +66,7 @@ function FeatureCard() {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) videoRef.current?.play()
+                    if (entry.isIntersecting) // videoRef.current?.play()
                     else videoRef.current?.pause()
                 })
             },
