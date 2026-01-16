@@ -2,60 +2,33 @@
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
 "use client"
-
 import React, { useRef } from "react"
-import { motion, useScroll, useSpring, useTransform } from "framer-motion"
+import { motion, MotionValue, useScroll, useSpring, useTransform } from "framer-motion"
 import FeatureCard from "./FeatureCard"
 
-function Features() {
+function Features({rootYScrollProgress}:{rootYScrollProgress: MotionValue<number>}) {
+
   return (
-    <div className="w-full flex flex-col items-center py-10 sm:py-16 lg:py-24 gap-28">
+    <div
+      className="w-full min-h-[300vh] flex flex-col items-center"
+    >
       <HeadingSection />
 
-      {[1, 2, 3].map((_, index) => (
-        <ScrollFocusedCard key={index} />
-      ))}
+      {[1, 2, 3].map((_, i) => {
+        const targetScale = 1 - (3 - i) * 0.05
+        return (
+          <FeatureCard
+            key={i}
+            progress={rootYScrollProgress}
+            i={i}
+            targetScale={targetScale}
+          />
+        )
+      })}
     </div>
   )
 }
 
-/* --------------------------------------------- */
-/* Card Scroll Animation */
-/* --------------------------------------------- */
-function ScrollFocusedCard() {
-  const ref = useRef<HTMLDivElement | null>(null)
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 90%", "center center", "end 10%"],
-  })
-
-  // 🔥 Heavy, buttery spring
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 60,
-    damping: 28,
-    mass: 1,
-  })
-
-  // 🎯 Subtle transforms only
-  const scale = useTransform(smoothProgress, [0, 0.5, 1], [0.96, 1, 0.96])
-  const opacity = useTransform(smoothProgress, [0, 0.3, 1], [0.75, 1, 0.75])
-  const y = useTransform(smoothProgress, [0, 0.5, 1], [24, 0, -24])
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ scale, opacity, y }}
-      className="w-full flex justify-center will-change-transform"
-    >
-      <FeatureCard />
-    </motion.div>
-  )
-}
-
-/* --------------------------------------------- */
-/* Heading Animation */
-/* --------------------------------------------- */
 function HeadingSection() {
   const ref = useRef<HTMLHeadingElement | null>(null)
 
