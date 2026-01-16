@@ -202,7 +202,7 @@ function FeatureCard() {
                                     ref={videoRef}
                                     src="https://res.cloudinary.com/dcyn3ewpv/video/upload/v1767631406/Screen_Recording_2026-01-05_215143_tqjqyq.mp4"
                                     muted
-                                    autoplay={false}
+                                    autoPlay={false}
                                     crossOrigin="anonymous"
                                     playsInline
                                     className="w-full h-full object-cover rounded-2xl"
