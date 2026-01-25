@@ -24,7 +24,7 @@ export const getApi = async <T>({
         let apiUrl = url;
         if (param) {
             const queryString = new URLSearchParams();
-            Object.keys(param).forEach(([Key,value]) => {
+            Object.entries(param).forEach(([Key,value]) => {
                 queryString.append(Key, String(value))
             })
             apiUrl += `?${queryString.toString()}`

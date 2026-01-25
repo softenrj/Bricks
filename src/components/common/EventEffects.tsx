@@ -9,6 +9,7 @@ import Snowfall from "react-snowfall"
 import { useEffect, useState } from "react"
 import { ConfettiEffect } from "./ConfettiEffect"
 import { FestivalFlags } from "./FestivalFlags"
+import RepublicDay from "../EventEffects/RepublicDay"
 
 function EventEffects() {
   const features = useAppSelector(state => state.Effects)
@@ -25,6 +26,7 @@ function EventEffects() {
       )}
 
       {features.effect === EffectEnum.NEW_YEAR && <NewYearSequence />}
+      {/* { features.effect === EffectEnum.REPUBLIC_DAY && <RepublicDay />} */}
     </div>
   )
 }
