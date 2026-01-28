@@ -2,9 +2,9 @@
 
 import { cn } from '@/lib/utils';
 import React, { forwardRef, useRef } from 'react';
+import { AnimatedBeam, Circle, Icons } from '../ui/animated-beam';
 
-import { AnimatedBeam, Circle } from '@/components/animated-beam';
-import { Icons } from '@/components/animated-beam';
+
 export default function FlowShowCase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const div1Ref = useRef<HTMLDivElement>(null);
