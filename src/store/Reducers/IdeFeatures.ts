@@ -4,6 +4,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IdeFeatures {
+  jobId?: string;
   codeCompletion: boolean;
   autoSave: boolean;
   realTimePanel: boolean;
@@ -48,9 +49,12 @@ const IdeFeaturesSlice = createSlice({
     },
     toggleArch: (state, action: PayloadAction<boolean>) => {
       state.ArchForgePanel = action.payload;
+    },
+    setArchJobId: (state, action: PayloadAction<string>) => {
+      state.jobId = action.payload;
     }
   },
 });
 
 export default IdeFeaturesSlice.reducer;
-export const { toggleCodeCompletion, toggleAutoSave, togglePanel, toggleArch } = IdeFeaturesSlice.actions;
+export const { toggleCodeCompletion, toggleAutoSave, togglePanel, toggleArch, setArchJobId } = IdeFeaturesSlice.actions;

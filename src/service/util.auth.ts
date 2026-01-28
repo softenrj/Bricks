@@ -5,6 +5,7 @@ import { auth } from "@/feature/Firebase";
 import { ApiResponse } from "@/types/Api";
 import { API_BRICKS_SIGN_IN } from "@/utils/api/APIConstant";
 import { postApi } from "@/utils/api/common";
+import Cookie from "js-cookie";
 import {
   createUserWithEmailAndPassword,
   GithubAuthProvider,
@@ -106,15 +107,25 @@ export class AuthProvider {
   }
 
   private static persistToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem("bricks:auth", token);
-    }
+    // if (typeof window !== 'undefined') {
+    //   localStorage.setItem("bricks:auth", token);
+    // }
+
+    Cookie.set("token", token, {
+      expires: 1/24,
+      secure: true,
+      path: '/',
+      sameSite: "strict",
+      
+    })
   }
 
   public static clearToken(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem("bricks:auth");
-    }
+    // if (typeof window !== 'undefined') {
+    //   localStorage.removeItem("bricks:auth");
+    // }
+
+    Cookie.remove("token");
   }
 
   public static getToken(): string | null {

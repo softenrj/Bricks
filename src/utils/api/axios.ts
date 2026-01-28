@@ -5,9 +5,9 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { defaultApiRoute } from '../constance'
 import toast from 'react-hot-toast'
 import * as firebaseAuth from '@/feature/Firebase'
+import Cookies from 'js-cookie';
 
-
-const defaultAxios = axios.create({ baseURL: defaultApiRoute })
+const defaultAxios = axios.create({ baseURL: defaultApiRoute, withCredentials: true })
 
 const getFreshToken = async (): Promise<string | null> => {
   const auth = firebaseAuth.auth;
@@ -16,16 +16,22 @@ const getFreshToken = async (): Promise<string | null> => {
     const token = await user.getIdToken(true)
     return token
   }
-  if (typeof window === 'undefined') return null;
-  const token = localStorage.getItem('bricks:auth')
-  return token
+  // if (typeof window === 'undefined') return null;
+  // const token = localStorage.getItem('bricks:auth')
+  return null;
 }
 
 defaultAxios.interceptors.request.use(
   async (config) => {
     const token = await getFreshToken();
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      // config.headers.Authorization = `Bearer ${token}`
+      Cookies.set("token",token, {
+        sameSite: "strict",
+        secure: true,
+        expires: 1/24,
+      })
+
     }
     return config
   },
@@ -48,7 +54,8 @@ defaultAxios.interceptors.response.use(
         }
       });
       if (typeof window !== 'undefined') {
-        localStorage.removeItem("bricks:auth");
+        // localStorage.removeItem("bricks:auth");
+        Cookies.remove("token");
         window.location.href = "/";
       }
     }

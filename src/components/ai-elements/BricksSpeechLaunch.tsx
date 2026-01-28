@@ -12,6 +12,8 @@ import { ArchProjectCode } from "@/types/arch.typs";
 import { ARCH_BRICKS_CODE_GEN } from "@/utils/api/socket.events";
 import { archWebContainerProcess } from "@/service/webContainer";
 import { archCodeGeneration } from "@/store/Reducers/fsSlice";
+import { API_BRICKS_ARCH_STREAM } from "@/utils/api/APIConstant";
+import { defaultApiRoute } from "@/utils/constance";
 
 function BricksSpeechLaunch({ projectId }: { projectId: string }) {
   const [showLaunch, setShowLaunch] = useState(true);
@@ -20,19 +22,20 @@ function BricksSpeechLaunch({ projectId }: { projectId: string }) {
   const textOperate = true;
   const socket = getSocket();
   const dispatch = useAppDispatch();
+  const jobId = useAppSelector(state => state.IdeFeatures).jobId!;
 
-  React.useEffect((): any => {
-    if (!socket) return;
+  // React.useEffect((): any => {
+  //   if (!socket) return;
 
-    const handler = async (gen: ArchProjectCode) => {
-      if (projectId !== gen.projectId) return ;
-      await archWebContainerProcess(gen.fileName,gen.path,gen.content,gen.projectId,dispatch);
-      dispatch(archCodeGeneration(gen))
-    };
+  //   const handler = async (gen: ArchProjectCode) => {
+  //     if (projectId !== gen.projectId) return;
+  //     await archWebContainerProcess(gen.fileName, gen.path, gen.content, gen.projectId, dispatch);
+  //     dispatch(archCodeGeneration(gen))
+  //   };
 
-    socket.on(ARCH_BRICKS_CODE_GEN, handler);
-    return () => socket.off(ARCH_BRICKS_CODE_GEN, handler);
-  }, [socket]);
+  //   socket.on(ARCH_BRICKS_CODE_GEN, handler);
+  //   return () => socket.off(ARCH_BRICKS_CODE_GEN, handler);
+  // }, [socket]);
 
   React.useEffect(() => {
     setShowLaunch(true);
@@ -44,6 +47,32 @@ function BricksSpeechLaunch({ projectId }: { projectId: string }) {
     return () => clearTimeout(timer);
   }, [archForge]);
 
+
+  React.useEffect(() => {
+    if (!jobId) return;
+
+    const es = new EventSource(defaultApiRoute + API_BRICKS_ARCH_STREAM + `/${jobId}`, { withCredentials: true });
+
+    es.addEventListener("file", async (e) => {
+      const gen: ArchProjectCode = JSON.parse(e.data);
+      if (projectId !== gen.projectId) return;
+
+      await archWebContainerProcess(gen.fileName, gen.path, gen.content, gen.projectId, dispatch);
+      dispatch(archCodeGeneration(gen))
+    })
+
+    es.addEventListener("complete", () => {
+      es.close();
+    });
+
+    es.onerror = () => {
+      es.close();
+    };
+
+    return () => {
+      es.close();
+    };
+  }, [jobId, projectId]);
 
   return (
     archForge &&

@@ -44,6 +44,7 @@ export const API_BRICKS_CODE_COMPLETION: string = "/project/bricks-code-improvem
 
 // ArchForge
 export const API_BRICKS_ARCH_REQUEST: string = "/ai/bricks-arch-forge"
+export const API_BRICKS_ARCH_STREAM: string = "/ai/bricks-arch-forge/stream"
 
 // History
 export const API_BRICKS_USER_HISTORY: string = "/history/user"

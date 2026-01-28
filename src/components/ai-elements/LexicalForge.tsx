@@ -9,11 +9,14 @@ import { motion } from "framer-motion";
 import { postApi } from "@/utils/api/common";
 import { ApiResponse } from "@/types/Api";
 import { API_BRICKS_ARCH_REQUEST } from "@/utils/api/APIConstant";
+import { useAppDispatch } from "@/hooks/redux";
+import { setArchJobId } from "@/store/Reducers/IdeFeatures";
 
 export default function LexicalForge({projectId}:{projectId: string}) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [prompt, setPrompt] = React.useState("");
   const [processing, setProcessing] = React.useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -25,10 +28,14 @@ export default function LexicalForge({projectId}:{projectId: string}) {
   const handleSend = async () => {
     if (prompt.trim() === "") return ;
     setProcessing(true);
-    const response = await postApi<ApiResponse<void>>({
+    const response = await postApi<ApiResponse<string>>({
       url: API_BRICKS_ARCH_REQUEST,
       values: { projectId, prompt }
     })
+
+    if (response?.success) {
+      dispatch(setArchJobId(response?.data))
+    }
     setProcessing(false);
     setPrompt("");
     if(response?.success){}
