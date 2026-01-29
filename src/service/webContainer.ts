@@ -169,7 +169,6 @@ function toContainerPath(path: string): string {
 }
 
 export async function archWebContainerProcess(
-  fileName: string,
   path: string,
   content: string,
   projectId: string,

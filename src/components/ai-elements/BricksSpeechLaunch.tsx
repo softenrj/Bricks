@@ -61,7 +61,7 @@ function BricksSpeechLaunch({ projectId }: { projectId: string }) {
         const gen: ArchProjectCode = JSON.parse(e.data);
         if (projectId !== gen.projectId) return;
 
-        await archWebContainerProcess(gen.fileName, gen.path, gen.content, gen.projectId, dispatch);
+        await archWebContainerProcess(gen.path, gen.content, gen.projectId, dispatch);
         dispatch(archCodeGeneration(gen))
       })
 
