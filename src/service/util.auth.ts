@@ -83,7 +83,7 @@ export class AuthProvider {
       return null;
     }
   }
-  
+
   private static async syncWithBackend(
     user: User,
     token: string,
@@ -107,25 +107,15 @@ export class AuthProvider {
   }
 
   private static persistToken(token: string): void {
-    // if (typeof window !== 'undefined') {
-    //   localStorage.setItem("bricks:auth", token);
-    // }
-
-    Cookie.set("token", token, {
-      expires: 1/24,
-      secure: true,
-      path: '/',
-      sameSite: "strict",
-      
-    })
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("bricks:auth", token);
+    }
   }
 
   public static clearToken(): void {
-    // if (typeof window !== 'undefined') {
-    //   localStorage.removeItem("bricks:auth");
-    // }
-
-    Cookie.remove("token");
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("bricks:auth");
+    }
   }
 
   public static getToken(): string | null {

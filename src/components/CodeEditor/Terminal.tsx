@@ -113,7 +113,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
       {/* Logs */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-xs"
+        className="flex-1 overflow-auto p-2 bg-black cursor-text font-mono text-[8pt]"
         onClick={focusInput}
       >
         {status === "booting" ? (

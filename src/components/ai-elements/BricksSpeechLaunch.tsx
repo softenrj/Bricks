@@ -14,6 +14,7 @@ import { archWebContainerProcess } from "@/service/webContainer";
 import { archCodeGeneration } from "@/store/Reducers/fsSlice";
 import { API_BRICKS_ARCH_STREAM } from "@/utils/api/APIConstant";
 import { defaultApiRoute } from "@/utils/constance";
+import { getFreshToken } from "@/utils/api/axios";
 
 function BricksSpeechLaunch({ projectId }: { projectId: string }) {
   const [showLaunch, setShowLaunch] = useState(true);
@@ -50,27 +51,35 @@ function BricksSpeechLaunch({ projectId }: { projectId: string }) {
 
   React.useEffect(() => {
     if (!jobId) return;
+    let es: EventSource;
+    const stream = async () => {
+      const token = await getFreshToken();
 
-    const es = new EventSource(defaultApiRoute + API_BRICKS_ARCH_STREAM + `/${jobId}`, { withCredentials: true });
+      es = new EventSource(defaultApiRoute + API_BRICKS_ARCH_STREAM + `/${jobId}?token=${token}`);
 
-    es.addEventListener("file", async (e) => {
-      const gen: ArchProjectCode = JSON.parse(e.data);
-      if (projectId !== gen.projectId) return;
+      es.addEventListener("file", async (e) => {
+        const gen: ArchProjectCode = JSON.parse(e.data);
+        if (projectId !== gen.projectId) return;
 
-      await archWebContainerProcess(gen.fileName, gen.path, gen.content, gen.projectId, dispatch);
-      dispatch(archCodeGeneration(gen))
-    })
+        await archWebContainerProcess(gen.fileName, gen.path, gen.content, gen.projectId, dispatch);
+        dispatch(archCodeGeneration(gen))
+      })
 
-    es.addEventListener("complete", () => {
-      es.close();
-    });
+      es.addEventListener("complete", () => {
+        es.close();
+      });
 
-    es.onerror = () => {
-      es.close();
-    };
+      es.onerror = () => {
+        es.close();
+      };
+    }
+
+    stream();
 
     return () => {
-      es.close();
+      if (es) {
+        es.close();
+      }
     };
   }, [jobId, projectId]);
 
