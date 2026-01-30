@@ -347,8 +347,9 @@ const fsSlice = createSlice({
       _state.selectedFileContent = null;
     },
     archCodeGeneration: (state, action: PayloadAction<ArchProjectCode>) => {
-      const { projectId, path, content, fileName } = action.payload;
+      const { projectId, path, content } = action.payload;
       const segments = path.split("/");
+      const fileName = segments.at(-1) || "";
 
       // walk tree
       let node: any = state.tree;
