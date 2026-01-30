@@ -1,121 +1,177 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025 Raj
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
 "use client";
+
 import React from "react";
-import { Github, Mail, Lock } from "lucide-react";
+import { Github, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { Tooltip } from "../common/Tooltip";
 import { AuthProvider } from "@/service/util.auth";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ForgotPassword from "./ForgetPassword";
+import PasswordInput from "./Password";
 
-function LogIn() {
+function LogIn({ toggle }: { toggle: () => void }) {
   const [email, setEmail] = React.useState("");
-  const [pass, setPass] = React.useState("");
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [fogetPass, setForgetPass] = React.useState<boolean>(false);
-  const router = useRouter()
+  const [password, setPassword] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [forgetPass, setForgetPass] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !pass) {
-      toast.error("Please fill all fields");
+    if (loading) return;
+
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
       return;
     }
-    setLoading(true);
-    const result = await AuthProvider.loginWithEmail(email, pass);
-    if (result) {
-      setPass("");
-      router.push("/dashboard");
+
+    try {
+      setLoading(true);
+      const result = await AuthProvider.loginWithEmail(email, password);
+
+      if (result) {
+        setPassword("");
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      toast.error("Invalid credentials");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
-    const result = await AuthProvider.signInWithGoogle();
-  };
-
-  const handleGitHubSignIn = async () => {
-    const result = await AuthProvider.signInWithGitHub();
-    if (result) {
-      console.log("Signed in with GitHub:", result.user.email);
+    try {
+      await AuthProvider.signInWithGoogle();
+    } catch {
+      toast.error("Google sign-in failed");
     }
   };
 
-  const handleForgetPass = () => setForgetPass(!fogetPass)
+  const handleGitHubSignIn = async () => {
+    try {
+      await AuthProvider.signInWithGitHub();
+    } catch {
+      toast.error("GitHub sign-in failed");
+    }
+  };
+
+  if (forgetPass) {
+    return <ForgotPassword setForgetPass={() => setForgetPass(false)} />;
+  }
 
   return (
-    fogetPass ? <ForgotPassword setForgetPass={handleForgetPass} /> :
-    <div className="w-full max-w-md mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
-      {/* Email + Password Form */}
+    <div className="w-full max-w-md mx-auto space-y-6 px-4 sm:px-6">
+      {/* Header */}
+      <div className="text-center space-y-1">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white">
+          Welcome back
+        </h2>
+        <p className="text-sm text-zinc-400">
+          Sign in to continue building
+        </p>
+      </div>
+
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Email */}
         <div>
-          <label className="block text-xs sm:text-sm text-gray-400 mb-1">Email</label>
-          <div className="flex items-center bg-white/5 px-3 py-2 sm:py-2.5 rounded-lg border border-white/10 focus-within:border-pink-400 transition">
-            <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
+          <label className="block text-xs sm:text-sm text-zinc-300 mb-1">
+            Email
+          </label>
+          <div className="group flex items-center bg-[#2F2F32] px-3 py-2.5 border border-white/10 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-400/40 transition">
+            <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 mr-2" />
             <input
               type="email"
               value={email}
+              name="email"
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="bg-transparent w-full outline-none text-white text-sm sm:text-base"
+              placeholder="you@example.com"
+              className="bg-transparent w-full outline-none text-white text-sm sm:text-base placeholder:text-zinc-500"
               required
             />
           </div>
         </div>
 
-        {/* Password */}
+        {/* <PasswordInput /> */}
         <div>
-          <label className="block text-xs sm:text-sm text-gray-400 mb-1">Password</label>
-          <div className="flex items-center bg-white/5 px-3 py-2 sm:py-2.5 rounded-lg border border-white/10 focus-within:border-pink-400 transition">
-            <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
+          <label htmlFor="password" className="block text-xs sm:text-sm text-zinc-300 mb-1">
+            Password
+          </label>
+          <div className="group flex items-center bg-[#2F2F32] px-3 py-2.5 border border-white/10 focus-within:border-pink-400 focus-within:ring-1 focus-within:ring-pink-400/40 transition">
+            <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400 mr-2" />
+
             <input
-              type="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              placeholder="Enter your password"
-              className="bg-transparent w-full outline-none text-white text-sm sm:text-base"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="bg-transparent w-full outline-none text-white text-sm sm:text-base placeholder:text-zinc-500"
               required
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="ml-2 text-zinc-400 hover:text-zinc-200 transition"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff className="cursor-pointer" size={16} /> : <Eye className="cursor-pointer" size={16} />}
+            </button>
           </div>
+
+
           <button
             type="button"
             onClick={() => setForgetPass(true)}
-            className="text-right text-xs sm:text-sm text-pink-400 hover:underline mt-1 cursor-pointer w-full"
+            className="mt-2 text-xs sm:text-sm text-pink-400 hover:text-pink-300 transition w-full text-right"
           >
             Forgot password?
           </button>
         </div>
 
+
         {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-pink-500 to-red-500 font-semibold text-white text-sm sm:text-base hover:opacity-90 hover:shadow-pink-500/40 hover:shadow-md transition"
+          className="
+            w-full py-2.5 sm:py-3
+            bg-gradient-to-r from-pink-500 to-red-500
+            font-semibold text-white
+            hover:opacity-90
+            disabled:opacity-60 disabled:cursor-not-allowed
+            transition
+          "
         >
-          { loading ? "wait.." : "Sign In"}
+          {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
       {/* Divider */}
-      <div className="flex items-center gap-2 text-gray-500 text-xs sm:text-sm">
-        <div className="flex-1 h-px bg-white/10"></div>
+      <div className="flex items-center gap-3 text-zinc-500 text-xs sm:text-sm">
+        <div className="flex-1 h-px bg-white/10" />
         <span>or continue with</span>
-        <div className="flex-1 h-px bg-white/10"></div>
+        <div className="flex-1 h-px bg-white/10" />
       </div>
 
-      {/* OAuth Buttons */}
-      <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+      {/* OAuth */}
+      <div className="flex justify-center gap-4">
         <Tooltip content="GitHub">
           <button
             type="button"
             aria-label="Sign in with GitHub"
             onClick={handleGitHubSignIn}
-            className="p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-md hover:shadow-pink-500/20 transition"
+            className="p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-pink-500/20 hover:shadow-md transition"
           >
-            <Github className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <Github className="w-5 h-5 text-white" />
           </button>
         </Tooltip>
 
@@ -124,9 +180,9 @@ function LogIn() {
             type="button"
             aria-label="Sign in with Google"
             onClick={handleGoogleSignIn}
-            className="p-2 sm:p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-md hover:shadow-pink-500/20 transition"
+            className="p-3 rounded-lg bg-white/5 border border-white/10 hover:border-pink-400 hover:shadow-pink-500/20 hover:shadow-md transition"
           >
-            {/* Google Icon */}
+            {/* Google SVG unchanged */}
             <svg
               className="w-5 h-5 sm:w-6 sm:h-6"
               viewBox="0 0 533.5 544.3"
@@ -152,6 +208,13 @@ function LogIn() {
           </button>
         </Tooltip>
       </div>
+      <p className="text-center text-xs text-zinc-400">
+        Don&apos;t have an account?{' '}
+        <span className="text-pink-400 hover:text-pink-300 cursor-pointer transition-colors underline-offset-4 hover:underline" onClick={toggle}>
+          Sign Up
+        </span>
+      </p>
+
     </div>
   );
 }

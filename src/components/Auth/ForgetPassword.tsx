@@ -34,17 +34,18 @@ function ForgotPassword({ setForgetPass }: { setForgetPass: () => void }) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-md mx-auto space-y-3 px-2 sm:px-3 lg:px-6">
       <h2 className="text-center text-2xl font-bold text-white">Forgot Password</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Email */}
         <div>
           <label className="block text-xs sm:text-sm text-gray-400 mb-1">Email</label>
-          <div className="flex items-center bg-white/5 px-3 py-2 sm:py-2.5 rounded-lg border border-white/10 focus-within:border-pink-400 transition">
+          <div className="flex items-center bg-white/5 px-3 py-2 sm:py-2.5 border border-white/10 focus-within:border-pink-400 transition">
             <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2" />
             <input
               type="email"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
@@ -58,7 +59,7 @@ function ForgotPassword({ setForgetPass }: { setForgetPass: () => void }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 sm:py-3 rounded-lg bg-gradient-to-r from-pink-500 to-red-500 font-semibold text-white text-sm sm:text-base hover:opacity-90 hover:shadow-pink-500/40 hover:shadow-md transition"
+          className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-pink-500 to-red-500 font-semibold text-white text-sm sm:text-base hover:opacity-90 hover:shadow-pink-500/40 hover:shadow-md transition"
         >
           {loading ? "Sending..." : "Send Reset Email"}
         </button>

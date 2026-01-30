@@ -13,8 +13,9 @@ import { useUserStats } from "@/service/api.user";
 import { motion } from "framer-motion";
 import { ShootingStars } from "../ui/shadcn-io/shooting-stars";
 import { ImageDialog } from "./ImageDialog";
-import { Pencil } from "lucide-react";
+import { Ellipsis, Pencil } from "lucide-react";
 import { UserProfileUpdate } from "./UserProfileUpdate";
+import AccountSettingMenu from "./AccountSettingMenu";
 
 export default function AccountProfile() {
     const user = useAppSelector((s) => s.user);
@@ -22,6 +23,9 @@ export default function AccountProfile() {
     const bio = user?.bio?.slice(0, 250) || "";
     const [open, setOpen] = React.useState(false)
     const [openProfile, setOpenProfile] = React.useState(false)
+    const [dropdown, setDropDown] = React.useState<boolean>(false);
+
+    const handleOpenProfileEdit = () => setOpenProfile(true);
 
     return (
         <>
@@ -69,9 +73,6 @@ export default function AccountProfile() {
 
                     <div
                         className=" flex flex-wrap gap-4 mt-1 text-sm sm:text-base z-50">
-                        <Tooltip content="Edit profie">
-                            <Pencil className="text-gray-300 w-4 h-4" onClick={() => setOpenProfile(true)} />
-                        </Tooltip>
                         <StatBlock
                             icon="ph:squares-four-duotone"
                             label="Projects"
@@ -103,6 +104,13 @@ export default function AccountProfile() {
                             color="text-rose-300"
                         />
                     </div>
+                </div>
+                <div className="z-999 absolute md:relative">
+                    <Tooltip content="Account Settings">
+                        <AccountSettingMenu edit={handleOpenProfileEdit} onOpenChange={() => setDropDown(false)} open={dropdown}>
+                            <Ellipsis className="text-gray-100 cursor-pointer" size={14} onClick={() => setDropDown(true)} />
+                        </AccountSettingMenu>
+                    </Tooltip>
                 </div>
                 <ShootingStars
                     starColor="#9E00FF"

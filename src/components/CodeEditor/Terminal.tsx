@@ -29,9 +29,29 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);
 
+  const hasProjectChanged = React.useCallback(() => {
+    if (typeof window === "undefined") return false;
+
+    const oldProjectId = localStorage.getItem("bricks:projectId");
+    return oldProjectId !== projectId;
+  }, [projectId]);
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!self.crossOriginIsolated) {
+      window.location.reload();
+      return;
+    }
+
+    if (hasProjectChanged()) {
+      localStorage.setItem("bricks:projectId", projectId);
+      window.location.reload();
+      return;
+    }
+
     dispatch(startShell());
-  }, [dispatch]);
+  }, [dispatch, projectId, hasProjectChanged]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -66,7 +86,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   const installDependenciesHandler = async () => {
     dispatch(installDependencies())
   }
-  
+
   return (
     <div className="flex flex-col h-full bg-black">
       {/* Header */}
@@ -93,7 +113,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
             <button
               onClick={() => dispatch(startDevServer())}
               className="py-1 px-1 bg-green-600 hover:bg-green-700 disabled:opacity-80 disabled:cursor-not-allowed text-white text-xs rounded transition"
-              // disabled={!!liveUrl}
+            // disabled={!!liveUrl}
             >
               npm run dev
             </button>

@@ -278,7 +278,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 8;
+  border-radius: 50;
   padding: 2px;
   background: linear-gradient(90deg,
       #00f0ff,
@@ -623,4 +623,14 @@ div[data-code-block-container="true"] {
 }
 .animate-ping-once {
   animation: ping-once 0.8s cubic-bezier(0, 0, 0.2, 1);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px #23232329;
 }

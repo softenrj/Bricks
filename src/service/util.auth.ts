@@ -17,6 +17,12 @@ import {
 } from "firebase/auth";
 import toast from "react-hot-toast";
 
+export enum AuthType {
+    EMAIL_PASS = "EMAIL",
+    GOOGLE = "GOOGLE",
+    GITHUB = "GITHUB"
+}
+
 type AuthReturn = { user: User; token: string };
 
 export class AuthProvider {
@@ -32,7 +38,7 @@ export class AuthProvider {
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       const token = await user.getIdToken();
       this.persistToken(token);
-      await this.syncWithBackend(user, token, username, email, "EMAIL");
+      await this.syncWithBackend(user, token, username, email, AuthType.EMAIL_PASS);
       toast.success("Registered successfully! 🎊");
       return { user, token };
     } catch (err) {
@@ -61,26 +67,27 @@ export class AuthProvider {
 
   public static async signInWithGoogle(): Promise<void> {
     try {
-      await signInWithRedirect(auth, this.GOOGLE_PROVIDER);
+      const { user } = await signInWithPopup(auth, this.GOOGLE_PROVIDER);
+      const token = await user.getIdToken();
+      this.persistToken(token);
+      console.log(user.uid)
+      this.syncWithBackendMethod(user,token,AuthType.GOOGLE)
     } catch (err) {
       console.error("Google sign-in error:", err);
       toast.error("Google sign-in failed 😞");
     }
   }
 
-  public static async signInWithGitHub(): Promise<AuthReturn | null> {
+  public static async signInWithGitHub(): Promise<void> {
     try {
       const result = await signInWithPopup(auth, this.GITHUB_PROVIDER);
       const user = result.user;
       const token = await user.getIdToken();
       this.persistToken(token);
-      await this.syncWithBackend(user, token, user.displayName, user.email, "GITHUB");
-      toast.success("GitHub login successful! 🎉");
-      return { user, token };
+      this.syncWithBackendMethod(user,token,AuthType.GITHUB)
     } catch (err) {
       console.error("GitHub sign-in error:", err);
       toast.error("GitHub login failed 😞");
-      return null;
     }
   }
 
@@ -89,12 +96,35 @@ export class AuthProvider {
     token: string,
     username?: string | null,
     email?: string | null,
-    authType?: string
+    authType?: AuthType
   ): Promise<void> {
     try {
       const response = await postApi<ApiResponse<any>>({
         url: API_BRICKS_SIGN_IN,
         values: { email: email!, username: username!, firebaseId: user.uid, token, authType },
+      });
+
+      if (response?.success) {
+        toast.success(response.message);
+      }
+    } catch (error) {
+      console.error("Sync backend error:", error);
+      toast.error("Please try again later 😞");
+    }
+  }
+
+  private static async syncWithBackendMethod(
+    user: User,
+    token: string,
+    authType: AuthType
+  ): Promise<void> {
+    try {
+      const username = user.displayName;
+      const email = user.email;
+      const profile = user.photoURL || "";
+      const response = await postApi<ApiResponse<any>>({
+        url: API_BRICKS_SIGN_IN,
+        values: { email: email!, username: username!, profile: profile, firebaseId: user.uid, token, authType },
       });
 
       if (response?.success) {
@@ -121,5 +151,12 @@ export class AuthProvider {
   public static getToken(): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem("bricks:auth");
+  }
+
+  public static logOut(): void {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem("bricks:auth");
+    auth.signOut();
+    window.location.href = "/";
   }
 }

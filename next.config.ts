@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)", // apply to all routes
+        source: "/:projectId/:path*", // apply to all routes
         headers: [
           {
             key: "Cross-Origin-Opener-Policy",

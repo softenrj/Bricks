@@ -58,7 +58,7 @@ const sidebarItems: AppSideBarItems[] = [
         title: "Account",
         href: "/account",
         icon: User,
-        color: "#8a3beb", // Vo
+        color: "#8a3beb", // Vo,
     },
 ];
 

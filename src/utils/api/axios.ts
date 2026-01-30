@@ -17,7 +17,7 @@ export const getFreshToken = async (): Promise<string | null> => {
   }
   if (typeof window === 'undefined') return null;
   const token = localStorage.getItem('bricks:auth')
-  return null;
+  return token;
 }
 
 defaultAxios.interceptors.request.use(

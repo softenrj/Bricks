@@ -37,7 +37,7 @@ function MobileTabs({ projectId }: { projectId: string }) {
           >
             <div className="h-12 px-3 flex items-center justify-between">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={BricksIcon.src} />
+                <AvatarImage src={BricksIcon.src} crossOrigin="anonymous" />
                 <AvatarFallback>Bricks</AvatarFallback>
               </Avatar>
 
