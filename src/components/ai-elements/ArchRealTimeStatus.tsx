@@ -9,15 +9,20 @@ import { Spinner } from "../ui/spinner";
 import { ArchEnginStatusSocket } from "@/types/processSocket";
 import { getSocket } from "@/socket/socket";
 import { ARCH_BRICKS_PROCESS_STATUS } from "@/utils/api/socket.events";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { upsertArchProcess } from "@/store/Reducers/ArchProcessChat";
 
 function ArchRealTimeStatus() {
   const [pipeline, setPipeline] = React.useState<ArchEnginStatusSocket[]>([]);
   const socket = getSocket();
+  const dispatch = useAppDispatch()
+  const ArchPanel = useAppSelector(state => state.IdeFeatures).ArchForgePanel
 
   React.useEffect((): any => {
     if (!socket) return;
 
     const handler = (process: ArchEnginStatusSocket) => {
+      dispatch(upsertArchProcess({...process, role: "ai" }));
       setPipeline(prev => {
         const index = prev.findIndex(p => p.processId === process.processId);
 
@@ -50,7 +55,7 @@ function ArchRealTimeStatus() {
   const last = pipeline[pipeline.length - 1];
 
   return last ? (
-    <motion.div
+    !ArchPanel && <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}

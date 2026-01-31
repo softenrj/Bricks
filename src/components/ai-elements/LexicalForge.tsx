@@ -2,17 +2,20 @@
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
 "use client";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 import React from "react";
 import { Tooltip } from "../common/Tooltip";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { postApi } from "@/utils/api/common";
 import { ApiResponse } from "@/types/Api";
 import { API_BRICKS_ARCH_REQUEST } from "@/utils/api/APIConstant";
 import { useAppDispatch } from "@/hooks/redux";
 import { setArchJobId } from "@/store/Reducers/IdeFeatures";
+import toast from "react-hot-toast";
+import { upsertArchProcess } from "@/store/Reducers/ArchProcessChat";
+import { uIdProvider } from "@/feature/uid";
 
-export default function LexicalForge({projectId}:{projectId: string}) {
+export default function LexicalForge({ projectId, rollBack, commit, snap }: { projectId: string, rollBack: () => void, commit: () => void, snap: boolean }) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [prompt, setPrompt] = React.useState("");
   const [processing, setProcessing] = React.useState<boolean>(false);
@@ -26,8 +29,14 @@ export default function LexicalForge({projectId}:{projectId: string}) {
   };
 
   const handleSend = async () => {
-    if (prompt.trim() === "") return ;
+    if (prompt.trim() === "") return;
     setProcessing(true);
+    dispatch(upsertArchProcess({
+      message: prompt,
+      process: "complete",
+      processId: uIdProvider(),
+      role: "user"
+    }))
     const response = await postApi<ApiResponse<string>>({
       url: API_BRICKS_ARCH_REQUEST,
       values: { projectId, prompt }
@@ -38,8 +47,23 @@ export default function LexicalForge({projectId}:{projectId: string}) {
     }
     setProcessing(false);
     setPrompt("");
-    if(response?.success){}
+    if (response?.success) { }
   }
+
+  const handleSetText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (snap) {
+      toast.custom(
+        <div className="px-3 py-2 text-sm bg-yellow-300/10 rounded-full text-white border border-yellow-300/20">
+          ⚠️ Please select an action first.
+        </div>,
+        { position: "top-center", duration: 1000 }
+      );
+      return;
+    }
+    setPrompt(e.target.value);
+  };
+
+
 
   React.useEffect(() => {
     const el = textareaRef.current;
@@ -50,13 +74,34 @@ export default function LexicalForge({projectId}:{projectId: string}) {
   }, [prompt]);
 
   return (
-    <motion.div
-      initial={{ y: 10, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.2, ease: "easeIn" }}
-      exit={{ y: 10, opacity: 0 }}
-      className="
-        fixed bottom-10 left-1/2 -translate-x-1/2
+    <AnimatePresence>
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2">
+        {snap && <motion.div initial={{ y: 10, opacity: 30 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.2, ease: "easeIn" }} exit={{ y: 10, opacity: 0 }} className="flex justify-center gap-2 m-2">
+          <Tooltip content="RollBack to Previous State">
+            <button
+              className="px-3 py-1 rounded-full border-2 border-red-500/80 bg-stone-900 text-red-500 hover:text-red-600 transition" onClick={rollBack}
+            >
+              Undo
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Commit the changes">
+            <button
+              className=" relative rounded-full px-4 py-2 Ai-btn text-white bg-[#000000] bg-gradient-to-l from-[#06112b] via-[#162946] to-[#010c20]"
+              onClick={commit}
+            >
+              <div className="flex items-center gap-2"><Sparkles size={16} /> <span>Apply Changes</span></div>
+            </button>
+          </Tooltip>
+        </motion.div>}
+
+
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.2, ease: "easeIn" }}
+          exit={{ y: 10, opacity: 0 }}
+          className="
         inline-flex items-center gap-2
         max-w-[620px] w-[32%] min-w-[300px]
         bg-[#1f1f1f]/80 text-gray-300
@@ -66,15 +111,15 @@ export default function LexicalForge({projectId}:{projectId: string}) {
         backdrop-blur-md
         z-[999]
       "
-    >
-      <textarea
-        ref={textareaRef}
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Message"
-        rows={1}
-        className="
+        >
+          <textarea
+            ref={textareaRef}
+            value={prompt}
+            onChange={handleSetText}
+            onKeyDown={handleKeyDown}
+            placeholder="Message"
+            rows={1}
+            className="
           flex-1
           max-h-[160px]
           bg-transparent
@@ -87,11 +132,11 @@ export default function LexicalForge({projectId}:{projectId: string}) {
           hide-scrollbar
           py-[6px]
         "
-      />
+          />
 
-      <Tooltip content="Run">
-        <button
-          className="
+          <Tooltip content="Run">
+            <button
+              className="
             inline-flex items-center justify-center
             shrink-0 w-7 h-7
             border border-gray-600 rounded-full
@@ -101,12 +146,14 @@ export default function LexicalForge({projectId}:{projectId: string}) {
             disabled:opacity-75
             disabled:cursor-progress
           "
-          disabled={processing}
-          onClick={handleSend}
-        >
-          <ChevronRight size={14} />
-        </button>
-      </Tooltip>
-    </motion.div>
+              disabled={processing || snap}
+              onClick={handleSend}
+            >
+              <ChevronRight size={14} />
+            </button>
+          </Tooltip>
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
 }

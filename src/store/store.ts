@@ -10,6 +10,7 @@ import chatSlice from "./Reducers/chatSlice"
 import chatTabs from "./Reducers/chatTabs"
 import Idefeatures from "./Reducers/IdeFeatures"
 import EventEffect from "./Reducers/effects"
+import ArchProcess from "./Reducers/ArchProcessChat"
 
 export const store = configureStore({
   reducer: {
@@ -20,7 +21,8 @@ export const store = configureStore({
     bricksChat: chatSlice,
     chatTabs: chatTabs,
     IdeFeatures: Idefeatures,
-    Effects: EventEffect
+    Effects: EventEffect,
+    ArchProcess: ArchProcess
   },
 })
 

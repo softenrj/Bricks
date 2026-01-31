@@ -22,7 +22,6 @@ function SignUp({ toggle }: { toggle: () => void }) {
     const username = String(form.get("username") || "");
     const email = String(form.get("email") || "");
     const password = String(form.get("password") || "");
-    console.log(username,email,password)
 
     if (!username || !email || !password) {
       toast.error("All fields are required");

@@ -10,6 +10,7 @@ import { FSState } from "@/types/FSState";
 import { detectLanguage, getFileContent } from "@/feature/fsSystem";
 import { FSTYPE } from "@/types/project";
 import { ArchProjectCode } from "@/types/arch.typs";
+import { ISnapshotFile } from "@/types/snapshot";
 export type FSData = { [key: string]: string | FSData };
 
 const initialState: FSState = {
@@ -34,6 +35,21 @@ export const writeFile = createAsyncThunk(
     return { path, content }; //? # 90'th commit 
   }
 );
+
+function cleanupEmptyDirs(root: FSData, path: string[]) {
+  if (path.length === 0) return;
+
+  const name = path.pop()!;
+  let node = root;
+
+  for (const seg of path) {
+    node = node[seg] as FSData;
+  }
+
+  if (Object.keys(node[name]).length === 0) {
+    delete node[name];
+  }
+}
 
 const fsSlice = createSlice({
   name: "fs",
@@ -327,12 +343,12 @@ const fsSlice = createSlice({
     },
     closeSaved: (_state, action: PayloadAction<string | undefined>) => {
       const actionFile = action.payload;
-      if (typeof actionFile === "undefined") return ;
+      if (typeof actionFile === "undefined") return;
       _state.openTabs = _state.openTabs.filter(item => item.isEditing);
       if (_state.openTabs.length == 0) {
         _state.selectedFile = null;
         _state.selectedFileContent = null;
-        return ;
+        return;
       }
       const isOpenTabRemoved = !_state.openTabs.some(item => item.name === _state.selectedFile);
       if (isOpenTabRemoved) {
@@ -367,8 +383,33 @@ const fsSlice = createSlice({
       if (!state.openTabs.some(t => t.name === path)) {
         state.openTabs.push({ name: path, isEditing: false });
       }
+    },
+
+    archCodeRollBack: (state, action: PayloadAction<ISnapshotFile[]>) => {
+      for (const file of action.payload) {
+        const segments = file.path.split("/");
+        let node = state.tree;
+        const name = segments.at(-1)!;
+
+        for (let i = 0; i < segments.length - 1; i++) {
+          const seg = segments[i];
+          if (!node[seg]) break;
+          node = node[seg] as FSData;
+        }
+
+        if (file.action === "modify") {
+          node[name] = file.content;
+        }
+
+        else if (file.action === "create") {
+          delete node[name];
+          cleanupEmptyDirs(state.tree, segments);
+        }
+      }
     }
+
   },
+
   extraReducers: (builder) => {
     builder.addCase(writeFile.fulfilled, (state, action) => {
       const { path, content } = action.payload;
@@ -379,6 +420,6 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow, closeOher, closeToRight, closeSaved, closeAll, archCodeGeneration } = fsSlice.actions;
+export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow, closeOher, closeToRight, closeSaved, closeAll, archCodeGeneration, archCodeRollBack } = fsSlice.actions;
 
 export default fsSlice.reducer;

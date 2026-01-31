@@ -70,7 +70,6 @@ export class AuthProvider {
       const { user } = await signInWithPopup(auth, this.GOOGLE_PROVIDER);
       const token = await user.getIdToken();
       this.persistToken(token);
-      console.log(user.uid)
       this.syncWithBackendMethod(user,token,AuthType.GOOGLE)
     } catch (err) {
       console.error("Google sign-in error:", err);

@@ -20,11 +20,13 @@ import ProcessBar from "../CodeEditor/ProcessBar";
 import RealTimePanel from "../common/RealTimePanel";
 import FooterController from "../CodeEditor/FooterController";
 import { chageWriteTree } from "@/store/Reducers/webContainer";
+import ArchPanel from "../ai-elements/ArchPanel";
 
 function MainWindow({ projectId }: { projectId: string }) {
   const dispatch = useAppDispatch();
   const { data: project } = useProject(projectId);
   const { data: projectFile } = useProjectFile(projectId);
+  const archPanel = useAppSelector(state => state.IdeFeatures).ArchForgePanel;
 
   React.useEffect(() => {
     dispatch(resetFs(projectId));
@@ -88,6 +90,12 @@ function MainWindow({ projectId }: { projectId: string }) {
               <ProcessBar />
             </div>
           </ResizablePanel>
+
+          <ResizableHandle />
+
+          {archPanel &&  <ResizablePanel defaultSize={30} minSize={20}>
+            <ArchPanel projectId={projectId} />
+          </ResizablePanel>}
 
           <RealTimePanel />
         </ResizablePanelGroup>

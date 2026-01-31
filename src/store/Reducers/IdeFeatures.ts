@@ -9,8 +9,11 @@ interface IdeFeatures {
   autoSave: boolean;
   realTimePanel: boolean;
   ArchForgePanel: boolean;
+  ArchFloatPanel: boolean;
+  snap?: { snapv1Id: string, snapv2Id: string } | null;
+  ArchVoice?: boolean;
 }
-const defaultState = { codeCompletion: false, autoSave: false, realTimePanel: true, ArchForgePanel: false }
+const defaultState = { codeCompletion: false, autoSave: false, realTimePanel: true, ArchForgePanel: false, ArchFloatPanel: false, ArchPanel: true }
 const loadFromLocalStorage = (): IdeFeatures => {
   if (typeof window === 'undefined') return defaultState;
   try {
@@ -49,12 +52,24 @@ const IdeFeaturesSlice = createSlice({
     },
     toggleArch: (state, action: PayloadAction<boolean>) => {
       state.ArchForgePanel = action.payload;
+      if (action.payload) {
+        state.ArchFloatPanel = false;
+      }
     },
     setArchJobId: (state, action: PayloadAction<string>) => {
       state.jobId = action.payload;
-    }
+    },
+    setSnapIds: (state, action: PayloadAction<{ snapv1Id: string, snapv2Id: string } | null>) => {
+      state.snap = action.payload;
+    },
+    setArchVoiePanel: (state, action: PayloadAction<boolean>) => {
+      state.ArchVoice = action.payload;
+    },
+    setArchFloatPanel: (state, action: PayloadAction<boolean>) => {
+      state.ArchFloatPanel = action.payload;
+    },
   },
 });
 
 export default IdeFeaturesSlice.reducer;
-export const { toggleCodeCompletion, toggleAutoSave, togglePanel, toggleArch, setArchJobId } = IdeFeaturesSlice.actions;
+export const { toggleCodeCompletion, toggleAutoSave, togglePanel, toggleArch, setArchJobId, setSnapIds, setArchVoiePanel, setArchFloatPanel } = IdeFeaturesSlice.actions;

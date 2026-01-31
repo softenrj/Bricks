@@ -11,6 +11,7 @@ import { FSData } from "../../types/fs";
 import { AppDispatch } from "@/store/store";
 import { addLog } from "@/store/Reducers/webContainer";
 import { fileCreateUpdateFlow } from "@/store/Reducers/fsSlice";
+import { ISnapshotFile } from "@/types/snapshot";
 
 
 let wc: WebContainer | null = null;
@@ -144,7 +145,7 @@ export async function toggleFSWatcher(
 
 async function ensureDir(container: any, filePath: string) {
   const lastSlashIndex = filePath.lastIndexOf('/');
-  
+
   if (lastSlashIndex === -1) return;
 
   const dirPath = filePath.substring(0, lastSlashIndex);
@@ -160,11 +161,11 @@ async function ensureDir(container: any, filePath: string) {
 }
 function toContainerPath(path: string): string {
   const idx = path.indexOf("src/");
-  
+
   if (idx !== -1) {
-    return "/" + path.slice(idx); 
+    return "/" + path.slice(idx);
   }
-  
+
   return "/src/" + path.replace(/^\/?src\//, "");
 }
 
@@ -185,3 +186,26 @@ export async function archWebContainerProcess(
 
   startFSWatcher(container, projectId, dispatch);
 }
+
+export const rollBack = async (files: ISnapshotFile[]) => {
+  try {
+    const container = await getWebContainer();
+
+    await Promise.all(
+      files.map(async (file: ISnapshotFile) => {
+        const containerPath = toContainerPath(file.path);
+
+        if (file.action === "create") {
+          await container.fs.rm(containerPath, { force: true });
+        }
+
+        else if (file.action === "modify") {
+          await container.fs.writeFile(containerPath, file.content);
+        }
+      })
+    );
+
+  } catch (error) {
+    console.error("Error While Rollback WebContainer", error);
+  }
+};
