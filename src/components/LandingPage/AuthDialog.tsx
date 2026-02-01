@@ -46,7 +46,6 @@ function AppDialog({
 }): React.ReactElement {
   return (
     <Dialog open={open} onOpenChange={close} aria-describedby="dialog-desc">
-      <DialogHeader>Welcome</DialogHeader>
       <DialogContent
         className="
           w-[95%] sm:w-[90%] md:max-w-md 
