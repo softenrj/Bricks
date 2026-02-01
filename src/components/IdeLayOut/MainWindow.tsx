@@ -93,7 +93,7 @@ function MainWindow({ projectId }: { projectId: string }) {
 
           <ResizableHandle />
 
-          {archPanel &&  <ResizablePanel defaultSize={30} minSize={20}>
+          {archPanel &&  <ResizablePanel defaultSize={30} minSize={25}>
             <ArchPanel projectId={projectId} />
           </ResizablePanel>}
 

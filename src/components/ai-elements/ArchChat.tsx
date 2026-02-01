@@ -16,19 +16,19 @@ function ArchChat({ process }: { process: ArchProcessState }) {
     >
     {process.role === "ai" && process.process === "render" && <DotSpin />}
       <p
-        className={` max-w-[80%] text-gray-300 text-sm leading-relaxed px-4 py-3 rounded-sm ${isAI ? "text-left" : "text-right bg-white/5"}`}
+        className={` max-w-[80%] text-gray-400 text-sm leading-relaxed px-4 py-3 rounded-sm ${isAI ? "text-left" : "text-right bg-white/5 shadow-md overflow-clip"}`}
       >
         {process.message}
       </p>
       {isAI && (
-        <div className="flex ml-3 justify-center gap-2 text-xs">
+        <div className="flex ml-3 justify-center items-center gap-1 text-xs">
             <Icon
           icon="streamline-flex:ai-chip-robot-remix"
-          width="14"
-          height="14"
-          className="mb-1 text-gray-400"
+          width="12"
+          height="12"
+          className="text-gray-500"
         />
-        <span>Arch {new Date().toLocaleDateString()}</span>
+        <span className="text-gray-500">Arch {new Date().toLocaleDateString()}</span>
         </div>
       )}
     </div>
@@ -58,7 +58,7 @@ export const DotSpin = () => {
     <div className="flex items-center gap-2">
   <span
     aria-hidden
-    className="inline-block w-[1.25ch] text-white text-[1.1rem]
+    className="inline-block w-[1ch] ml-3 text-white/40 text-[1.1rem]
                leading-none font-mono opacity-90 select-none"
     style={{ fontVariantNumeric: "tabular-nums" }}
   >

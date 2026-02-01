@@ -20,7 +20,7 @@ import { archCodeRollBack } from '@/store/Reducers/fsSlice'
 import { upsertArchProcess } from '@/store/Reducers/ArchProcessChat'
 import { uIdProvider } from '@/feature/uid'
 
-function ArchPanel({projectId}:{projectId: string}) {
+function ArchPanel({ projectId }: { projectId: string }) {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
     const [prompt, setPrompt] = React.useState("");
     const [processing, setProcessing] = React.useState<boolean>(false);
@@ -40,11 +40,11 @@ function ArchPanel({projectId}:{projectId: string}) {
         if (prompt.trim() === "") return;
         setProcessing(true);
         dispatch(upsertArchProcess({
-              message: prompt,
-              process: "complete",
-              processId: uIdProvider(),
-              role: "user"
-            }))
+            message: prompt,
+            process: "complete",
+            processId: uIdProvider(),
+            role: "user"
+        }))
         const response = await postApi<ApiResponse<string>>({
             url: API_BRICKS_ARCH_REQUEST,
             values: { projectId, prompt }
@@ -58,34 +58,34 @@ function ArchPanel({projectId}:{projectId: string}) {
         if (response?.success) { }
     }
 
-      const handleCommit = async () => {
+    const handleCommit = async () => {
         if (!IdeFea.snap) return;
         const response = await postApi<ApiResponse<void>>({
-          url: API_BRICKS_ARCH_COMMIT,
-          values: IdeFea.snap
+            url: API_BRICKS_ARCH_COMMIT,
+            values: IdeFea.snap
         })
-    
+
         if (response?.success) {
-          toast.success(response.message);
-          dispatch(setSnapIds(null));
+            toast.success(response.message);
+            dispatch(setSnapIds(null));
         }
-      }
-    
-      const handleRollBack = async () => {
+    }
+
+    const handleRollBack = async () => {
         if (!IdeFea.snap) return;
         const response = await postApi<ApiResponse<ISnapshotFile[]>>({
-          url: API_BRICKS_ARCH_ROLLBACK,
-          values: IdeFea.snap
+            url: API_BRICKS_ARCH_ROLLBACK,
+            values: IdeFea.snap
         })
-    
+
         if (response?.success) {
-          toast.success(response.message);
-          //await syncwebContainer(response.data);
-          await rollBack(response.data)
-          dispatch(archCodeRollBack(response.data))
-          dispatch(setSnapIds(null));
+            toast.success(response.message);
+            //await syncwebContainer(response.data);
+            await rollBack(response.data)
+            dispatch(archCodeRollBack(response.data))
+            dispatch(setSnapIds(null));
         }
-      }
+    }
 
     const handleSetText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (IdeFea.snap) {
@@ -120,13 +120,13 @@ function ArchPanel({projectId}:{projectId: string}) {
     return (
         <div className="h-full w-full bg-[#0D0D0D] flex flex-col items-center text-center px-6 py-8 text-gray-400">
             <div className="relative bg-white/5 w-full flex items-center rounded-sm p-2">
-                <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 items-center">
+                <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 items-center shadow-2xl">
                     <Icon
                         icon="streamline-flex:ai-chip-robot-remix"
-                        width="14"
-                        height="14"
+                        width="12"
+                        height="12"
                     />
-                    <h3 className="font-bold text-md tracking-tight text-gray-300">
+                    <h3 className="font-bold text-sm tracking-tight text-gray-300">
                         ArchForge
                     </h3>
                 </div>
@@ -134,21 +134,21 @@ function ArchPanel({projectId}:{projectId: string}) {
                 {/* Right action */}
                 <div className="ml-auto">
                     <Tooltip content="Close Arch">
-                        <X size={16} onClick={() => dispatch(toggleArch(false))} className="cursor-pointer text-gray-400 hover:text-gray-200 transition" />
+                        <X size={12} onClick={() => dispatch(toggleArch(false))} className="cursor-pointer text-gray-400 hover:text-gray-200 transition" />
                     </Tooltip>
                 </div>
 
             </div>
 
-            <div className='w-full max-w-[400px] flex items-stretch justify-center h-10 gap-2 py-2'>
-                <button className='w-full bg-white/5 cursor-pointer' onClick={() => dispatch(setArchVoiePanel(!IdeFea.ArchVoice))}>
-                    <div className=' rounded-xs flex items-center justify-center gap-2 px-4'>
+            <div className='w-full max-w-[400px] flex items-stretch justify-center gap-2 py-2'>
+                <button className='w-full bg-white/5 cursor-pointer rounded-xs' onClick={() => dispatch(setArchVoiePanel(!IdeFea.ArchVoice))}>
+                    <div className=' flex items-center justify-center gap-2 px-4 py-1'>
                         <Icon icon="nrk:media-soundwave" width="16" height="16" />
                         <span className='text-xs whitespace-nowrap truncate'>speech recognition</span>
                     </div>
                 </button>
-                <button className='w-full bg-white/5 cursor-pointer' onClick={() => dispatch(setArchFloatPanel(!IdeFea.ArchFloatPanel))}>
-                    <div className=' rounded-xs flex items-center gap-2 px-4 justify-center'>
+                <button className='w-full bg-white/5 cursor-pointer rounded-xs' onClick={() => dispatch(setArchFloatPanel(!IdeFea.ArchFloatPanel))}>
+                    <div className=' flex items-center gap-2 px-4 py-1 justify-center'>
                         <Icon icon="game-icons:new-born" width="12" height="12" />
                         <span className='text-xs whitespace-nowrap truncate'>Small Panel</span>
                     </div>
@@ -163,10 +163,11 @@ function ArchPanel({projectId}:{projectId: string}) {
                 </div>
 
                 <p className="max-w-md text-gray-500 text-sm leading-relaxed mb-10">
-                    Build, test, and preview your projects in realtime.
-                    <span className="text-gray-400"> Bricks AI </span> lets you develop
-                    at the speed of thought 🚀.
+                    Create full application codebases using AI.
+                    <span className="text-gray-400"> Arch AI </span> generates structured,
+                    extensible projects that are ready to run, test, and preview in real time.
                 </p>
+
             </div>}
 
             <div className='overflow-y-scroll hide-scrollbar w-full'>
@@ -174,17 +175,17 @@ function ArchPanel({projectId}:{projectId: string}) {
                 <div ref={bottomRef} />
             </div>
 
-            
+
 
             <div className="mt-auto w-full flex flex-col justify-center items-center">
                 {IdeFea.snap && <div className='flex justify-center items-center gap-2 mb-2'>
-                <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleRollBack}>
-                    <p>RollBack</p>
-                </button>
-                <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleCommit}>
-                    <p>Commit</p>
-                </button>
-            </div>}
+                    <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleRollBack}>
+                        <p>RollBack</p>
+                    </button>
+                    <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleCommit}>
+                        <p>Commit</p>
+                    </button>
+                </div>}
                 <div
                     className="inline-flex items-center gap-2 max-w-[620px] w-full
                  bg-[#1f1f1f]/80 text-gray-300 py-2 px-3 rounded-xl

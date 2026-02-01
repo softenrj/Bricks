@@ -98,8 +98,10 @@ function BricksSpeechLaunch({ projectId }: { projectId: string }) {
         if (projectId !== gen.projectId) return;
 
         await archWebContainerProcess(gen.path, gen.content, gen.projectId, dispatch);
-        await sendToShell(gen.dependency, dispatch, projectId, false);
         dispatch(archCodeGeneration(gen))
+        if (gen.dependency && gen.dependency.trim()) {
+          await sendToShell(gen.dependency, dispatch, projectId, false);
+        }
       })
 
       es.addEventListener("complete", (e) => {
