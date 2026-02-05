@@ -1,20 +1,13 @@
 // Copyright (c) 2025 Raj 
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
-import { SOCKET_FILE_CREATE_UPDATE, SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE } from "@/utils/api/socket.events";
+import { SOCKET_FILE_CREATE_UPDATE, SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE, SOCKET_REMOVE_FOLDER } from "@/utils/api/socket.events";
 import { getSocket } from "./socket";
 import { Socket } from "socket.io-client";
 import { FSTYPE } from "@/types/project";
 
 let socket: Socket | null;
 
-/**
- * 
- * @param name 
- * @param src 
- * @param fsc 
- * @returns 
- */
 export const fileUpdate = (name: string,src: string, fsc: string, projectId: string) => {
     if (!socket) socket = getSocket();
     // Emit the socket event
@@ -26,13 +19,15 @@ export const fileUpdate = (name: string,src: string, fsc: string, projectId: str
     });
 }
 
-/**
- * 
- * @param src 
- * @param oldName 
- * @param name 
- * @returns 
- */
+export const folderRemove = (src: string, projectId: string) => {
+    if (!socket) socket = getSocket();
+    // Emit the socket event
+    socket?.emit(SOCKET_REMOVE_FOLDER, {
+        path: src,
+        projectId: projectId
+    });
+}
+
 export const fileRename = (src: string,oldName: string, name: string,projectId: string) => {
     if (!socket) socket = getSocket();
 
@@ -44,13 +39,6 @@ export const fileRename = (src: string,oldName: string, name: string,projectId: 
     })
 }
 
-/**
- * 
- * @param src 
- * @param name 
- * @param projectId 
- * @returns 
- */
 export const newFileSocket = (src: string, name: string, projectId: string, content?: string) => {
     if (!socket) socket = getSocket();
 
@@ -62,13 +50,7 @@ export const newFileSocket = (src: string, name: string, projectId: string, cont
     })
 }
 
-/**
- * 
- * @param src 
- * @param name 
- * @param projectId 
- * @returns 
- */
+
 export const newFolderSocket = (src: string, name: string, projectId: string) => {
     if (!socket) socket = getSocket();
 
@@ -79,12 +61,6 @@ export const newFolderSocket = (src: string, name: string, projectId: string) =>
     })
 }
 
-/**
- * 
- * @param src 
- * @param name 
- * @returns 
- */
 export const removeFile = (src: string, name: string, projectId: string) => {
     if (!socket) socket = getSocket();
 

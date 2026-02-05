@@ -15,6 +15,8 @@ function PreviewPanel() {
 
   const [history, setHistory] = React.useState<string[]>([]);
   const [index, setIndex] = React.useState(-1);
+  const refresh = useAppSelector(state => state.IdeFeatures).devServerRefresh;
+  
 
   // Push new URLs into history
   React.useEffect(() => {
@@ -32,6 +34,10 @@ function PreviewPanel() {
     if (!iframeRef.current) return;
     iframeRef.current.src = history[index];
   };
+
+  React.useEffect(() => {
+    handleReload()
+  }, [refresh]);
 
   return (
     <div className="h-full bg-[#0D0D0D]">

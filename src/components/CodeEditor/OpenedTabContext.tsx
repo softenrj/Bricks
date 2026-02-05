@@ -14,7 +14,7 @@ import {
 import { useAppDispatch } from "@/hooks/redux";
 import { closeAll, closeOher, closeSaved, closeTab, closeToRight } from "@/store/Reducers/fsSlice";
 
-export const TabCss = "flex items-center gap-2 rounded-md px-2 data-[highlighted]:bg-white/5 data-[highlighted]:text-gray-100 focus:outline-none";
+export const TabCss = "flex cursor-pointer items-center gap-2 rounded-md px-2 data-[highlighted]:bg-white/5 data-[highlighted]:text-gray-100 focus:outline-none";
 
 function OpenedTabContext({ children, name }: { children: React.ReactNode, name: string | undefined }) {
     const dispatch = useAppDispatch();

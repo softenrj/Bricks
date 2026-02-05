@@ -159,6 +159,12 @@ async function ensureDir(container: any, filePath: string) {
     }
   }
 }
+
+export const killserver = async () => {
+  const container = await getWebContainer();
+  await container.spawn("pkill", ["node"]);
+}
+
 function toContainerPath(path: string): string {
   const idx = path.indexOf("src/");
 
@@ -167,6 +173,16 @@ function toContainerPath(path: string): string {
   }
 
   return "/src/" + path.replace(/^\/?src\//, "");
+}
+
+export async function removeFolder(path: string) {
+  const container = await getWebContainer();
+
+  const containerPath = toContainerPath(path);
+  await container.fs.rm(containerPath, { recursive: true, force: true })
+  // await killserver();
+  // await container.spawn("npm", ["run", "dev"]);
+  return;
 }
 
 export async function archWebContainerProcess(
@@ -209,3 +225,5 @@ export const rollBack = async (files: ISnapshotFile[]) => {
     console.error("Error While Rollback WebContainer", error);
   }
 };
+
+

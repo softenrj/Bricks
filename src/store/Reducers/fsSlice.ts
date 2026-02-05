@@ -5,12 +5,13 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { wc } from "./webContainer";
 import { getFSTree } from "@/service/fsWalker";
 import { LanguageEnum } from "@/feature/LanguageEnum";
-import { fileRename, fileUpdate, fileUpdateCreate, newFileSocket, newFolderSocket, removeFile } from "@/socket/project.FS";
+import { fileRename, fileUpdate, fileUpdateCreate, folderRemove, newFileSocket, newFolderSocket, removeFile } from "@/socket/project.FS";
 import { FSState } from "@/types/FSState";
 import { detectLanguage, getFileContent } from "@/feature/fsSystem";
 import { FSTYPE } from "@/types/project";
 import { ArchProjectCode } from "@/types/arch.typs";
 import { ISnapshotFile } from "@/types/snapshot";
+import { removeFolder } from "@/service/webContainer";
 export type FSData = { [key: string]: string | FSData };
 
 const initialState: FSState = {
@@ -147,6 +148,22 @@ const fsSlice = createSlice({
       if (wc) {
         wc.fs.writeFile(path, content);
       }
+    },
+
+    deleteFolder: (state, action: PayloadAction<{ path: string; projectId: string }>) => {
+      const { path , projectId } = action.payload;
+      let node = state.tree;
+      const segments = path.split("/");
+      const name = segments.at(-1);
+      for (let i = 0; i< segments.length - 1; i++) {
+        const seg = segments[i];
+        if (!node[seg]) break;
+        node = node[seg] as FSData;
+      }
+      
+      if (name) delete node[name]
+      folderRemove(path,projectId)
+      removeFolder(path);
     },
 
     renameFileName: (state, action: PayloadAction<{ oldPath: string; newName: string, projectId: string }>) => {
@@ -420,6 +437,12 @@ const fsSlice = createSlice({
   },
 });
 
-export const { setSelectedFile, resetFs, setFileLanguage, setFileContent, updateFileContent, setTree, switchTab, closeTab, setProjectName, setFileChange, renameFileName, deleteFile, setActivepath, newFile, newFolder, aiCodeGen, newFileWithContent, fileCreateUpdateFlow, closeOher, closeToRight, closeSaved, closeAll, archCodeGeneration, archCodeRollBack } = fsSlice.actions;
+export const { setSelectedFile, resetFs, setFileLanguage, setFileContent,
+   updateFileContent, setTree, switchTab,
+    closeTab, setProjectName, setFileChange,
+     renameFileName, deleteFile, setActivepath,
+      newFile, newFolder, aiCodeGen, newFileWithContent,
+       fileCreateUpdateFlow, closeOher, closeToRight,
+        closeSaved, closeAll, archCodeGeneration, archCodeRollBack, deleteFolder } = fsSlice.actions;
 
 export default fsSlice.reducer;

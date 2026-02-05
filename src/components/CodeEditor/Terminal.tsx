@@ -24,7 +24,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   const { logs, status, liveUrl } = useAppSelector(
     (state: RootState) => state.webContainer
   );
-
+  
   const [currentCommand, setCurrentCommand] = useState("");
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);

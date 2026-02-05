@@ -16,7 +16,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react"
-import { TabCss } from "../CodeEditor/OpenedTabContext";
+import { TabCss } from "./OpenedTabContext";
 
 interface Prope { children: React.ReactNode,
   onRename: (path: string, name: string) => void;

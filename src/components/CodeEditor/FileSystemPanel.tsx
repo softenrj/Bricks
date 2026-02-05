@@ -9,7 +9,8 @@ import { deleteFile, fetchFsTree, FSData, newFile, newFolder, renameFileName, se
 import { LanguageEnum } from "@/feature/LanguageEnum";
 import { getFileIcon } from "@/feature/fileIconsMapper";
 import FScontroller from "./FScontroller";
-import { FileContext } from "../common/FileContext";
+import { FileContext } from "./FileContext";
+import FolderContext from "./FolderContext";
 
 type CreatingState = {
   parentPath: string;
@@ -73,7 +74,7 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
 
   const handleCollapseFoldersAll = () => {
     const _state: Record<string, boolean> = {}
-    Object.keys(collapsed).forEach(key => _state[key] = false );
+    Object.keys(collapsed).forEach(key => _state[key] = false);
     setCollapsed(_state)
   }
 
@@ -123,22 +124,24 @@ function FileSystemPanel({ projectId }: { projectId: string }) {
 
     return (
       <li key={fullPath} className="select-none">
-        <div
-          className="group flex items-center gap-0.5 py-0.5 cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
-          style={{ paddingLeft: `${depth * 16 + 10}px` }}
-          onClick={() => handleFolderClick(fullPath)}
-        >
-          {hasChildren ? (
-            isCollapsed ? (
-              <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-gray-400 transition-colors flex-shrink-0" />
+        <FolderContext path={fullPath} projectId={projectId}>
+          <div
+            className="group flex items-center gap-0.5 py-0.5 cursor-pointer hover:bg-gray-700/30 transition-all duration-150"
+            style={{ paddingLeft: `${depth * 16 + 10}px` }}
+            onClick={() => handleFolderClick(fullPath)}
+          >
+            {hasChildren ? (
+              isCollapsed ? (
+                <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-gray-400 transition-colors flex-shrink-0" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-400 transition-colors flex-shrink-0" />
+              )
             ) : (
-              <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-400 transition-colors flex-shrink-0" />
-            )
-          ) : (
-            <div className="w-4" />
-          )}
-          <span className="text-xs text-gray-100 truncate font-normal leading-relaxed">{name}</span>
-        </div>
+              <div className="w-4" />
+            )}
+            <span className="text-xs text-gray-100 truncate font-normal leading-relaxed">{name}</span>
+          </div>
+        </FolderContext>
 
         {!isCollapsed && (
           <ul className="relative">

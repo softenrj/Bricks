@@ -5,6 +5,7 @@
 // File sync
 export const SOCKET_NEW_FILE: string = "file:add"
 export const SOCKET_NEW_FOLDER: string = "folder:add"
+export const SOCKET_REMOVE_FOLDER: string = "folder:remove"
 export const SOCKET_FILE_UPDATE: string = "file:update"
 export const SOCKET_REMOVE_FILE: string = "file:remove"
 export const SOCKET_FILE_RENAME: string = "file:rename"
