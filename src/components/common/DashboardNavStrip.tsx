@@ -12,8 +12,12 @@ import { getSocket } from '@/socket/socket'
 import { useIsMobile } from '@/hooks/use-mobile'
 import MobileTabs from '../IdeLayOut/MobileTabs'
 import { toggleArch } from '@/store/Reducers/IdeFeatures'
+import { useRouter, useSearchParams } from 'next/navigation'
+import path from 'path'
+import { useLocation } from 'react-use'
 
-function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string, displayTabs?: boolean}) {
+function DashboardNavStrip({ projectId, displayTabs = false }: { projectId?: string, displayTabs?: boolean }) {
+  const location = useLocation();;
   const today = new Date().toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -26,78 +30,89 @@ function DashboardNavStrip({projectId, displayTabs = false}: {projectId?: string
   const dispatch = useAppDispatch();
   const archForge = useAppSelector(state => state.IdeFeatures).ArchForgePanel;
   const handleArchForge = async () => dispatch(toggleArch(!archForge));
+  const [arch, setArch] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    const route = path.basename(location?.href ?? "");
+    console.log(route)
+    if (route !== "editor") {
+      setArch(false);
+    } else {
+      setArch(true)
+    }
+  }, [location?.href])
 
   return (
     <>
-    <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm max-w-screen">
-      {/* Left side */}
-      <div className="flex items-center gap-2">
-        <Tooltip content={socket ?  "online" : "offline"}>
-          <Activity size={16} className={socket ? "text-green-500" : "text-pink-500"} />
-        </Tooltip>
-        <Badge className="bg-green-700 text-[10px] px-2 py-0.5 rounded-full">
-          RealTime
-        </Badge>
-        <Tooltip content='bricks UID'>
-          <p className='text-gray-500 text-xs hover:text-gray-400 truncate w-10 sm:w-20 md:w-30 lg:w-full'>#{user.uid}</p>
-        </Tooltip>
-      </div>
+      <div className="bg-[#0E0E0E] h-8 px-4 flex justify-between items-center border-b border-gray-800 shadow-sm max-w-screen">
+        {/* Left side */}
+        <div className="flex items-center gap-2">
+          <Tooltip content={socket ? "online" : "offline"}>
+            <Activity size={16} className={socket ? "text-green-500" : "text-pink-500"} />
+          </Tooltip>
+          <Badge className="bg-green-700 text-[10px] px-2 py-0.5 rounded-full">
+            RealTime
+          </Badge>
+          <Tooltip content='bricks UID'>
+            <p className='text-gray-500 text-xs hover:text-gray-400 truncate w-10 sm:w-20 md:w-30 lg:w-full'>#{user.uid}</p>
+          </Tooltip>
+        </div>
 
 
 
-      {/* Center Date */}
-      <p className="text-[11px] text-gray-400 tracking-wide">{today}</p>
+        {/* Center Date */}
+        <p className="text-[11px] text-gray-400 tracking-wide">{today}</p>
 
-      {/* Right side */}
-      <div className="flex items-center gap-2 md:gap-4">
-        {/* User Tag */}
-        {displayTabs && <Tooltip content='ArchForge Panel'>
-          <div className="flex items-center bg-black border Ai-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition" onClick={handleArchForge}>
-          <Sparkles size={14} className="text-yellow-400" />
-          <p className="ml-1 text-[11px] text-gray-400 hover:text-gray-200 transition">
-            ArchForge
-          </p>
-        </div></Tooltip>}
+        {/* Right side */}
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* User Tag */}
+          {displayTabs && arch && <Tooltip content='ArchForge Panel'>
+            <div className="flex items-center bg-black border Ai-btn rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition" onClick={handleArchForge}>
+              <Sparkles size={14} className="text-yellow-400" />
+              <p className="ml-1 text-[11px] text-gray-400 hover:text-gray-200 transition">
+                ArchForge
+              </p>
+            </div></Tooltip>}
 
-        {/* Notifications */}
-        <button className="relative">
-          {false ? (
-            <Bell className="w-5 h-5 text-gray-400 hover:text-white transition" />
-          ) : (
-            <>
-              <BellDot className="w-5 h-5 text-gray-400 hover:text-white transition" />
-              <span className="absolute -top-1 -right-1 bg-red-500 rounded-full w-2.5 h-2.5 border border-black"></span>
-            </>
-          )}
-        </button>
+          {/* Notifications */}
+          <button className="relative">
+            {false ? (
+              <Bell className="w-5 h-5 text-gray-400 hover:text-white transition" />
+            ) : (
+              <>
+                <BellDot className="w-5 h-5 text-gray-400 hover:text-white transition" />
+                <span className="absolute -top-1 -right-1 bg-red-500 rounded-full w-2.5 h-2.5 border border-black"></span>
+              </>
+            )}
+          </button>
 
-        {/* GitHub */}
-        <Tooltip content="GitHub">
-          <a
-            href="https://github.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center"
-          >
-            <Image
-              src="/icons/github.svg"
-              className="bg-gray-100 rounded-full hover:scale-110 transition-transform"
-              width={18}
-              height={18}
-              alt="github-icon"
-            />
-          </a>
-        </Tooltip>
+          {/* GitHub */}
+          <Tooltip content="GitHub">
+            <a
+              href="https://github.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center"
+            >
+              <Image
+                src="/icons/github.svg"
+                className="bg-gray-100 rounded-full hover:scale-110 transition-transform"
+                width={18}
+                height={18}
+                alt="github-icon"
+              />
+            </a>
+          </Tooltip>
 
-        {/* Tag/Workspace */}
-        <div className="flex items-center bg-black border border-gray-800 rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition">
-          <p className="text-[11px] text-gray-400 hover:text-gray-200 transition">
-            #Bricks
-          </p>
+          {/* Tag/Workspace */}
+          <div className="flex items-center bg-black border border-gray-800 rounded-full px-2 py-1 cursor-pointer hover:border-gray-600 transition">
+            <p className="text-[11px] text-gray-400 hover:text-gray-200 transition">
+              #Bricks
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    {isMobile && displayTabs && <MobileTabs projectId={projectId || ''} />}
+      {isMobile && displayTabs && <MobileTabs projectId={projectId || ''} />}
     </>
   );
 }
