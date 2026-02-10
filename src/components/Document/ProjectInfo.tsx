@@ -65,11 +65,11 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                                     icon={project.tech_language === "JS" ? "devicon:javascript" : "devicon:typescript"} 
                                     className="text-lg"
                                 />
-                                <span>{project.tech_language === 'JS' ? "JavaScript" : "TypeScript"}</span>
+                                <span className='text-xs'>{project.tech_language === 'JS' ? "JavaScript" : "TypeScript"}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <Calendar size={14} />
-                                <span>Created {formatDistanceToNow(new Date(project.createdAt))} ago</span>
+                                <span className='text-xs'>Created {formatDistanceToNow(new Date(project.createdAt))} ago</span>
                             </div>
                         </div>
                     </div>
@@ -80,26 +80,26 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                     <Tooltip content={isStarred ? "Remove from favorites" : "Add to favorites"}>
                         <button 
                             onClick={handleStarClick}
-                            className={`p-2.5 rounded-lg border transition-all duration-200 ${
+                            className={`p-2.5 rounded-md border transition-all duration-200 ${
                                 isStarred 
                                 ? "bg-amber-500/10 border-amber-500/50 text-amber-500" 
                                 : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
                             }`}
                         >
-                            <Star size={20} fill={isStarred ? "currentColor" : "none"} />
+                            <Star size={12} fill={isStarred ? "currentColor" : "none"} />
                         </button>
                     </Tooltip>
 
                     <Tooltip content={isArch ? "Unarchive Project" : "Archive Project"}>
                         <button 
                             onClick={handleArchieve}
-                            className={`p-2.5 rounded-lg border transition-all duration-200 ${
+                            className={`p-2.5 rounded-md border transition-all duration-200 ${
                                 isArch 
                                 ? "bg-red-500/10 border-red-500/50 text-red-500" 
                                 : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
                             }`}
                         >
-                            {isArch ? <Eye size={20} /> : <EyeOff size={20} />}
+                            {isArch ? <Eye size={12} /> : <EyeOff size={12} />}
                         </button>
                     </Tooltip>
                 </div>
@@ -107,7 +107,7 @@ function ProjectInfo({ projectId }: { projectId: string }) {
 
             {/* Description Section */}
             <div className="relative group max-w-3xl">
-                <p className="leading-relaxed text-slate-300 text-base">
+                <p className="leading-relaxed text-slate-400 text-base">
                     {project.description || "No description provided for this project."}
                 </p>
             </div>
