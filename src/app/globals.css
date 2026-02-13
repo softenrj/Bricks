@@ -3,6 +3,11 @@
 @source "../node_modules/streamdown/dist/index.js";
 @custom-variant dark (&:is(.dark *));
 
+.subtitle {
+  font-family: "Lacquer", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
 
 @theme inline {
   --color-background: var(--background);

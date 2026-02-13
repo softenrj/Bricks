@@ -6,13 +6,17 @@ import { EffectEnum } from "@/types/event"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface EventEffectState {
-  effect: EffectEnum | null
+  effect: EffectEnum | null,
+  lyrics: { time: number, text: string }[],
+  lyricsIdx: number
 }
 
 const STORAGE_KEY = "Bricks:event-effects"
 
 const defaultState: EventEffectState = {
   effect: null,
+  lyrics: [],
+  lyricsIdx: -1
 }
 
 const loadFromLocalStorage = (): EventEffectState => {
@@ -28,9 +32,10 @@ const loadFromLocalStorage = (): EventEffectState => {
 
 const saveToLocalStorage = (state: EventEffectState) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    const { lyricsIdx, ...persistentState } = state; 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(persistentState))
   } catch {
-    // ignore quota / private mode errors
+    // ignore
   }
 }
 
@@ -45,6 +50,15 @@ const eventEffectSlice = createSlice({
       saveToLocalStorage(state)
     },
 
+    setLyrics(state, action: PayloadAction<{ time: number, text: string }[]>) {
+      state.lyrics = action.payload
+      saveToLocalStorage(state)
+    },
+
+    setLyricsIdx(state, action: PayloadAction<number>) {
+      state.lyricsIdx = action.payload
+    },
+
     clearEffect(state) {
       state.effect = null
       saveToLocalStorage(state)
@@ -52,5 +66,5 @@ const eventEffectSlice = createSlice({
   },
 })
 
-export const { setEffect, clearEffect } = eventEffectSlice.actions
+export const { setEffect, clearEffect, setLyrics, setLyricsIdx } = eventEffectSlice.actions
 export default eventEffectSlice.reducer

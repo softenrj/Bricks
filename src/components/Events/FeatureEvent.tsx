@@ -125,7 +125,7 @@ function FeatureEvent({
                 <Calendar size={14} />
                 {formatDistanceToNow(new Date(event.createdAt))} ago
               </span>
-              {event.audio && <EventAudio effect={event.effect as EffectEnum} src={`/api/audio?src=${encodeURIComponent(event.audio)}`} isValid={status !== "Upcoming"} />}
+              {event.audio && <EventAudio effect={event.effect as EffectEnum} lyrics={event.lyrics} src={`/api/audio?src=${encodeURIComponent(event.audio)}`} isValid={status !== "Upcoming"} />}
             </div>
 
             <h1 className="text-2xl md:text-3xl xl:text-4xl font-extrabold tracking-tight leading-tight text-white">

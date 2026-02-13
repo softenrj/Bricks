@@ -10,6 +10,7 @@ import { useEffect, useState } from "react"
 import { ConfettiEffect } from "./ConfettiEffect"
 import { FestivalFlags } from "./FestivalFlags"
 import RepublicDay from "../EventEffects/RepublicDay"
+import Mahashivratri from "../EventEffects/Mahashivratri"
 
 function EventEffects() {
   const features = useAppSelector(state => state.Effects)
@@ -26,6 +27,7 @@ function EventEffects() {
       )}
 
       {features.effect === EffectEnum.NEW_YEAR && <NewYearSequence />}
+      {features.effect === EffectEnum.Mahashivratri && <Mahashivratri />}
       {/* { features.effect === EffectEnum.REPUBLIC_DAY && <RepublicDay />} */}
     </div>
   )
