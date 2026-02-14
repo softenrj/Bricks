@@ -5,12 +5,13 @@ import { useAppSelector } from '@/hooks/redux'
 
 const LyricPortal = () => {
   const lyrics = useAppSelector(state => state.Effects).lyrics;
-  const activeIdx = useAppSelector(state => state.Effects).lyricsIdx
+  const activeIdx = useAppSelector(state => state.Effects).lyricsIdx;
+  const eff = useAppSelector(state => state.Effects).effect
 
   return (
-    <div className="pointer-events-none fixed bottom-2 left-1/2 z-999 w-full max-w-4xl -translate-x-1/2 px-4 text-center">
-      {lyrics?.length > 0 && activeIdx >= 0 && (
-          <AnimatePresence mode="wait">
+    <div className="pointer-events-none fixed bottom-18 left-1/2 z-999 w-full max-w-4xl -translate-x-1/2 px-4 text-center">
+      {eff && lyrics?.length > 0 && activeIdx >= 0 && (
+          <AnimatePresence mode="sync">
             <motion.p
               key={activeIdx}
               initial={{ opacity: 0, y: 20, filter: "blur(10px)", scale: 0.95 }}

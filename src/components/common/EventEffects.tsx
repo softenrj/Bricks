@@ -11,25 +11,34 @@ import { ConfettiEffect } from "./ConfettiEffect"
 import { FestivalFlags } from "./FestivalFlags"
 import RepublicDay from "../EventEffects/RepublicDay"
 import Mahashivratri from "../EventEffects/Mahashivratri"
+import { X } from 'lucide-react'
+import { useAppDispatch } from '@/hooks/redux'
+import { clearEffect } from '@/store/Reducers/effects'
 
 function EventEffects() {
   const features = useAppSelector(state => state.Effects)
+  const dispatch = useAppDispatch();
 
   return (
-    <div className="fixed inset-0 z-[999] pointer-events-none">
-      {features.effect === EffectEnum.CHRISTMAS && (
-        <>
-          <Snowfall snowflakeCount={40} color="#ff4d4f" />
-          <Snowfall snowflakeCount={40} color="#40a9ff" />
-          <Snowfall snowflakeCount={40} color="#73d13d" />
-          <Snowfall snowflakeCount={40} color="#9254de" />
-        </>
-      )}
+    <>
+      <div className="fixed inset-0 z-[999] pointer-events-none">
+        {features.effect === EffectEnum.CHRISTMAS && (
+          <>
+            <Snowfall snowflakeCount={40} color="#ff4d4f" />
+            <Snowfall snowflakeCount={40} color="#40a9ff" />
+            <Snowfall snowflakeCount={40} color="#73d13d" />
+            <Snowfall snowflakeCount={40} color="#9254de" />
+          </>
+        )}
 
-      {features.effect === EffectEnum.NEW_YEAR && <NewYearSequence />}
-      {features.effect === EffectEnum.Mahashivratri && <Mahashivratri />}
-      {/* { features.effect === EffectEnum.REPUBLIC_DAY && <RepublicDay />} */}
-    </div>
+        {features.effect === EffectEnum.NEW_YEAR && <NewYearSequence />}
+        {features.effect === EffectEnum.Mahashivratri && <Mahashivratri />}
+        {/* { features.effect === EffectEnum.REPUBLIC_DAY && <RepublicDay />} */}
+      </div>
+      {features.effect && <div className='absolute top-5 p-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-md right-5 z-[999] transition-colors'>
+        <X className='text-white cursor-pointer' size={18} onClick={() => dispatch(clearEffect())} />
+      </div>}
+    </>
   )
 }
 

@@ -60,6 +60,7 @@ const eventEffectSlice = createSlice({
     },
 
     clearEffect(state) {
+      console.log("first")
       state.effect = null
       saveToLocalStorage(state)
     },
