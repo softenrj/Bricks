@@ -187,7 +187,7 @@ If you need help or have questions:
 
 ## 📄 License
 
-By contributing to BRICKS AI, you agree that your contributions will be licensed under the same license as the project (BUSL-1.1). See [LICENSE](LICENSE.md) for details.
+By contributing to BRICKS AI, you agree that your contributions will be licensed under the same license as the project: the **Apache License 2.0**. See [`LICENSE`](LICENSE) for details.
 
 ---
 

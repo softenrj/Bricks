@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-export const runtime = "nodejs"; // ⬅️ IMPORTANT
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   const src = req.nextUrl.searchParams.get("src");

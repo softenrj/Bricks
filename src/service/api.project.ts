@@ -1,5 +1,4 @@
 // Copyright (c) 2025 Raj 
-// Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";

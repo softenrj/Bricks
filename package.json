@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Bricks AI – Web-based AI-powered Coding IDE",
   "author": "Raj",
-  "license": "BUSL-1.1",
+  "license": "Apache-2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

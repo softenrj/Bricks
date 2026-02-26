@@ -42,26 +42,26 @@ Our mission: *Empower anyone to build software using natural inputs like speech,
 
 ---
 
-## 📸 Screenshots
+## 📸 Live Product Gallery
 
-<div align="center">
+> A quick visual tour of the Bricks AI experience.
 
-<table>
-<tr>
-<td align="center"><img src="demo/dashboard.png" width="300"/><br/><b>Dashboard</b></td>
-<td align="center"><img src="demo/all-project-page.png" width="300"/><br/><b>All Projects</b></td>
-<td align="center"><img src="demo/code-ide.png" width="300"/><br/><b>Code IDE</b></td>
-</tr>
-<tr>
-<td align="center"><img src="demo/project-chat.png" width="300"/><br/><b>Project Chat</b></td>
-<td align="center"><img src="demo/context-tree.png" width="300"/><br/><b>Context Tree</b></td>
-<td></td>
-</tr>
-</table>
+### 🪄 Landing & Workspace
 
-*Explore the modern visual interface of Bricks AI in action.*
+![Bricks AI landing page](demo/landing-page.png)
+![Bricks AI dashboard](demo/dashboard.png)
+![Bricks AI all projects](demo/all-projects.png)
 
-</div>
+### 🧑‍🎓 Profile & Progress
+
+![Bricks AI profile](demo/profile.png)
+
+### 🧑‍💻 Deep in the IDE
+
+![Bricks AI AI chat](demo/idetab-ai-chat.png)
+![Bricks AI context tree](demo/idetab-context-tree.png)
+![Bricks AI project docs](demo/idetab-project-doc.png)
+![Bricks AI project history](demo/idetab-project-history.png)
 
 ---
 
@@ -73,6 +73,7 @@ Our mission: *Empower anyone to build software using natural inputs like speech,
 * Voice-to-Code *(in dev)*
 * Image-to-App wireframe recognition *(in dev)*
 * Context-aware AI suggestions
+* AI-generated refactors, tests, and implementation hints
 
 ### ⚡ Performance & Scalability
 
@@ -80,12 +81,20 @@ Our mission: *Empower anyone to build software using natural inputs like speech,
 * **Low-latency Collaboration** with conflict resolution
 * **Cloud-Native Backend** for enterprise scalability
 
-### 🎨 Design & UX
+### 🎨 Design, UX & Flow
 
 * Clean, productive interface
 * Fully responsive layout
 * Dark / Light themes
 * Accessibility-focused (WCAG compliant)
+* Optimized multi-tab layout for dashboard, projects, chat, docs, and history
+
+### 🏆 Profile, Achievements & Rank
+
+* Rich profile with avatar, role, and skill focus
+* Achievement-style milestones for shipped projects, collaboration, and activity
+* Visual progress indicators for project count, streaks, and coding time
+* Rank-style feeling through comparative stats and growth over time
 
 ---
 
@@ -145,12 +154,53 @@ Firebase • Redux Toolkit • Axios • Framer Motion
 
 ---
 
+## 🧪 Use Cases
+
+* **Solo developers**: Spin up full-stack sandboxes, iterate quickly, and lean on AI for boilerplate and refactors.
+* **Product teams**: Prototype flows and dashboards with live data, then hand off production-ready code.
+* **Startups**: Validate ideas in days instead of weeks by going from prompt → working MVP.
+* **Education & workshops**: Teach modern web development without any local setup.
+
+---
+
+## 🗺️ Roadmap
+
+* 🎙️ **Voice-to-Code** – Dictate features and flows, let Bricks turn them into code.
+* 🖼️ **Image-to-App** – Drop wireframes or screenshots, generate responsive layouts.
+* 🧠 **Deeper Context Awareness** – Smarter refactors across large codebases.
+* 🧩 **Template Library** – Pre-built app shells for dashboards, SaaS, internal tools, and more.
+* 🛡️ **Team Admin & Analytics** – Advanced controls for orgs, usage insights, and audit trails.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! This repository focuses on the **Bricks AI web client** – the backend remains proprietary but is exposed via public APIs.
+
+If you’d like to contribute:
+
+1. Fork the repo
+2. Create a feature branch
+3. Make your changes with clear, focused commits
+4. Open a Pull Request with a concise description and screenshots if relevant
+
+---
+
+## 📄 License
+
+This project is licensed under the **Apache License 2.0**.  
+See the [`LICENSE`](LICENSE) file for full terms.
+
+---
+
 <div align="center">
 
 ## 🌈 Ready to Build the Future?
 
 **Built with ❤️ using Next.js, React, and cutting-edge AI.**
-© 2025 Raj. All rights reserved.
-Licensed under [BUSL-1.1 (Extended for Bricks AI)](LICENSE)
+
+[**Open Bricks AI in your browser →**](https://bricks-three-rose.vercel.app)
+
+© 2025 Raj.
 
 </div>
