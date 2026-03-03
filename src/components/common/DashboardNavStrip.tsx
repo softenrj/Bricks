@@ -11,7 +11,6 @@ import { getSocket } from '@/socket/socket'
 import { useIsMobile } from '@/hooks/use-mobile'
 import MobileTabs from '../IdeLayOut/MobileTabs'
 import { toggleArch } from '@/store/Reducers/IdeFeatures'
-import { useRouter, useSearchParams } from 'next/navigation'
 import path from 'path'
 import { useLocation } from 'react-use'
 
@@ -33,7 +32,6 @@ function DashboardNavStrip({ projectId, displayTabs = false }: { projectId?: str
 
   React.useEffect(() => {
     const route = path.basename(location?.href ?? "");
-    console.log(route)
     if (route !== "editor") {
       setArch(false);
     } else {

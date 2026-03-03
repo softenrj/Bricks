@@ -13,6 +13,7 @@ import Mahashivratri from "../EventEffects/Mahashivratri"
 import { X } from 'lucide-react'
 import { useAppDispatch } from '@/hooks/redux'
 import { clearEffect } from '@/store/Reducers/effects'
+import HoliEvent from "../EventEffects/HoliEvent"
 
 function EventEffects() {
   const features = useAppSelector(state => state.Effects)
@@ -32,6 +33,7 @@ function EventEffects() {
 
         {features.effect === EffectEnum.NEW_YEAR && <NewYearSequence />}
         {features.effect === EffectEnum.Mahashivratri && <Mahashivratri />}
+        {features.effect === EffectEnum.HOLI && <HoliEvent />}
         {/* { features.effect === EffectEnum.REPUBLIC_DAY && <RepublicDay />} */}
       </div>
       {features.effect && <div className='absolute top-5 p-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-md right-5 z-[999] transition-colors'>

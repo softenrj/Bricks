@@ -131,6 +131,23 @@ function FeatureEvent({
               {event.name}
             </h1>
 
+            {event.effect === EffectEnum.HOLI && (
+              <a
+                href="https://github.com/softenrj/Bricks-backend"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-block transition-transform duration-300 "
+              >
+                <h2 className="text-[12px] mdtext-sm font-black tracking-tighter leading-tight 
+                   bg-gradient-to-r from-pink-500 via-purple-500 via-orange-400 to-yellow-500 
+                   bg-clip-text text-transparent drop-shadow-sm 
+                   group-hover:from-yellow-400 group-hover:to-pink-500 transition-all duration-500">
+                  https://github.com/softenrj/Bricks-backend
+                </h2>
+                <div className="h-[1px] mt-1 w-0 group-hover:w-full transition-all duration-500 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full" />
+              </a>
+            )}
+
             <p className="text-zinc-400 text-base md:text-md leading-relaxed max-w-xl">
               {event.description}
             </p>
