@@ -3,7 +3,7 @@
 
 "use client"
 import { Icon } from '@iconify/react'
-import { ChevronRight, PanelLeftClose, Sparkles, X } from 'lucide-react'
+import { ArrowUp, ChevronRight, PanelLeftClose, Plus, Sparkles, X } from 'lucide-react'
 import React from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { ApiResponse } from '@/types/Api'
@@ -176,7 +176,7 @@ function ArchPanel({ projectId }: { projectId: string }) {
 
 
 
-            <div className="mt-auto w-full flex flex-col justify-center items-center">
+            <div className="mt-auto w-full flex flex-col focus:border-violet-500 justify-center items-center">
                 {IdeFea.snap && <div className='flex justify-center items-center gap-2 mb-2'>
                     <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleRollBack}>
                         <p>RollBack</p>
@@ -186,9 +186,9 @@ function ArchPanel({ projectId }: { projectId: string }) {
                     </button>
                 </div>}
                 <div
-                    className="inline-flex items-center gap-2 max-w-[620px] w-full
+                    className=" gap-2 max-w-[620px] w-full
                  bg-[#1f1f1f]/80 text-gray-300 py-2 px-3 rounded-xl
-                 border border-[#2d2d2d] shadow-sm backdrop-blur-md"
+                 border border-[#2d2d2d]  shadow-sm backdrop-blur-md"
                 >
                     <textarea
                         ref={textareaRef}
@@ -197,16 +197,22 @@ function ArchPanel({ projectId }: { projectId: string }) {
                         onKeyDown={handleKeyDown}
                         placeholder="Message"
                         rows={1}
-                        className="flex-1 max-h-[160px] bg-transparent resize-none text-[15px] leading-relaxed text-[#ececec] placeholder-[#8e8e8e] outline-none overflow-y-auto hide-scrollbar py-[6px]" />
+                        className="flex-1 max-h-[160px] w-full bg-transparent resize-none text-[15px] leading-relaxed text-[#ececec] placeholder-[#8e8e8e] outline-none overflow-y-auto hide-scrollbar py-[6px]" />
 
-                    <Tooltip content="Run">
+                    <div className='w-full flex justify-between items-center'>
+                        <div className='hover:bg-white/10 p-1.5 rounded-full transition-all duration-150 ease-in'>
+                            <Plus size={14} />
+                        </div>
+                        <Tooltip content={prompt.trim().length === 0 ? "Please enter a message": "Hit generate"}>
                         <button
-                            className="inline-flex items-center justify-center shrink-0 w-7 h-7 border border-gray-600 rounded-full bg-gray-800/30 hover:bg-gray-700/50 transition"
+                            className="inline-flex items-center justify-center shrink-0 w-7 h-7 border border-white/20 rounded-full bg-gray-800/30 hover:bg-gray-700/30 transition"
                             onClick={handleSend}
+                            disabled={prompt.trim().length === 0}
                         >
-                            <ChevronRight size={14} />
+                            <ArrowUp size={14} className={`${prompt.trim().length === 0 ? "text-white/50": "text-white"}`} />
                         </button>
                     </Tooltip>
+                    </div>
                 </div>
             </div>
         </div>

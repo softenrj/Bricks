@@ -15,6 +15,7 @@ import { useDebounce } from '@/hooks/debounce'
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Project } from '@/types/project'
+import toast from 'react-hot-toast'
 
 function FilterOptions({
     extraOptions = false,
@@ -34,7 +35,7 @@ function FilterOptions({
         const projects: Project[] | null = await exportProjects(mode);
 
         if (!projects || projects.length === 0) {
-            alert("No projects found to export.");
+            toast.success("No projects found to export.");
             return;
         }
 
