@@ -86,7 +86,7 @@ function DashboardNavStrip({ projectId, displayTabs = false }: { projectId?: str
           {/* GitHub */}
           <Tooltip content="GitHub">
             <a
-              href="https://github.com/"
+              href="https://github.com/softenrj"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center"

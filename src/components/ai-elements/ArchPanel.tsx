@@ -38,6 +38,8 @@ function ArchPanel({ projectId }: { projectId: string }) {
     const handleSend = async () => {
         if (prompt.trim() === "") return;
         setProcessing(true);
+        setPrompt("");
+
         dispatch(upsertArchProcess({
             message: prompt,
             process: "complete",
@@ -53,7 +55,6 @@ function ArchPanel({ projectId }: { projectId: string }) {
             dispatch(setArchJobId(response?.data))
         }
         setProcessing(false);
-        setPrompt("");
         if (response?.success) { }
     }
 
