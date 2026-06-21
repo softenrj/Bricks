@@ -3,7 +3,7 @@
 
 "use client"
 import { Icon } from '@iconify/react'
-import { ArrowUp, ChevronRight, PanelLeftClose, Plus, Sparkles, X } from 'lucide-react'
+import { ArrowUp, ChevronRight, Ellipsis, GitPullRequestClosed, Hash, Merge, PanelLeftClose, Plus, Sparkles, X } from 'lucide-react'
 import React from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { ApiResponse } from '@/types/Api'
@@ -118,29 +118,27 @@ function ArchPanel({ projectId }: { projectId: string }) {
     }, [prompt]);
 
     return (
-        <div className="h-full w-full bg-[#0D0D0D] flex flex-col items-center text-center px-6 py-8 text-gray-400">
-            <div className="relative bg-white/5 w-full flex items-center rounded-sm p-2">
-                <div className="absolute left-1/2 -translate-x-1/2 flex gap-2 items-center shadow-2xl">
-                    <Icon
-                        icon="streamline-flex:ai-chip-robot-remix"
-                        width="12"
-                        height="12"
-                    />
-                    <h3 className="font-bold text-sm tracking-tight text-gray-300">
+        <div className="h-full w-full bg-[#0D0D0D] flex flex-col items-center text-center p-1 text-gray-400">
+            <div className="relative w-full flex items-center rounded-sm p-2">
+                <div className='flex items-center gap-1'>
+                    <Hash size={11} className='text-gray-500' />
+                    <h3 className="text-[8px] tracking-wider text-gray-400">
                         ArchForge
                     </h3>
                 </div>
 
-                {/* Right action */}
-                <div className="ml-auto">
+                <div className="ml-auto flex items-center gap-2">
                     <Tooltip content="Close Arch">
                         <X size={12} onClick={() => dispatch(toggleArch(false))} className="cursor-pointer text-gray-400 hover:text-gray-200 transition" />
                     </Tooltip>
-                </div>
 
+                    <Tooltip content='options'>
+                        <Ellipsis size={12} />
+                    </Tooltip>
+                </div>
             </div>
 
-            <div className='w-full max-w-[400px] flex items-stretch justify-center gap-2 py-2'>
+            {/* <div className='w-full max-w-[400px] flex items-stretch justify-center gap-2 py-2'>
                 <button className='w-full bg-white/5 cursor-pointer rounded-xs' onClick={() => dispatch(setArchVoiePanel(!IdeFea.ArchVoice))}>
                     <div className=' flex items-center justify-center gap-2 px-4 py-1'>
                         <Icon icon="nrk:media-soundwave" width="16" height="16" />
@@ -153,16 +151,18 @@ function ArchPanel({ projectId }: { projectId: string }) {
                         <span className='text-xs whitespace-nowrap truncate'>Small Panel</span>
                     </div>
                 </button>
-            </div>
-            {process.length === 0 && <div className="flex flex-col justify-center items-center flex-1">
-                <div className="flex gap-2 items-center mb-5">
-                    <Icon icon="streamline-flex:ai-chip-robot-remix" width="24" height="24" />
-                    <h1 className="font-bold text-3xl tracking-tight text-gray-300">
+            </div> */}
+
+
+            {process.length === 0 && <div className="flex flex-col justify-center items-center gap-2 flex-1">
+                <div className="flex gap-2 items-center">
+                    <Hash size={18} className='text-gray-400' />
+                    <h1 className="text-md tracking-tight text-gray-300">
                         ArchForge
                     </h1>
                 </div>
 
-                <p className="max-w-md text-gray-500 text-sm leading-relaxed mb-10">
+                <p className="max-w-md text-gray-500 text-[12px] leading-relaxed">
                     Create full application codebases using AI.
                     <span className="text-gray-400"> Arch AI </span> generates structured,
                     extensible projects that are ready to run, test, and preview in real time.
@@ -177,19 +177,28 @@ function ArchPanel({ projectId }: { projectId: string }) {
 
 
 
-            <div className="mt-auto w-full flex flex-col focus:border-violet-500 justify-center items-center">
-                {IdeFea.snap && <div className='flex justify-center items-center gap-2 mb-2'>
-                    <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleRollBack}>
-                        <p>RollBack</p>
+            <div className="mt-auto w-[96%] flex flex-col focus:border-violet-500 justify-center items-center">
+                {IdeFea.snap && <div className='flex p-1.5 flex-col justify-stretch items-start w-full border-t border-s border-r rounded-t-md border-[#1b1b1b] bg-[#0f0f0f] items-center gap-2'>
+                    <button className='bg-[#141313] hover:bg-[#1c1b1b] w-full py-1 h-fit flex justify-between items-center px-3 rounded-xs border border-white/10 cursor-pointer group' onClick={handleRollBack}>
+                        <div className='flex flex-col items-start'>
+                            <span className='text-xs text-yellow-500'>RollBack</span>
+                            <p className='text-[10px]'>All changes will sync to backend.</p>
+                        </div>
+
+                        <GitPullRequestClosed size={12} className='text-gray-400 ml-2 group-hover::text-gray-200' />
                     </button>
-                    <button className='bg-white/5 px-3 py-1 rounded-xs border border-white/10 cursor-pointer hover:text-white' onClick={handleCommit}>
-                        <p>Commit</p>
+                    <button className='bg-[#141313] hover:bg-[#1c1b1b] w-full py-1 h-fit flex justify-between items-center px-3 rounded-xs border border-white/10 cursor-pointer group' onClick={handleCommit}>
+                        <div className='flex flex-col items-start'>
+                            <span className='text-xs text-green-500'>Commit</span>
+                            <p className='text-[10px]'>All changes will sync to backend.</p>
+                        </div>
+
+                        <Merge size={12} className='text-gray-400 ml-2 group-hover::text-gray-200' />
                     </button>
                 </div>}
-                <div
-                    className=" gap-2 max-w-[620px] w-full
-                 bg-[#1f1f1f]/80 text-gray-300 py-2 px-3 rounded-xl
-                 border border-[#2d2d2d]  shadow-sm backdrop-blur-md"
+
+
+                <div className="gap-2 z-2 w-full bg-[#0f0f0f] text-gray-300 py-2 px-3 rounded-md border border-[#1b1b1b]  shadow-sm backdrop-blur-md"
                 >
                     <textarea
                         ref={textareaRef}

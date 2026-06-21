@@ -2,6 +2,7 @@
 
 import { ArchProcessState } from "@/store/Reducers/ArchProcessChat";
 import { Icon } from "@iconify/react";
+import { Hash } from "lucide-react";
 import React from "react";
 
 function ArchChat({ process }: { process: ArchProcessState }) {
@@ -16,19 +17,14 @@ function ArchChat({ process }: { process: ArchProcessState }) {
     >
       {process.role === "ai" && process.process === "render" && <DotSpin />}
       <p
-        className={` max-w-[80%] text-gray-400 text-sm leading-relaxed px-4 py-3 rounded-sm ${isAI ? "text-left" : "text-right bg-white/5 shadow-md overflow-clip"}`}
+        className={` text-gray-400 text-xs leading-relaxed px-4 py-3 rounded-sm ${isAI ? "text-left" : "text-right bg-white/5 shadow-md overflow-clip"}`}
       >
         {process.message}
       </p>
       {isAI && (
-        <div className="flex ml-3 justify-center items-center gap-1 text-xs">
-          <Icon
-            icon="streamline-flex:ai-chip-robot-remix"
-            width="12"
-            height="12"
-            className="text-gray-500"
-          />
-          <span className="text-gray-500">Arch {new Date().toLocaleDateString()}</span>
+        <div className="flex ml-3 justify-center items-center gap-1">
+          <Hash size={8} className='text-gray-500' />
+          <span className="text-gray-500 text-[10px]">Arch {new Date().toLocaleDateString()}</span>
         </div>
       )}
     </div>

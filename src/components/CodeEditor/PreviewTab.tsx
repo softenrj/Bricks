@@ -51,7 +51,7 @@ function PreviewPanel() {
 
             <Globe size={12} />
 
-            <span className="ml-auto truncate">{history[index]}</span>
+            <span className=" truncate">{history[index]}</span>
           </div>
 
           <iframe
