@@ -127,4 +127,4 @@ We appreciate security researchers who help make BRICKS AI safer. With your perm
 
 ---
 
-**Last Updated**: October 2025
+**Last Updated**: October 2025-2026

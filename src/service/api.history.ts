@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 import { IBricksHistry } from "@/types/history";
@@ -9,15 +9,15 @@ import { API_BRICKS_CLEAN_PROJECT_HISTORY, API_BRICKS_CLEAN_USER_HISTORY, API_BR
 import toast from "react-hot-toast";
 
 export enum BrickHistoryTypeEnum {
-  ArchForge = "ArchForge",
-  FileSystem = "FileSystem",
-  CodeCompletion = "CodeCompletion",
-  BrickChat = "BrickChat",
-  unknown = "unknown",
-  user = "user",
-  project = "project",
-  Achievement = "Achievement",
-  Rank = "RankChange"
+    ArchForge = "ArchForge",
+    FileSystem = "FileSystem",
+    CodeCompletion = "CodeCompletion",
+    BrickChat = "BrickChat",
+    unknown = "unknown",
+    user = "user",
+    project = "project",
+    Achievement = "Achievement",
+    Rank = "RankChange"
 }
 
 

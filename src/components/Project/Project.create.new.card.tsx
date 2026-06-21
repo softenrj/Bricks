@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { Lightbulb, Code } from "lucide-react";
@@ -15,7 +15,7 @@ function NewProjectCard({ onClose }: { onClose: () => void }) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState<TechLanguage>(TechLanguage.JS);
-    const [loading, setLoading] = React.useState<boolean>(false)
+  const [loading, setLoading] = React.useState<boolean>(false)
   const router = useRouter();
 
   const handleCreate = async () => {

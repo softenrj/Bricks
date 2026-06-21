@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { auth, app } from "@/feature/Firebase"
 import { onAuthStateChanged, User } from "@firebase/auth"
@@ -9,7 +9,7 @@ export const useAuth = () => {
     const [checking, setChecking] = React.useState<boolean>(true);
 
     React.useEffect(() => {
-        const unsubscribe = onAuthStateChanged( auth, async (firebaseUser) => {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
             if (firebaseUser) {
                 const token = await firebaseUser.getIdToken()
@@ -25,7 +25,7 @@ export const useAuth = () => {
         })
 
         return () => unsubscribe();
-    },[])
+    }, [])
 
     return { user, checking }
 }

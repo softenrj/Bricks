@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React, { Suspense } from 'react'
@@ -111,7 +111,7 @@ function History() {
             })}
 
             <Tooltip content="Clean History">
-                <button  className="group w-fit h-8 flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-red-300 hover:border-red-400 transition-all" onClick={handleCleanHistory}>
+                <button className="group w-fit h-8 flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-red-300 hover:border-red-400 transition-all" onClick={handleCleanHistory}>
                     <Cookie size={12} />
                     <span>Clean history</span>
                 </button>

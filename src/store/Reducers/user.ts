@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { IUser } from "@/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -11,11 +11,11 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserdata: (_state, action: PayloadAction<IUser>) => {
-        _state = action.payload as any;
-        setLocalStorage(action.payload);
-        return _state
+      _state = action.payload as any;
+      setLocalStorage(action.payload);
+      return _state
     },
-    clearUser: () => {},
+    clearUser: () => { },
   },
 });
 

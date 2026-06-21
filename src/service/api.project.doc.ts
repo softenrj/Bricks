@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 import { ApiResponse } from "@/types/Api";
@@ -14,7 +14,7 @@ import { CodeLense, DependencyInfo, ProjectDocMetadata } from "../../types/proje
  * @param projectId 
  * @returns 
  */
-export const getProjectCodeLense = async (projectId: string): Promise<CodeLense[] | null>  => {
+export const getProjectCodeLense = async (projectId: string): Promise<CodeLense[] | null> => {
     try {
         const response = await getApi<ApiResponse<CodeLense[]>>({
             url: API_BRICKS_CODE_LENSE + `/${projectId}`

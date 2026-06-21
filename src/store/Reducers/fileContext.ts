@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { FSTYPE, Project, ProjectContext, ProjectFile } from "@/types/project";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";

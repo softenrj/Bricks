@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React, { useRef, useEffect } from "react"
@@ -19,7 +19,7 @@ export default function ChatArea() {
   return (
     <div className="h-[82%] overflow-y-auto px-3 sm:px-5 py-5 space-y-4 flex flex-col items-center">
       <AnimatePresence>
-           {messages.map((message, ind) => (
+        {messages.map((message, ind) => (
           <motion.div
             key={`${message.id}-${ind}`}
             initial={{ opacity: 0, y: 10 }}

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { Activity, Bell, BellDot, Sparkles } from 'lucide-react'

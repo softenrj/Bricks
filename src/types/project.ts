@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // Licensed under the Business Source License 1.1 (BUSL-1.1)
 // See LICENSE for details.
 export enum WebTech {

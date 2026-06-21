@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { ApiResponse, ProjectsApiResponse } from "@/types/Api";
 import { Project, TechLanguage, WebTech } from "@/types/project";
@@ -356,7 +356,7 @@ export const __getCodeCompletion = async (content: string, fileName: string, fil
 
 export const getAiResponse = async (projectId: string, chatId: string | null, prompt: string): Promise<{ message: Message, chat: BricksChat } | null> => {
     try {
-        const response = await postApi<ApiResponse<{ message: Message, chat: BricksChat }>> ({
+        const response = await postApi<ApiResponse<{ message: Message, chat: BricksChat }>>({
             url: API_BRICKS_PROMPT_RESPONSE + `/${projectId}`,
             values: {
                 chatId: chatId as any,
@@ -364,7 +364,7 @@ export const getAiResponse = async (projectId: string, chatId: string | null, pr
             }
         })
         if (response?.success) {
-            return { message: response.data.message, chat: response.data.chat};
+            return { message: response.data.message, chat: response.data.chat };
         }
         return null;
     } catch (error: any) {

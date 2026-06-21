@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { SOCKET_FILE_CREATE_UPDATE, SOCKET_FILE_RENAME, SOCKET_FILE_UPDATE, SOCKET_NEW_FILE, SOCKET_NEW_FOLDER, SOCKET_REMOVE_FILE, SOCKET_REMOVE_FOLDER } from "@/utils/api/socket.events";
 import { getSocket } from "./socket";
@@ -7,7 +7,7 @@ import { FSTYPE } from "@/types/project";
 
 let socket: Socket | null;
 
-export const fileUpdate = (name: string,src: string, fsc: string, projectId: string) => {
+export const fileUpdate = (name: string, src: string, fsc: string, projectId: string) => {
     if (!socket) socket = getSocket();
     // Emit the socket event
     socket?.emit(SOCKET_FILE_UPDATE, {
@@ -27,7 +27,7 @@ export const folderRemove = (src: string, projectId: string) => {
     });
 }
 
-export const fileRename = (src: string,oldName: string, name: string,projectId: string) => {
+export const fileRename = (src: string, oldName: string, name: string, projectId: string) => {
     if (!socket) socket = getSocket();
 
     socket?.emit(SOCKET_FILE_RENAME, {
@@ -63,7 +63,7 @@ export const newFolderSocket = (src: string, name: string, projectId: string) =>
 export const removeFile = (src: string, name: string, projectId: string) => {
     if (!socket) socket = getSocket();
 
-    socket?.emit(SOCKET_REMOVE_FILE , {
+    socket?.emit(SOCKET_REMOVE_FILE, {
         path: src,
         name,
         projectId: projectId
@@ -73,7 +73,7 @@ export const removeFile = (src: string, name: string, projectId: string) => {
 export const fileUpdateCreate = (src: string, name: string, projectId: string, content: string, type: string) => {
     if (!socket) socket = getSocket();
 
-    socket?.emit(SOCKET_FILE_CREATE_UPDATE , {
+    socket?.emit(SOCKET_FILE_CREATE_UPDATE, {
         path: src,
         name: name,
         projectId: projectId,

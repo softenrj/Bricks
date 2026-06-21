@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 
@@ -16,7 +16,7 @@ import { closeAll, closeOher, closeSaved, closeTab, closeToRight } from "@/store
 export const TabCss = "flex cursor-pointer items-center gap-2 rounded-md px-2 data-[highlighted]:bg-white/5 data-[highlighted]:text-gray-100 focus:outline-none";
 
 function OpenedTabContext({ children, name }: { children: React.ReactNode, name: string | undefined }) {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   return (
     <ContextMenu>
       <ContextMenuTrigger className="h-full">

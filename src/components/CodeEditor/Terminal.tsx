@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React, { useEffect, useRef, useState } from "react";
@@ -23,7 +23,7 @@ export default function TerminalPanel({ projectId }: { projectId: string }) {
   const { logs, status, liveUrl } = useAppSelector(
     (state: RootState) => state.webContainer
   );
-  
+
   const [currentCommand, setCurrentCommand] = useState("");
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const terminalInputRef = useRef<HTMLInputElement | null>(null);

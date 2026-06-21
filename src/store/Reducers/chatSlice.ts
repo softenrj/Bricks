@@ -1,10 +1,10 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Message } from "../../../types/chatMessage";
 
 interface ChatState {
-  chatId: string  | null;
+  chatId: string | null;
   fetch: boolean;
   messages: Message[];
 }
@@ -35,8 +35,8 @@ const chatSlice = createSlice({
     },
 
     setAiFetching: (state, action: PayloadAction<boolean>) => {
-        state.fetch = action.payload;
-        return state;
+      state.fetch = action.payload;
+      return state;
     },
     clearChat: (state) => {
       state.chatId = '';

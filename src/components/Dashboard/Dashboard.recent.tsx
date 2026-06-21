@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -20,7 +20,7 @@ function DashboardRecent() {
   }
   React.useEffect(() => {
     fetchRecent()
-  },[])
+  }, [])
   return (
     <div className="text-gray-100 py-6 ">
       {/* Header */}
@@ -53,7 +53,7 @@ function DashboardRecent() {
       {/* Cards Grid */}
       <div className="max-w-8xl mx-auto self-start">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {recent.map(item  => (
+          {recent.map(item => (
             <ProjectCard key={item._id} project={item} />
           ))}
         </div>

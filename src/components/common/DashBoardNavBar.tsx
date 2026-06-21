@@ -1,11 +1,11 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from "react"
 export function DashBoardNavBar(): React.JSX.Element {
   return (
     <nav className="py-4 px-6 flex items-center justify-between absolute top-0 left-0 right-0 z-999 ">
-    
+
     </nav>
   )
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { IEvent } from '@/types/event'
@@ -20,7 +20,7 @@ function Events({ events, eventFallback }: { events: IEvent[], eventFallback: (e
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
 
-                        <div className="pointer-events-none absolute inset-0bg-gradient-to-tfrom-black/70via-black/20to-transparent"/>
+                        <div className="pointer-events-none absolute inset-0bg-gradient-to-tfrom-black/70via-black/20to-transparent" />
                     </div>
 
                     <div className="p-4 flex flex-col gap-2">

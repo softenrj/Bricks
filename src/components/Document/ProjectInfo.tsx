@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 "use client"
@@ -46,7 +46,7 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                     <div className="bg-gradient-to-br from-[#2c2c2c] to-[#1a1a1a] p-3 rounded-xl border border-white/10 shadow-xl">
                         <Icon icon="vscode-icons:file-type-vite" width="40" height="40" />
                     </div>
-                    
+
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-xl md:text-3xl font-bold tracking-tight">
@@ -60,8 +60,8 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                         </div>
                         <div className='flex items-center gap-3 mt-1.5 text-slate-400 text-sm'>
                             <div className="flex items-center gap-1.5 border-r border-white/10 pr-3">
-                                <Icon 
-                                    icon={project.tech_language === "JS" ? "devicon:javascript" : "devicon:typescript"} 
+                                <Icon
+                                    icon={project.tech_language === "JS" ? "devicon:javascript" : "devicon:typescript"}
                                     className="text-lg"
                                 />
                                 <span className='text-xs'>{project.tech_language === 'JS' ? "JavaScript" : "TypeScript"}</span>
@@ -77,26 +77,24 @@ function ProjectInfo({ projectId }: { projectId: string }) {
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2">
                     <Tooltip content={isStarred ? "Remove from favorites" : "Add to favorites"}>
-                        <button 
+                        <button
                             onClick={handleStarClick}
-                            className={`p-2.5 rounded-md border transition-all duration-200 ${
-                                isStarred 
-                                ? "bg-amber-500/10 border-amber-500/50 text-amber-500" 
-                                : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
-                            }`}
+                            className={`p-2.5 rounded-md border transition-all duration-200 ${isStarred
+                                    ? "bg-amber-500/10 border-amber-500/50 text-amber-500"
+                                    : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                                }`}
                         >
                             <Star size={12} fill={isStarred ? "currentColor" : "none"} />
                         </button>
                     </Tooltip>
 
                     <Tooltip content={isArch ? "Unarchive Project" : "Archive Project"}>
-                        <button 
+                        <button
                             onClick={handleArchieve}
-                            className={`p-2.5 rounded-md border transition-all duration-200 ${
-                                isArch 
-                                ? "bg-red-500/10 border-red-500/50 text-red-500" 
-                                : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
-                            }`}
+                            className={`p-2.5 rounded-md border transition-all duration-200 ${isArch
+                                    ? "bg-red-500/10 border-red-500/50 text-red-500"
+                                    : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white"
+                                }`}
                         >
                             {isArch ? <Eye size={12} /> : <EyeOff size={12} />}
                         </button>

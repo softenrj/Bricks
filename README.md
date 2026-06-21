@@ -177,6 +177,6 @@ See the [`LICENSE`](LICENSE) file for more information on rights and limitations
 
 [**🚀 Open Bricks AI in your browser**](https://bricks-three-rose.vercel.app)
 
-© 2025 Raj. All rights reserved.
+© 2025-2026 Raj. All rights reserved.
 
 </div>

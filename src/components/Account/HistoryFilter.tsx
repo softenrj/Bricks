@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from 'react'
@@ -31,137 +31,137 @@ function HistoryFilter({
     const project = useAppSelector(state => state.fs);
 
     const handleExportPDF = async () => {
-    const history = mode === 'user' ? await getAllUserHistory() : projectId && await getAllProjectHistory(projectId);
+        const history = mode === 'user' ? await getAllUserHistory() : projectId && await getAllProjectHistory(projectId);
 
-    if (!history || history.length === 0) {
-        alert("No history found to export.");
-        return;
-    }
-
-    const doc = new jsPDF("p", "mm", "a4");
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-
-    const colors = {
-        dark: "#1a1a1a",       
-        primary: "#FF5733",
-        text: "#2C3E50",
-        lightText: "#7F8C8D",
-    };
-
-    doc.setFillColor(colors.dark);
-    doc.rect(0, 0, pageWidth, 25, "F");
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(20);
-    doc.setFont("helvetica", "bold");
-    doc.text("History Report", 14, 16);
-
-    doc.setFontSize(10);
-    doc.setTextColor(200, 200, 200); 
-    doc.setFont("helvetica", "normal");
-
-    const contextTitle = mode === 'user' ? "User Activity Log" : `Project ID: ${projectId}`;
-    doc.text(contextTitle, 14, 22);
-
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 14, 16, { align: "right" });
-
-    doc.setTextColor(60, 60, 60);
-    doc.setFontSize(10);
-    
-    let metaText = `Total Records: ${history.length}`;
-    if (mode === 'project' && project) {
-        metaText = `Project: ${project.projectName}   |   ${metaText}`;
-    } else if (mode === 'user') {
-        metaText = `User Report   |   ${metaText}`;
-    }
-
-    doc.text(metaText, 14, 32);
-
-    const tableBody = history.map((item) => [
-        item.type.toUpperCase(), 
-        item.description,        
-        new Date(item.createdAt).toLocaleDateString() + " " + new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    ]);
-
-    autoTable(doc, {
-        head: [["Action Type", "Description", "Timestamp"]],
-        body: tableBody,
-        startY: 38,
-        theme: 'grid',
-
-        headStyles: {
-            fillColor: colors.dark,
-            textColor: [255, 255, 255],
-            fontStyle: 'bold',
-            halign: 'left',
-            cellPadding: 4
-        },
-
-        styles: {
-            fontSize: 10,
-            cellPadding: 5,
-            lineColor: [230, 230, 230],
-            lineWidth: 0.1,
-            valign: 'middle',
-            font: "helvetica",
-            textColor: [50, 50, 50]
-        },
-
-        columnStyles: {
-            0: { fontStyle: 'bold', cellWidth: 35 }, 
-            1: { textColor: [50, 50, 50] },
-            2: { halign: 'right', cellWidth: 40, fontSize: 9, textColor: [100, 100, 100], fontStyle: 'italic' } // Date
-        },
-
-        alternateRowStyles: {
-            fillColor: [250, 250, 250] 
-        },
-
-        didDrawCell: (data) => {
-            if (data.section === 'body' && data.column.index === 0) {
-                const { x, y, height } = data.cell;
-
-                const rawType = (data.cell.raw ? String(data.cell.raw) : '').toLowerCase();
-
-               
-                let indicatorColor: [number, number, number] = [149, 165, 166]; 
-
-                if (rawType.includes('create') || rawType.includes('add')) {
-                    indicatorColor = [46, 204, 113];
-                } else if (rawType.includes('delete') || rawType.includes('remove')) {
-                    indicatorColor = [231, 76, 60]; 
-                } else if (rawType.includes('update') || rawType.includes('edit')) {
-                    indicatorColor = [52, 152, 219];
-                }
-
-                doc.setFillColor(...indicatorColor);
-                doc.rect(x, y, 1.5, height, 'F');
-            }
-        },
-
-        didDrawPage: (data) => {
-            const footerY = pageHeight - 15;
-            doc.setFontSize(10);
-            doc.setTextColor(colors.primary);
-            doc.setFont("helvetica", "bold");
-            doc.text("Bricks AI", 14, footerY);
-
-            doc.setTextColor(100, 100, 100);
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(9);
-            doc.setTextColor(150, 150, 150);
-            doc.text(
-                `Page ${data.pageNumber}`,
-                pageWidth - 14,
-                footerY,
-                { align: "right" }
-            );
+        if (!history || history.length === 0) {
+            alert("No history found to export.");
+            return;
         }
-    });
 
-    doc.save(`Bricks_History_${new Date().toISOString().split("T")[0]}.pdf`);
-};
+        const doc = new jsPDF("p", "mm", "a4");
+        const pageWidth = doc.internal.pageSize.width;
+        const pageHeight = doc.internal.pageSize.height;
+
+        const colors = {
+            dark: "#1a1a1a",
+            primary: "#FF5733",
+            text: "#2C3E50",
+            lightText: "#7F8C8D",
+        };
+
+        doc.setFillColor(colors.dark);
+        doc.rect(0, 0, pageWidth, 25, "F");
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text("History Report", 14, 16);
+
+        doc.setFontSize(10);
+        doc.setTextColor(200, 200, 200);
+        doc.setFont("helvetica", "normal");
+
+        const contextTitle = mode === 'user' ? "User Activity Log" : `Project ID: ${projectId}`;
+        doc.text(contextTitle, 14, 22);
+
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 14, 16, { align: "right" });
+
+        doc.setTextColor(60, 60, 60);
+        doc.setFontSize(10);
+
+        let metaText = `Total Records: ${history.length}`;
+        if (mode === 'project' && project) {
+            metaText = `Project: ${project.projectName}   |   ${metaText}`;
+        } else if (mode === 'user') {
+            metaText = `User Report   |   ${metaText}`;
+        }
+
+        doc.text(metaText, 14, 32);
+
+        const tableBody = history.map((item) => [
+            item.type.toUpperCase(),
+            item.description,
+            new Date(item.createdAt).toLocaleDateString() + " " + new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        ]);
+
+        autoTable(doc, {
+            head: [["Action Type", "Description", "Timestamp"]],
+            body: tableBody,
+            startY: 38,
+            theme: 'grid',
+
+            headStyles: {
+                fillColor: colors.dark,
+                textColor: [255, 255, 255],
+                fontStyle: 'bold',
+                halign: 'left',
+                cellPadding: 4
+            },
+
+            styles: {
+                fontSize: 10,
+                cellPadding: 5,
+                lineColor: [230, 230, 230],
+                lineWidth: 0.1,
+                valign: 'middle',
+                font: "helvetica",
+                textColor: [50, 50, 50]
+            },
+
+            columnStyles: {
+                0: { fontStyle: 'bold', cellWidth: 35 },
+                1: { textColor: [50, 50, 50] },
+                2: { halign: 'right', cellWidth: 40, fontSize: 9, textColor: [100, 100, 100], fontStyle: 'italic' } // Date
+            },
+
+            alternateRowStyles: {
+                fillColor: [250, 250, 250]
+            },
+
+            didDrawCell: (data) => {
+                if (data.section === 'body' && data.column.index === 0) {
+                    const { x, y, height } = data.cell;
+
+                    const rawType = (data.cell.raw ? String(data.cell.raw) : '').toLowerCase();
+
+
+                    let indicatorColor: [number, number, number] = [149, 165, 166];
+
+                    if (rawType.includes('create') || rawType.includes('add')) {
+                        indicatorColor = [46, 204, 113];
+                    } else if (rawType.includes('delete') || rawType.includes('remove')) {
+                        indicatorColor = [231, 76, 60];
+                    } else if (rawType.includes('update') || rawType.includes('edit')) {
+                        indicatorColor = [52, 152, 219];
+                    }
+
+                    doc.setFillColor(...indicatorColor);
+                    doc.rect(x, y, 1.5, height, 'F');
+                }
+            },
+
+            didDrawPage: (data) => {
+                const footerY = pageHeight - 15;
+                doc.setFontSize(10);
+                doc.setTextColor(colors.primary);
+                doc.setFont("helvetica", "bold");
+                doc.text("Bricks AI", 14, footerY);
+
+                doc.setTextColor(100, 100, 100);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(9);
+                doc.setTextColor(150, 150, 150);
+                doc.text(
+                    `Page ${data.pageNumber}`,
+                    pageWidth - 14,
+                    footerY,
+                    { align: "right" }
+                );
+            }
+        });
+
+        doc.save(`Bricks_History_${new Date().toISOString().split("T")[0]}.pdf`);
+    };
     const handleSearch = (): void => setFilter(prev => ({ ...prev, q: textQ }));
     React.useEffect(handleSearch, [textDebounce])
 

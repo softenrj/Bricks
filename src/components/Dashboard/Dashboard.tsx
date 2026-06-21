@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 
@@ -23,8 +23,8 @@ function Dashboard() {
   }, [user, dispatch])
 
   React.useEffect(() => {
-    (async () => ( await dailyLogIn()))();
-  },[])
+    (async () => (await dailyLogIn()))();
+  }, [])
 
   const ensureSocketConnection = React.useCallback(() => {
     const tryConnect = () => {

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from 'react'
@@ -43,8 +43,8 @@ function FilterOptions({
         const pageWidth = doc.internal.pageSize.width;
         const pageHeight = doc.internal.pageSize.height;
 
-        const primaryColor = "#FF5733"; 
-        const darkColor = "#1a1a1a"; 
+        const primaryColor = "#FF5733";
+        const darkColor = "#1a1a1a";
 
         doc.setFillColor(darkColor);
         doc.rect(0, 0, pageWidth, 25, "F");
@@ -100,24 +100,24 @@ function FilterOptions({
                 valign: 'middle'
             },
             columnStyles: {
-                0: { fontStyle: 'bold', textColor: [33, 33, 33] }, 
-                1: { textColor: [74, 144, 226] }, 
-                2: { fontSize: 8, fontStyle: 'italic' }, 
-                3: { halign: 'right', cellWidth: 30 } 
+                0: { fontStyle: 'bold', textColor: [33, 33, 33] },
+                1: { textColor: [74, 144, 226] },
+                2: { fontSize: 8, fontStyle: 'italic' },
+                3: { halign: 'right', cellWidth: 30 }
             },
             alternateRowStyles: {
-                fillColor: [250, 250, 250] 
+                fillColor: [250, 250, 250]
             },
 
 
             didDrawCell: (data) => {
-               
+
                 if (data.section === 'body' && data.column.index === 0) {
                     const rawRow = projects[data.row.index];
                     if (rawRow && rawRow.starred) {
                         const { x, y, height } = data.cell;
-                        doc.setFillColor(255, 215, 0); 
-                        doc.rect(x, y, 1.5, height, 'F'); 
+                        doc.setFillColor(255, 215, 0);
+                        doc.rect(x, y, 1.5, height, 'F');
                     }
                 }
             },

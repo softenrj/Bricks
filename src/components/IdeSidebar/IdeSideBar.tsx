@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from 'react'
@@ -10,7 +10,7 @@ function IdeSideBar() {
       <div className="h-screen flex flex-col w-full bg-gradient-to-r from-[#0F1012] via-[#151718] to-[#1C1B21]">
 
       </div>
-      
+
     </Sidebar>
 
   )

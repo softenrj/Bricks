@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { Project } from "./project";
 
@@ -9,12 +9,12 @@ export type ApiResponse<T> = {
 }
 
 export interface ProjectsApiResponse extends ApiResponse<Project[]> {
-  nextCursor: string | null; 
+    nextCursor: string | null;
 }
 
 export type PaginatedApiResponse<T> = {
     success: boolean;
     message: string;
     data: T;
-    nextCursor: string | null; 
+    nextCursor: string | null;
 }

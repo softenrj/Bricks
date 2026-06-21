@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import {
   WebContainer,
@@ -225,3 +225,26 @@ export const rollBack = async (files: ISnapshotFile[]) => {
 };
 
 
+// TODO
+/**
+async function forceTailwindRecompile(
+  dispatch: AppDispatch,
+  projectId: string
+): Promise<void> {
+  const container = await getWebContainer();
+
+  // Read the current CSS entry file and rewrite it — this triggers Tailwind's watcher
+  try {
+    const cssPath = "/src/index.css"; // adjust if your entry differs
+    const existing = await container.fs.readFile(cssPath, "utf-8");
+    await container.fs.writeFile(cssPath, existing); // same content, new mtime
+  } catch {
+    // fallback: touch tailwind config
+    try {
+      const cfgPath = "/tailwind.config.js";
+      const cfg = await container.fs.readFile(cfgPath, "utf-8");
+      await container.fs.writeFile(cfgPath, cfg);
+    } catch {  }
+  }
+}
+**/

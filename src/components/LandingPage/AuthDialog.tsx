@@ -1,18 +1,12 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from "react"
 import Auth from "../Auth"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog"
+import { Dialog, DialogContent } from "../ui/dialog"
 import { useAuth } from "@/hooks/useAuth"
 import { useRouter } from "next/navigation"
-import BricksIcon from "@/assets/svg/bricks-t-w.svg"
-import Image from "next/image"
+
 
 function AuthDialog({
   isOpen = false,

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -31,8 +31,8 @@ export default function AppSideBarProfile() {
           </h2>
           <Tooltip content={user.email || ""}>
             <p className="text-gray-400 text-xs whitespace-nowrap overflow-hidden text-ellipsis max-w-[135px]">
-            {user.email}
-          </p>
+              {user.email}
+            </p>
           </Tooltip>
 
         </div>

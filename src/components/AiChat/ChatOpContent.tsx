@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { Plus, Search, MessageSquare, SquarePen } from "lucide-react"
@@ -108,7 +108,7 @@ function ChatOpContent({ projectId }: { projectId: string }) {
         loader={null}
       >
         <div className="flex flex-col gap-1">
-          {chats.map((chat,idx) => (
+          {chats.map((chat, idx) => (
             <button
               key={chat._id + idx}
               onClick={() => handleChangeChat(chat._id)}

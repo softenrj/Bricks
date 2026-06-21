@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { Ellipsis } from 'lucide-react'
@@ -34,7 +34,7 @@ function MenuOptions({
     const handleDelete = async () => {
         if (!project._id) return;
         const response = await removeProject(project._id);
-        if (!response) return ;
+        if (!response) return;
         onDelete?.(project._id);
     };
 

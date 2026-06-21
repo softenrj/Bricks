@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import {
@@ -17,14 +17,15 @@ import {
 } from "lucide-react"
 import { TabCss } from "./OpenedTabContext";
 
-interface Prope { children: React.ReactNode,
+interface Prope {
+  children: React.ReactNode,
   onRename: (path: string, name: string) => void;
   onRemove: (fullPath: string, name: string) => void;
   onNewFile: () => void;
   onNewFolder: () => void;
   path: string;
   name: string;
- }
+}
 
 export function FileContext({ children, onRename, onRemove, path, name, onNewFile, onNewFolder }: Prope) {
   return (
@@ -42,7 +43,7 @@ export function FileContext({ children, onRename, onRemove, path, name, onNewFil
         </ContextMenuItem>
 
         <ContextMenuItem
-         className={TabCss}
+          className={TabCss}
           onClick={onNewFolder}
         >
           <FolderPlus size={16} className="text-gray-300" />

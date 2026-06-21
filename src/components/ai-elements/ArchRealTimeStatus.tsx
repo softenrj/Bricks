@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 
@@ -21,7 +21,7 @@ function ArchRealTimeStatus() {
     if (!socket) return;
 
     const handler = (process: ArchEnginStatusSocket) => {
-      dispatch(upsertArchProcess({...process, role: "ai" }));
+      dispatch(upsertArchProcess({ ...process, role: "ai" }));
       setPipeline(prev => {
         const index = prev.findIndex(p => p.processId === process.processId);
 

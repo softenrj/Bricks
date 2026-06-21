@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from 'react'
@@ -10,9 +10,9 @@ import { useDebounce } from '@/hooks/debounce'
 function ChatOptionContent({ onClose, projectId }: { onClose: () => void, projectId: string }) {
   return (
     <div className='w-full flex flex-col items-center my-4'>
-        <ChatOpHeader onClose={onClose}  />
-        <ChatOpContent projectId={projectId} />
-        <AppSideBarProfile />
+      <ChatOpHeader onClose={onClose} />
+      <ChatOpContent projectId={projectId} />
+      <AppSideBarProfile />
     </div>
   )
 }

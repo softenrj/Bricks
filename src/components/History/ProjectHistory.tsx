@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 "use client"
@@ -12,7 +12,7 @@ import { Cookie, Trash, User } from 'lucide-react'
 import { getHistoryIcon, historyIcons, resolveHistoryType } from '@/feature/HistoryIconMap'
 import { Tooltip } from '../common/Tooltip'
 
-function ProjectHistory({projectId}: {projectId: string}) {
+function ProjectHistory({ projectId }: { projectId: string }) {
     const [filter, setFilter] = React.useState<Partial<Filter>>({});
     const [history, setHistory] = React.useState<IBricksHistry[]>([]);
     const [nextCursor, setNextCursor] = React.useState<Date | null>(null);
@@ -30,7 +30,7 @@ function ProjectHistory({projectId}: {projectId: string}) {
         setLoading(true);
         try {
             const cursor = reset ? null : nextCursor;
-            const result = await getProjectHistory(10,projectId, cursor, filter);
+            const result = await getProjectHistory(10, projectId, cursor, filter);
 
             if (reset) {
                 setHistory(result.data);
@@ -112,7 +112,7 @@ function ProjectHistory({projectId}: {projectId: string}) {
             })}
 
             <Tooltip content="Clean History">
-                <button  className="group w-fit h-8 flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-red-300 hover:border-red-400 transition-all" onClick={handleCleanHistory}>
+                <button className="group w-fit h-8 flex items-center gap-1 rounded-sm px-2.5 py-1 text-xs font-medium bg-gradient-to-r from-gray-700/40 to-gray-600/40 text-gray-300 border border-gray-600/20 hover:from-yellow-500/10 hover:to-yellow-400/10 hover:text-red-300 hover:border-red-400 transition-all" onClick={handleCleanHistory}>
                     <Cookie size={12} />
                     <span>Clean history</span>
                 </button>

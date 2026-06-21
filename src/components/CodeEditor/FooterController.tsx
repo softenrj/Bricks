@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -21,7 +21,7 @@ interface Snapshot {
   }[];
 }
 
-export default function FooterController({projectId}: {projectId: string}) {
+export default function FooterController({ projectId }: { projectId: string }) {
   const [processRunning, setProcessRunning] = React.useState(false);
   const [snapshotIndex, setSnapshotIndex] = React.useState<number>(-1);
   const [snapshotData, setSnapshotData] = React.useState<Snapshot | null>(null);
@@ -52,11 +52,11 @@ export default function FooterController({projectId}: {projectId: string}) {
       return newSnap;
     });
 
-    if (!selectedFileContent || !selectedLanguage || !selectedFile) return ;
+    if (!selectedFileContent || !selectedLanguage || !selectedFile) return;
     const response = await __getCodeCompletion(selectedFileContent, selectedFile, selectedLanguage, projectId);
     if (!response) return;
 
-    dispatch(setFileChange({name: selectedFile || '', isEditing: true}))
+    dispatch(setFileChange({ name: selectedFile || '', isEditing: true }))
     let frameId: number;
     let index = 0;
     const speed = 8;
@@ -110,14 +110,12 @@ export default function FooterController({projectId}: {projectId: string}) {
         >
           <ChevronsLeftRightEllipsis
             size={18}
-            className={`transition-colors duration-200 ${
-              codeCompletion ? "text-green-500" : "text-pink-500"
-            }`}
+            className={`transition-colors duration-200 ${codeCompletion ? "text-green-500" : "text-pink-500"
+              }`}
           />
           <span
-            className={`transition-colors duration-200 ${
-              codeCompletion ? "text-white" : "text-gray-400"
-            }`}
+            className={`transition-colors duration-200 ${codeCompletion ? "text-white" : "text-gray-400"
+              }`}
           >
             Code Suggestion
           </span>
@@ -139,36 +137,36 @@ export default function FooterController({projectId}: {projectId: string}) {
 
       <div className="ml-auto flex items-center gap-3">
         {snapshotData && snapshotData.snapshots.length > 0 && (
-        <div className="flex items-center gap-1 ">
-          <Tooltip content="Previous snapshot">
-            <button
-              className="p-1 bg-transparen"
-              disabled={snapshotIndex <= 0}
-              onClick={handleSnapShotPrev}
-            >
-              <ChevronLeft size={14} className="text-gray-300" />
-            </button>
-          </Tooltip>
-          <Tooltip content="Next snapshot">
-            <button
-              className="p-1 bg-transparent"
-              disabled={snapshotIndex >= snapshotData.snapshots.length - 1}
-              onClick={handleSnapShotForward}
-            >
-              <ChevronRight size={14} className="text-gray-300" />
-            </button>
-          </Tooltip>
-        </div>
-      )}
+          <div className="flex items-center gap-1 ">
+            <Tooltip content="Previous snapshot">
+              <button
+                className="p-1 bg-transparen"
+                disabled={snapshotIndex <= 0}
+                onClick={handleSnapShotPrev}
+              >
+                <ChevronLeft size={14} className="text-gray-300" />
+              </button>
+            </Tooltip>
+            <Tooltip content="Next snapshot">
+              <button
+                className="p-1 bg-transparent"
+                disabled={snapshotIndex >= snapshotData.snapshots.length - 1}
+                onClick={handleSnapShotForward}
+              >
+                <ChevronRight size={14} className="text-gray-300" />
+              </button>
+            </Tooltip>
+          </div>
+        )}
 
-      <Tooltip content={realTimePanel ? "RealTime Panel is on" : "RealTime Panel is off"}>
-        <Switch checked={realTimePanel} onClick={() => dispatch(togglePanel(!realTimePanel))} />
-      </Tooltip>
-      <Tooltip content={autoSave ? "Auto Save on" : "Auto Save close"}>
-        <div onClick={() => dispatch(toggleAutoSave(!autoSave))}>
-          {autoSave ? <SaveOff size={14} className="text-green-400" /> : <Save size={14} className="text-pink-500" />}
-        </div>
-      </Tooltip>
+        <Tooltip content={realTimePanel ? "RealTime Panel is on" : "RealTime Panel is off"}>
+          <Switch checked={realTimePanel} onClick={() => dispatch(togglePanel(!realTimePanel))} />
+        </Tooltip>
+        <Tooltip content={autoSave ? "Auto Save on" : "Auto Save close"}>
+          <div onClick={() => dispatch(toggleAutoSave(!autoSave))}>
+            {autoSave ? <SaveOff size={14} className="text-green-400" /> : <Save size={14} className="text-pink-500" />}
+          </div>
+        </Tooltip>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { io, Socket } from "socket.io-client";
 import { serverUrl } from "@/utils/constance";

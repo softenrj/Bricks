@@ -1,13 +1,13 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 import React from 'react'
 import ProjectHistory from './ProjectHistory'
 
-function index({projectId}: {projectId: string}) {
+function index({ projectId }: { projectId: string }) {
   return (
     <div>
-        <ProjectHistory projectId={projectId} />
+      <ProjectHistory projectId={projectId} />
     </div>
   )
 }

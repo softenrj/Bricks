@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 import { EffectEnum } from "@/types/event"
@@ -31,7 +31,7 @@ const loadFromLocalStorage = (): EventEffectState => {
 
 const saveToLocalStorage = (state: EventEffectState) => {
   try {
-    const { lyricsIdx, ...persistentState } = state; 
+    const { lyricsIdx, ...persistentState } = state;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(persistentState))
   } catch {
     // ignore

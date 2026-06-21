@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { auth } from "@/feature/Firebase";
 import { ApiResponse } from "@/types/Api";
@@ -17,9 +17,9 @@ import {
 import toast from "react-hot-toast";
 
 export enum AuthType {
-    EMAIL_PASS = "EMAIL",
-    GOOGLE = "GOOGLE",
-    GITHUB = "GITHUB"
+  EMAIL_PASS = "EMAIL",
+  GOOGLE = "GOOGLE",
+  GITHUB = "GITHUB"
 }
 
 type AuthReturn = { user: User; token: string };
@@ -69,7 +69,7 @@ export class AuthProvider {
       const { user } = await signInWithPopup(auth, this.GOOGLE_PROVIDER);
       const token = await user.getIdToken();
       this.persistToken(token);
-      this.syncWithBackendMethod(user,token,AuthType.GOOGLE)
+      this.syncWithBackendMethod(user, token, AuthType.GOOGLE)
     } catch (err) {
       console.error("Google sign-in error:", err);
       toast.error("Google sign-in failed 😞");
@@ -82,7 +82,7 @@ export class AuthProvider {
       const user = result.user;
       const token = await user.getIdToken();
       this.persistToken(token);
-      this.syncWithBackendMethod(user,token,AuthType.GITHUB)
+      this.syncWithBackendMethod(user, token, AuthType.GITHUB)
     } catch (err) {
       console.error("GitHub sign-in error:", err);
       toast.error("GitHub login failed 😞");

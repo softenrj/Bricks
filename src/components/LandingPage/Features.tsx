@@ -1,11 +1,11 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React, { useRef } from "react"
 import { motion, MotionValue, useScroll, useSpring, useTransform } from "framer-motion"
 import FeatureCard from "./FeatureCard"
 
-function Features({rootYScrollProgress}:{rootYScrollProgress: MotionValue<number>}) {
+function Features({ rootYScrollProgress }: { rootYScrollProgress: MotionValue<number> }) {
 
   return (
     <div

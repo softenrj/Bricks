@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import { useAppSelector } from "@/hooks/redux";
@@ -15,7 +15,7 @@ function PreviewPanel() {
   const [history, setHistory] = React.useState<string[]>([]);
   const [index, setIndex] = React.useState(-1);
   const refresh = useAppSelector(state => state.IdeFeatures).devServerRefresh;
-  
+
 
   // Push new URLs into history
   React.useEffect(() => {
@@ -45,8 +45,8 @@ function PreviewPanel() {
           <div className="flex items-center gap-2 px-2 py-1 bg-[#0D0D0D] text-xs text-gray-300">
             <Tooltip content="Reload">
               <button onClick={handleReload}>
-              <Icon icon="tabler:reload" className="text-gray-400" width="14" height="14" />
-            </button>
+                <Icon icon="tabler:reload" className="text-gray-400" width="14" height="14" />
+              </button>
             </Tooltip>
 
             <Globe size={12} />

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 import { useQuery } from "@tanstack/react-query";
@@ -95,7 +95,7 @@ export const dailyLogIn = async (): Promise<void> => {
         await postApi<ApiResponse<void>>({
             url: API_BRICKS_DAILY_LOGIN
         })
-        return ;
+        return;
     } catch (error: any) {
         console.error("Error fetching stats:", error);
         throw new Error(error?.message ?? "Failed to set user profile");

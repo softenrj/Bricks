@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from "react";
@@ -11,26 +11,26 @@ function Navbar(): React.JSX.Element {
   const handleAuthDialog = () => setIsOpen(!isOpen)
   return (
     <>
-    <nav className="py-3 px-4 sm:py-4 sm:px-6 flex items-center justify-between">
-      {/* Logo */}
-      <Logo />
+      <nav className="py-3 px-4 sm:py-4 sm:px-6 flex items-center justify-between">
+        {/* Logo */}
+        <Logo />
 
-      {/* Nav Links - compact + glossy dark look */}
-      <ul
-        className="hidden sm:flex items-center gap-3 md:gap-5 
+        {/* Nav Links - compact + glossy dark look */}
+        <ul
+          className="hidden sm:flex items-center gap-3 md:gap-5 
         text-xs sm:text-sm md:text-base font-medium
         bg-white/5 backdrop-blur-md border border-white/10 shadow-sm
         rounded-full text-white px-3 py-1"
-      >
-        <li className="hover:text-pink-400 transition cursor-pointer">Home</li>
-        <li className="hover:text-pink-400 transition cursor-pointer">Features</li>
-        <li className="hover:text-pink-400 transition cursor-pointer">Docs</li>
-      </ul>
+        >
+          <li className="hover:text-pink-400 transition cursor-pointer">Home</li>
+          <li className="hover:text-pink-400 transition cursor-pointer">Features</li>
+          <li className="hover:text-pink-400 transition cursor-pointer">Docs</li>
+        </ul>
 
-      {/* Sign In Button */}
-      < div onClick={handleAuthDialog}><SignInButton /></div>
-    </nav>
-    <AuthDialog isOpen={isOpen} onClose={handleAuthDialog} />
+        {/* Sign In Button */}
+        < div onClick={handleAuthDialog}><SignInButton /></div>
+      </nav>
+      <AuthDialog isOpen={isOpen} onClose={handleAuthDialog} />
     </>
   );
 }

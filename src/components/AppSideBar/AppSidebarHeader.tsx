@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React from 'react'
@@ -13,21 +13,21 @@ function AppSidebarHeader() {
     const { toggleSidebar, open } = useSidebar()
     return (
         <div className='m-2 flex items-center justify-between'>
-            { open ? <>
-            <div className='flex gap-2 items-center'>
-                <Avatar className="h-10 w-10 rounded-sm">
-                <AvatarImage src={BricksIcon.src} />
-                <AvatarFallback>Bricks</AvatarFallback>
-            </Avatar>
-            <h1 className="text-white font-bold text-2xl">Bricks</h1>
-            </div>
+            {open ? <>
+                <div className='flex gap-2 items-center'>
+                    <Avatar className="h-10 w-10 rounded-sm">
+                        <AvatarImage src={BricksIcon.src} />
+                        <AvatarFallback>Bricks</AvatarFallback>
+                    </Avatar>
+                    <h1 className="text-white font-bold text-2xl">Bricks</h1>
+                </div>
 
-            <Tooltip content='close'>
-                <PanelLeftClose onClick={toggleSidebar} color="#8e8e8e" className='hover:text-[#a8a8a8]' />
-            </Tooltip></>:
-            <Tooltip content='open'>
-                <PanelLeftOpen size={28} onClick={toggleSidebar} color="#8e8e8e" className='hover:text-[#a8a8a8] mx-auto' />
-            </Tooltip>}
+                <Tooltip content='close'>
+                    <PanelLeftClose onClick={toggleSidebar} color="#8e8e8e" className='hover:text-[#a8a8a8]' />
+                </Tooltip></> :
+                <Tooltip content='open'>
+                    <PanelLeftOpen size={28} onClick={toggleSidebar} color="#8e8e8e" className='hover:text-[#a8a8a8] mx-auto' />
+                </Tooltip>}
         </div>
     )
 }

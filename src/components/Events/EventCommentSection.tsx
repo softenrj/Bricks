@@ -1,8 +1,8 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 "use client"
-import React, { useState, useRef, useEffect } from 'react' 
+import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from "motion/react"
 import { useComment, useAddComment } from '@/service/api.event'
 import { BType, IComment } from '@/types/comment'
@@ -45,7 +45,7 @@ function EventCommentSection({ fallback, open, eventId }: { fallback: () => void
         setInputValue("");
 
         setTimeout(() => {
-             bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+            bottomRef.current?.scrollIntoView({ behavior: "smooth" });
         }, 50);
     };
 
@@ -73,7 +73,7 @@ function EventCommentSection({ fallback, open, eventId }: { fallback: () => void
                             <div className="flex items-center gap-2">
                                 <MessageCircle size={16} className="text-indigo-400" />
                                 <h3 className="text-zinc-100 font-semibold text-sm tracking-wide">
-                                    Discussion 
+                                    Discussion
                                     <span className="text-zinc-500 font-normal ml-1">
                                         {allComments.length > 0 ? allComments.length : ''}
                                     </span>
@@ -118,7 +118,7 @@ function EventCommentSection({ fallback, open, eventId }: { fallback: () => void
                                             <CommentItem key={comment._id || index} comment={comment} />
                                         ))
                                     )}
-                                    
+
                                     <div ref={bottomRef} className="h-px w-full" />
                                 </div>
                             </InfiniteScroll>

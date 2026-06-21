@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React, { useEffect, useRef, useState } from "react";
@@ -21,7 +21,7 @@ function Logo() {
     // Create audio instance once
     audioRef.current = new Audio(src);
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.2; 
+    audioRef.current.volume = 0.2;
 
     return () => {
       audioRef.current?.pause();

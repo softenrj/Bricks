@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { wc } from "./webContainer";
@@ -150,18 +150,18 @@ const fsSlice = createSlice({
     },
 
     deleteFolder: (state, action: PayloadAction<{ path: string; projectId: string }>) => {
-      const { path , projectId } = action.payload;
+      const { path, projectId } = action.payload;
       let node = state.tree;
       const segments = path.split("/");
       const name = segments.at(-1);
-      for (let i = 0; i< segments.length - 1; i++) {
+      for (let i = 0; i < segments.length - 1; i++) {
         const seg = segments[i];
         if (!node[seg]) break;
         node = node[seg] as FSData;
       }
-      
+
       if (name) delete node[name]
-      folderRemove(path,projectId)
+      folderRemove(path, projectId)
       removeFolder(path);
     },
 
@@ -437,11 +437,11 @@ const fsSlice = createSlice({
 });
 
 export const { setSelectedFile, resetFs, setFileLanguage, setFileContent,
-   updateFileContent, setTree, switchTab,
-    closeTab, setProjectName, setFileChange,
-     renameFileName, deleteFile, setActivepath,
-      newFile, newFolder, aiCodeGen, newFileWithContent,
-       fileCreateUpdateFlow, closeOher, closeToRight,
-        closeSaved, closeAll, archCodeGeneration, archCodeRollBack, deleteFolder } = fsSlice.actions;
+  updateFileContent, setTree, switchTab,
+  closeTab, setProjectName, setFileChange,
+  renameFileName, deleteFile, setActivepath,
+  newFile, newFolder, aiCodeGen, newFileWithContent,
+  fileCreateUpdateFlow, closeOher, closeToRight,
+  closeSaved, closeAll, archCodeGeneration, archCodeRollBack, deleteFolder } = fsSlice.actions;
 
 export default fsSlice.reducer;

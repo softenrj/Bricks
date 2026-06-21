@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React, { useEffect, useRef, useState } from "react"
@@ -7,7 +7,7 @@ import { EffectEnum } from "@/types/event"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux"
 import { clearEffect, setEffect, setLyricsIdx } from "@/store/Reducers/effects"
 
-function EventAudio({ src, isValid, lyrics = [], effect }: { src: string, isValid: boolean, lyrics?:{ time: number; text: string }[], effect: EffectEnum }) {
+function EventAudio({ src, isValid, lyrics = [], effect }: { src: string, isValid: boolean, lyrics?: { time: number; text: string }[], effect: EffectEnum }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const activeEffect = useAppSelector(state => state).Effects
   const dispatch = useAppDispatch();
@@ -15,7 +15,7 @@ function EventAudio({ src, isValid, lyrics = [], effect }: { src: string, isVali
 
   useEffect(() => {
     if (!src) return
-    setIsPlaying(false) 
+    setIsPlaying(false)
     dispatch(clearEffect())
     dispatch(setLyricsIdx(-1));
 
@@ -35,18 +35,18 @@ function EventAudio({ src, isValid, lyrics = [], effect }: { src: string, isVali
   }, [src])
 
   const onTimeUpdate = (audio: HTMLAudioElement) => {
-      const t = audio.currentTime
-      for (let i = lyrics.length - 1; i >= 0; i--) {
-        if (t >= lyrics[i].time) {
-          dispatch(setLyricsIdx(i))
-          break
-        }
+    const t = audio.currentTime
+    for (let i = lyrics.length - 1; i >= 0; i--) {
+      if (t >= lyrics[i].time) {
+        dispatch(setLyricsIdx(i))
+        break
       }
     }
+  }
 
 
   const handlePlay = async () => {
-    if (!audioRef.current || !isValid) return 
+    if (!audioRef.current || !isValid) return
 
     try {
       if (isPlaying) {
@@ -60,13 +60,13 @@ function EventAudio({ src, isValid, lyrics = [], effect }: { src: string, isVali
       setIsPlaying(!isPlaying)
     } catch (err) {
       console.error("Audio play failed:", err)
-      setIsPlaying(false) 
+      setIsPlaying(false)
     }
   }
 
   return (
-    <span 
-      className={`mr-2 mt-1 inline-block ${!isValid ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`} 
+    <span
+      className={`mr-2 mt-1 inline-block ${!isValid ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
       onClick={handlePlay}
     >
       {isPlaying ? (

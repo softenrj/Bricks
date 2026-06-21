@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -39,7 +39,7 @@ export default function ContextNode({ data, onExpand }: ContextNodeProps) {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
+
     if (days === 0) return "Today";
     if (days === 1) return "Yesterday";
     if (days < 7) return `${days} days ago`;
@@ -59,11 +59,11 @@ export default function ContextNode({ data, onExpand }: ContextNodeProps) {
       key={data.id}
     >
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
+
       <div className="relative flex items-center space-x-3 px-4 py-3">
         <div className="relative flex-shrink-0">
           <div className="absolute inset-0 blur-md bg-pink-500/30 rounded-lg" />
-            {data?.details?.type === 'folder' ? getFileIcon('file') : getFileIcon(data.label)}
+          {data?.details?.type === 'folder' ? getFileIcon('file') : getFileIcon(data.label)}
         </div>
 
         {/* Label with Popover */}
@@ -86,7 +86,7 @@ export default function ContextNode({ data, onExpand }: ContextNodeProps) {
               )}
             </div>
           </PopoverTrigger>
-          <PopoverContent 
+          <PopoverContent
             className="bg-gradient-to-br from-slate-900/98 via-slate-800/95 to-slate-900/98 
               border-2 border-pink-500/60 rounded-2xl p-0 shadow-2xl 
               shadow-pink-500/20 backdrop-blur-xl w-80 overflow-hidden"
@@ -129,7 +129,7 @@ export default function ContextNode({ data, onExpand }: ContextNodeProps) {
                       <Sparkles className="w-4 h-4 text-purple-400" />
                       <span className="text-sm text-gray-300">Version</span>
                     </div>
-                      <span className="text-xs font-bold text-white">v{data.details.version}</span>
+                    <span className="text-xs font-bold text-white">v{data.details.version}</span>
                   </div>
 
                   {/* Last Updated */}

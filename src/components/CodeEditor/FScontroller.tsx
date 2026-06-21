@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { CloudDownload, CodeXml, FileSymlink, FolderSymlink, GitPullRequestClosed } from 'lucide-react'
@@ -20,9 +20,9 @@ function FScontroller({ onNewFile, onNewFolder, onFolderCollapse }: Probe) {
     <div className="mx-3 my-1 flex justify-between items-center group">
       <Tooltip content='project name'>
         <p className="flex items-center gap-1 truncate text-sm text-gray-300 max-w-[100px] sm:text-xs" title={projectName}>
-        <CodeXml color="#ff00ff" size={12} />
-        <span className="truncate">{projectName}</span>
-      </p>
+          <CodeXml color="#ff00ff" size={12} />
+          <span className="truncate">{projectName}</span>
+        </p>
       </Tooltip>
 
       <div className="text-[#a2a2a2] gap-2 opacity-0 hidden group-hover:opacity-100 group-hover:flex transition-opacity duration-200">

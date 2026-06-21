@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 
 "use client"
@@ -204,15 +204,15 @@ function ArchPanel({ projectId }: { projectId: string }) {
                         <div className='hover:bg-white/10 p-1.5 rounded-full transition-all duration-150 ease-in'>
                             <Plus size={14} />
                         </div>
-                        <Tooltip content={prompt.trim().length === 0 ? "Please enter a message": "Hit generate"}>
-                        <button
-                            className="inline-flex items-center justify-center shrink-0 w-7 h-7 border border-white/20 rounded-full bg-gray-800/30 hover:bg-gray-700/30 transition"
-                            onClick={handleSend}
-                            disabled={prompt.trim().length === 0}
-                        >
-                            <ArrowUp size={14} className={`${prompt.trim().length === 0 ? "text-white/50": "text-white"}`} />
-                        </button>
-                    </Tooltip>
+                        <Tooltip content={prompt.trim().length === 0 ? "Please enter a message" : "Hit generate"}>
+                            <button
+                                className="inline-flex items-center justify-center shrink-0 w-7 h-7 border border-white/20 rounded-full bg-gray-800/30 hover:bg-gray-700/30 transition"
+                                onClick={handleSend}
+                                disabled={prompt.trim().length === 0}
+                            >
+                                <ArrowUp size={14} className={`${prompt.trim().length === 0 ? "text-white/50" : "text-white"}`} />
+                            </button>
+                        </Tooltip>
                     </div>
                 </div>
             </div>

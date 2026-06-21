@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import React, { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from "react"
@@ -346,7 +346,7 @@ export default function ChatInput({ projectId }: { projectId: string }) {
 
       {/* Footer */}
       <p className="text-center text-xs text-[#8e8e8e] mt-3 select-none">
-        © 2025 BRICKS AI. All rights reserved.
+        © 2025-2026 BRICKS AI. All rights reserved.
       </p>
     </div>
   )

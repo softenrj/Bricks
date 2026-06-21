@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import { ChevronRight } from 'lucide-react'
@@ -23,8 +23,8 @@ function SubtitleAi() {
                        shrink-0 w-6 h-6 
                        border border-gray-500 rounded-full 
                        hover:bg-gray-700/40 transition">
-                    <ChevronRight size={14} />
-                </button>
+                        <ChevronRight size={14} />
+                    </button>
                 </Tooltip>
             </div>
 

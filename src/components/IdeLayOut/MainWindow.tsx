@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -92,7 +92,7 @@ function MainWindow({ projectId }: { projectId: string }) {
 
           <ResizableHandle />
 
-          {archPanel &&  <ResizablePanel defaultSize={30} minSize={25}>
+          {archPanel && <ResizablePanel defaultSize={30} minSize={25}>
             <ArchPanel projectId={projectId} />
           </ResizablePanel>}
 

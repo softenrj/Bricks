@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -37,9 +37,8 @@ function AppSlideBarBtnsCard({ item, index, tab, open }: Props) {
       <SidebarMenuItem>
         {/* Main Item */}
         <div
-          className={`flex items-center justify-between w-fit min-w-[80%] rounded-md ${
-            tab === item.href ? "glass-card" : ""
-          }`}
+          className={`flex items-center justify-between w-fit min-w-[80%] rounded-md ${tab === item.href ? "glass-card" : ""
+            }`}
         >
           <Link
             className="cursor-pointer flex-1"
@@ -67,9 +66,8 @@ function AppSlideBarBtnsCard({ item, index, tab, open }: Props) {
             <CollapsibleTrigger asChild>
               <ChevronDown
                 size={16}
-                className={`mr-2 text-gray-300 transition-transform duration-300 ${
-                  isOpen ? "rotate-180" : "rotate-0"
-                }`}
+                className={`mr-2 text-gray-300 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"
+                  }`}
               />
             </CollapsibleTrigger>
           )}
@@ -84,9 +82,8 @@ function AppSlideBarBtnsCard({ item, index, tab, open }: Props) {
                 return (
                   <Link key={subIndex} href={sub.href}>
                     <SidebarMenuSubItem
-                      className={`relative flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors ${
-                        isActive ? "text-white font-medium" : ""
-                      }`}
+                      className={`relative flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors ${isActive ? "text-white font-medium" : ""
+                        }`}
                     >
                       <p className="text-xs sm:text-sm truncate">{sub.title}</p>
                       {isActive && (

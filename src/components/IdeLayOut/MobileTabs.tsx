@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -51,10 +51,9 @@ function MobileTabs({ projectId }: { projectId: string }) {
                         className={`
                           flex items-center justify-center min-w-[36px] h-9 rounded-xl px-3
                           transition-all
-                          ${
-                            isActive
-                              ? "bg-white/10 text-white border border-white/20 shadow-inner"
-                              : "text-gray-400 hover:bg-white/5 hover:text-white"
+                          ${isActive
+                            ? "bg-white/10 text-white border border-white/20 shadow-inner"
+                            : "text-gray-400 hover:bg-white/5 hover:text-white"
                           }
                         `}
                       >

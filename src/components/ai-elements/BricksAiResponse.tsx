@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React from "react";
@@ -18,8 +18,8 @@ function BricksAiResponse({ message }: { message: Message }) {
 
   React.useEffect(() => {
     if (!isNew) {
-        setDisplayedText(message.content);
-        return ;
+      setDisplayedText(message.content);
+      return;
     }
     let frame: number;
     let index = 0;

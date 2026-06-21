@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -75,4 +75,4 @@ const IdeFeaturesSlice = createSlice({
 });
 
 export default IdeFeaturesSlice.reducer;
-export const { toggleCodeCompletion,toggleDevServerRefresh, toggleAutoSave, togglePanel, toggleArch, setArchJobId, setSnapIds, setArchVoiePanel, setArchFloatPanel } = IdeFeaturesSlice.actions;
+export const { toggleCodeCompletion, toggleDevServerRefresh, toggleAutoSave, togglePanel, toggleArch, setArchJobId, setSnapIds, setArchVoiePanel, setArchFloatPanel } = IdeFeaturesSlice.actions;

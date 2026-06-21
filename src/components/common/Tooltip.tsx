@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client"
 import {
@@ -15,7 +15,7 @@ type AppTooltipProps = {
   triggClass?: string
 } & React.HtmlHTMLAttributes<HTMLDivElement>
 
-export function Tooltip({ children, content, show=true, triggClass,  ...probe}: AppTooltipProps) {
+export function Tooltip({ children, content, show = true, triggClass, ...probe }: AppTooltipProps) {
   return (
     <ToolTipComp {...probe}>
       <TooltipTrigger asChild className={`${triggClass ? triggClass : "cursor-pointer"}`}>
@@ -23,8 +23,8 @@ export function Tooltip({ children, content, show=true, triggClass,  ...probe}: 
       </TooltipTrigger>
       {
         show && <TooltipContent className="bg-black">
-        <p>{content}</p>
-      </TooltipContent>
+          <p>{content}</p>
+        </TooltipContent>
       }
     </ToolTipComp>
   )

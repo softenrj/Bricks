@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Raj 
+// Copyright (c) 2025-2026 Raj 
 // See LICENSE for details.
 "use client";
 import React, { useState } from "react";
@@ -13,7 +13,7 @@ import MenuOptions from "./Project.MenuOption";
 function ProjectCard({ project, projectUpdate, projectDelete }: { project?: Project, projectUpdate?: (id: string, changes: Project) => void, projectDelete?: (id: string) => void }) {
     const [isStarred, setStarred] = React.useState<boolean>(!!project?.starred)
     const handleStarClick = async () => {
-        if (!project?._id) return ;
+        if (!project?._id) return;
         const response = await markStarred(isStarred, project?._id)
         if (response) setStarred(!isStarred)
     };
