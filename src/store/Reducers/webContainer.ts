@@ -184,6 +184,17 @@ export const installDependencies = createAsyncThunk<void, void>(
 );
 
 
+export const killAllProcesses = async () => {
+  const container = await getWebContainer();
+
+  try {
+    await container.spawn("pkill", ["-f", "node"]);
+    await new Promise(r => setTimeout(r, 800));
+  } catch (e) {
+    // ignore
+  }
+};
+
 
 // Run Dev Server
 export const startDevServer = createAsyncThunk<string, void>(
@@ -191,6 +202,7 @@ export const startDevServer = createAsyncThunk<string, void>(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       if (!wc) wc = await getWebContainer();
+      await killAllProcesses();
       const devProcess = await wc.spawn("npm", ["run", "dev"]);
 
       devProcess.output.pipeTo(

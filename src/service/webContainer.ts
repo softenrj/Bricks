@@ -90,7 +90,14 @@ export function startFSWatcher(
 
   fsWatcher = container.fs.watch("/", { recursive: true }, async (event, fileName) => {
     if (!fileName) return;
-    if (String(fileName).startsWith("node_modules")) return;
+    const filenameStr = String(fileName);
+
+    if (
+      filenameStr.startsWith("node_modules") ||
+      filenameStr.startsWith(".git") ||
+      filenameStr.includes("dist") ||
+      filenameStr.includes(".next")
+    ) return;
 
     try {
       const { type } = await detectType(container, fileName);

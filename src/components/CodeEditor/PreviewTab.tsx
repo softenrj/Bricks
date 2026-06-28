@@ -34,9 +34,16 @@ function PreviewPanel() {
     iframeRef.current.src = history[index];
   };
 
+  const openPreview = () => {
+    if (history[index]) {
+      window.open(history[index], "_blank", "noopener,noreferrer");
+    }
+  };
+
   React.useEffect(() => {
     handleReload()
   }, [refresh]);
+
 
   return (
     <div className="h-full bg-[#0D0D0D]">
@@ -52,6 +59,11 @@ function PreviewPanel() {
             <Globe size={12} />
 
             <span className=" truncate">{history[index]}</span>
+            <Tooltip content="Open in new tab">
+              <button onClick={openPreview}>
+                <Icon icon="tabler:external-link" width={14} height={14} />
+              </button>
+            </Tooltip>
           </div>
 
           <iframe

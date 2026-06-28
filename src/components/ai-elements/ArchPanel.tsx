@@ -179,14 +179,6 @@ function ArchPanel({ projectId }: { projectId: string }) {
 
             <div className="mt-auto w-[96%] flex flex-col focus:border-violet-500 justify-center items-center">
                 {IdeFea.snap && <div className='flex p-1.5 flex-col justify-stretch items-start w-full border-t border-s border-r rounded-t-md border-[#1b1b1b] bg-[#0f0f0f] items-center gap-2'>
-                    <button className='bg-[#141313] hover:bg-[#1c1b1b] w-full py-1 h-fit flex justify-between items-center px-3 rounded-xs border border-white/10 cursor-pointer group' onClick={handleRollBack}>
-                        <div className='flex flex-col items-start'>
-                            <span className='text-xs text-yellow-500'>RollBack</span>
-                            <p className='text-[10px]'>All changes will sync to backend.</p>
-                        </div>
-
-                        <GitPullRequestClosed size={12} className='text-gray-400 ml-2 group-hover::text-gray-200' />
-                    </button>
                     <button className='bg-[#141313] hover:bg-[#1c1b1b] w-full py-1 h-fit flex justify-between items-center px-3 rounded-xs border border-white/10 cursor-pointer group' onClick={handleCommit}>
                         <div className='flex flex-col items-start'>
                             <span className='text-xs text-green-500'>Commit</span>
@@ -194,6 +186,14 @@ function ArchPanel({ projectId }: { projectId: string }) {
                         </div>
 
                         <Merge size={12} className='text-gray-400 ml-2 group-hover::text-gray-200' />
+                    </button>
+                    <button className='bg-[#141313] hover:bg-[#1c1b1b] w-full py-1 h-fit flex justify-between items-center px-3 rounded-xs border border-white/10 cursor-pointer group' onClick={handleRollBack}>
+                        <div className='flex flex-col items-start'>
+                            <span className='text-xs text-yellow-500'>RollBack</span>
+                            <p className='text-[10px]'>All changes will sync to backend.</p>
+                        </div>
+
+                        <GitPullRequestClosed size={12} className='text-gray-400 ml-2 group-hover::text-gray-200' />
                     </button>
                 </div>}
 
