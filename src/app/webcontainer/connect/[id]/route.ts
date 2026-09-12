@@ -3,9 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    const id = params.id;
+    const param = await params;
+    const id = param.id;
 
     // This is the key part — you need to validate the connection ID
     // and tell the WebContainer that this tab belongs to your project.
