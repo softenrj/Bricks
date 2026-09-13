@@ -11,15 +11,16 @@ import { ArchProjectCode } from "@/types/arch.typs";
 import { ARCH_BRICKS_CODE_GEN } from "@/utils/api/socket.events";
 import { archWebContainerProcess, rollBack } from "@/service/webContainer";
 import { archCodeGeneration, archCodeRollBack } from "@/store/Reducers/fsSlice";
-import { API_BRICKS_ARCH_COMMIT, API_BRICKS_ARCH_ROLLBACK, API_BRICKS_ARCH_SNAP_EXTENED, API_BRICKS_ARCH_STREAM } from "@/utils/api/APIConstant";
+import { API_BRICKS_ARCH_COMMIT, API_BRICKS_ARCH_ROLLBACK, API_BRICKS_ARCH_SNAP_EXTENED, API_BRICKS_ARCH_STREAM, API_BRICKS_ARCH_STREAM_VALIDATE } from "@/utils/api/APIConstant";
 import { defaultApiRoute } from "@/utils/constance";
 import { getFreshToken } from "@/utils/api/axios";
-import { postApi } from "@/utils/api/common";
+import { getApi, postApi } from "@/utils/api/common";
 import { ApiResponse } from "@/types/Api";
 import toast from "react-hot-toast";
 import { ISnapshotFile } from "@/types/snapshot";
 import { sendToShell } from "@/store/Reducers/webContainer";
 import { setSnapIds } from "@/store/Reducers/IdeFeatures";
+import { upsertArchProcess } from "@/store/Reducers/ArchProcessChat";
 
 function BricksSpeechLaunch({ projectId }: { projectId: string }) {
   const [showLaunch, setShowLaunch] = useState(true);
@@ -88,9 +89,17 @@ function BricksSpeechLaunch({ projectId }: { projectId: string }) {
     if (!jobId) return;
     let es: EventSource;
     const stream = async () => {
-      const token = await getFreshToken();
+      const response = await getApi<ApiResponse<void>>({
+        url: API_BRICKS_ARCH_STREAM_VALIDATE + `/${jobId}`
+      })
 
-      es = new EventSource(defaultApiRoute + API_BRICKS_ARCH_STREAM + `/${jobId}?token=${token}`);
+      if (!response?.success) {
+        // unauthorized
+        dispatch(upsertArchProcess({ message: "Stream is Not allowed Error: wrong jobId or user", process: "complete", processId: "Terminate", role: "ai" }));
+        return;
+      }
+
+      es = new EventSource(defaultApiRoute + API_BRICKS_ARCH_STREAM + `/${jobId}`);
 
       es.addEventListener("file", async (e) => {
         const gen: ArchProjectCode = JSON.parse(e.data);
